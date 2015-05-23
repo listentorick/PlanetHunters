@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 public class ShipGUIController : MonoBehaviour {
 
-	public Body ship;
+	public Ship ship;
 	public Slider slider;
 	public SpriteRenderer selected;
 	public Image fill;

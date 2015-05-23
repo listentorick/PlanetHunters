@@ -87,7 +87,8 @@ public class SolarSystem : MonoBehaviour {
 	}
 
 
-
+	public delegate void ShipEnteredOrbitHandler(Body s, Body p);
+	public event ShipEnteredOrbitHandler ShipEnteredOrbit;
 
 	private void UpdateForces (float dt) { //delta is the num of milliseconds which have passed between updates
 		
@@ -107,6 +108,14 @@ public class SolarSystem : MonoBehaviour {
 				
 					if(body.inOrbit==false) {
 						body.justEnteredOrbit = true;
+
+						if(ShipEnteredOrbit != null)
+						{
+							// All listeners will be invoked
+							ShipEnteredOrbit(body,SOIParent);
+						}
+
+
 					} else {
 						body.justEnteredOrbit = false;
 					}

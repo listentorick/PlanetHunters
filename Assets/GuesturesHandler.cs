@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GuesturesHandler : MonoBehaviour {
 
-	private Body selectedBody;
+	private Ship selectedBody;
 	private Camera camera;
 
 	public void Start(){
@@ -17,7 +17,7 @@ public class GuesturesHandler : MonoBehaviour {
 				selectedBody.IsSelected = false;
 			}
 
-			selectedBody = gesture.Selection.GetComponent<Body> ();
+			selectedBody = gesture.Selection.GetComponent<Ship> ();
 			selectedBody.IsSelected = true;
 			Debug.Log ("Tapped object: " + gesture.Selection.name);
 		} else {
