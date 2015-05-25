@@ -13,12 +13,16 @@ public class GuesturesHandler : MonoBehaviour {
 	void OnTap( TapGesture gesture ) 
 	{
 		if (gesture.Selection) {
-			if(selectedBody!=null) {
+			if(selectedBody!=null ) {
 				selectedBody.IsSelected = false;
 			}
 
-			selectedBody = gesture.Selection.GetComponent<Ship> ();
-			selectedBody.IsSelected = true;
+			if(gesture.Selection.GetComponent<Ship>()){
+				selectedBody = gesture.Selection.GetComponent<Ship> ();
+				selectedBody.IsSelected = true;
+			}
+
+
 			Debug.Log ("Tapped object: " + gesture.Selection.name);
 		} else {
 			Debug.Log ("No object was tapped at " + gesture.Position + " " + gesture.ElapsedTime);

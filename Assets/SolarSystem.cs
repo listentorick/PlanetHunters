@@ -17,6 +17,15 @@ public class SolarSystem : MonoBehaviour {
 		bodies.Add (body);
 		//forces.Add (new List<Vector2>());
 	}
+
+	public void RemoveBody(Body body) {
+		//do this at the end of the update cycle?
+		bodies.Remove (body);
+	}
+
+	public void Clear(){
+		bodies.Clear ();
+	}
 	
 	private Vector2 CalculateForce(Body body1, Body body2) {  //vector force on body 1 from body 2
 		var GM1M2 = G*body1.mass*body2.mass;
@@ -187,6 +196,7 @@ public class SolarSystem : MonoBehaviour {
 
 
 				} else {
+
 					bodies [n].acceleration.x += forces [n,m].x / massN;
 					bodies [n].acceleration.y += forces [n,m].y / massN;    
 

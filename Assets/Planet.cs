@@ -36,6 +36,10 @@ public class Planet : Body {
 		if (medicalSupplyTimer > rateOfConsumptionMedicalSupplies) {
 			medicalSupplyTimer = 0;
 			medicalSupplies-=1;
+			if(medicalSupplies<=0){
+				ResourceDepleted(Cargo.Medical);
+				medicalSupplies = 0;
+			}
 
 		}
 
@@ -46,6 +50,10 @@ public class Planet : Body {
 		if (foodSupplyTimer > rateOfConsumptionFoodlSupplies) {
 			foodSupplyTimer = 0;
 			foodSupplies-=1;
+			if(foodSupplies<=0){
+				ResourceDepleted(Cargo.Food);
+				foodSupplies = 0;
+			}
 			
 		}
 		
@@ -54,6 +62,10 @@ public class Planet : Body {
 		base.Update ();
 
 	}
+
+	public delegate void ResourceDepletedHandler(Cargo type);
+	public event ResourceDepletedHandler ResourceDepleted;
+
 
 	public void ConsumeCargo (Ship s) {
 	

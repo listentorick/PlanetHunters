@@ -24,11 +24,52 @@ public class Ship : Body {
 		renderers = this.GetComponentsInChildren<Renderer> ();
 	}
 
+	//public 
+
 
 	public void Thrust(Vector2 thrust){
 		if (fuel <= 0)
 			return;
 		additionalForce = thrust;
+	}
+
+	public void AlignToVector(Vector2 v) {
+
+		var angle = Mathf.Atan2 (v.y, v.x) * Mathf.Rad2Deg;
+				
+		if (v.x < 0 && v.y > 0) {
+			//topleft
+			angle -= 90;
+		}
+		if (v.x > 0 && v.y > 0) {
+			angle += 270;
+		}
+		if (v.x > 0 && v.y < 0) {
+			angle -= 90;
+		}
+		if (v.x < 0 && v.y < 0) {
+			angle += 270;
+		}
+		if (v.x == 0 && v.y < 0) {
+			angle = 180;
+		}
+		if (v.x == 0 && v.y > 0) {
+			angle = 0;
+		}
+
+		if (v.x < 0 && v.y == 0) {
+			angle = 90;
+		}
+		if (v.x > 0 && v.y == 0) {
+			angle = 0;
+		}
+
+		if (shipRendererTransform == null) {
+			shipRendererTransform = this.gameObject.transform.GetChild (0);
+		}
+		
+		shipRendererTransform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
+	
 	}
 
 	public void Update() {
@@ -40,8 +81,19 @@ public class Ship : Body {
 				fuel = 0;
 				rechargeTime =0;
 			}
-			
-			var angle = Mathf.Atan2 (additionalForce.y, additionalForce.x) * Mathf.Rad2Deg;
+
+			AlignToVector(additionalForce);
+			//var angle = Mathf.Atan2 (additionalForce.y, additionalForce.x) * Mathf.Rad2Deg;
+
+		//if(additionalForce.x==0 && additionalForce.y>0) {
+				//pointing down
+		//		angle += 180;
+		//	}
+		//	if(additionalForce.x==0 && additionalForce.y>0) {
+		//		//pointing up
+		//		angle += 180;
+		//	}
+			/*
 			
 			if (additionalForce.x < 0 && additionalForce.y > 0) {
 				//topleft
@@ -56,9 +108,15 @@ public class Ship : Body {
 			if (additionalForce.x < 0 && additionalForce.y < 0) {
 				angle += 270;
 			}
+			if (additionalForce.x >= 0 && additionalForce.y < 0) {
+				angle -= 90;
+			}
+			if (additionalForce.x >= 0 && additionalForce.y > 0) {
+				angle += 90;
+			}
 			
 			shipRendererTransform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
-			
+			*/
 		} else {
 			
 			if(thruster!=null)thruster.Stop();
@@ -125,5 +183,17 @@ public class Ship : Body {
 		position = new Vector2(newPosition.x,newPosition.y) * scale;
 		
 		this.transform.position = newPosition;
+	}
+
+	public delegate void ShipCollidedHandler(Ship ship, GameObject other);
+	public event ShipCollidedHandler ShipCollided;
+
+
+	public void OnTriggerEnter2D(Collider2D other) {
+		Ship ship = other.gameObject.GetComponent<Ship>();
+		if (ship != null) {
+			//raise ship collision event
+			ShipCollided(this,ship.gameObject);
+		}
 	}
 }
