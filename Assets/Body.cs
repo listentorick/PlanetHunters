@@ -24,7 +24,7 @@ public class Body : MonoBehaviour {
 
 	public void Update () {
 	
-		this.transform.position = new Vector2(position.x/100000f, position.y/100000f);
+		this.transform.position = new Vector3(position.x/100000f, position.y/100000f, this.transform.position.z);
 
 	}
 

@@ -10,13 +10,16 @@ public class ResourceChart : MonoBehaviour {
 	private MeshRenderer meshRenderer;
 	private MeshBuilder meshBuilder;
 	private MeshHelper meshHelper;
-	private float value = 0;
+	public float value = 0;
+
+	public float minAngle = 0f;
+	public float maxAngle = 360f;
 
 
 
 	// Use this for initialization
 	public float radius = 5;
-	public float thickness = 1;
+	public float thickness = 0.1f;
 
 	void Start () {
 
@@ -38,8 +41,10 @@ public class ResourceChart : MonoBehaviour {
 		
 		meshBuilder = new MeshBuilder();
 		meshHelper = new MeshHelper ();
+		//value = 0.1f;
+
 		
-		meshHelper.BuildDisc (meshBuilder, radius, radius + thickness, 32, 360f * value);
+		meshHelper.BuildDisc (meshBuilder, radius, radius + thickness, 32, minAngle, minAngle + (maxAngle - minAngle) * value);
 		
 		meshFilter.mesh = meshBuilder.CreateMesh();
 	}

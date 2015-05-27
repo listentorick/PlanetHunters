@@ -40,15 +40,18 @@ public class ShipSpawner : MonoBehaviour {
 		warpGate.ShipEnteredWarpGate+= HandleShipEnteredWarpGate;
 
 		createdObjects.Add (warpGate.gameObject);
+
+
+
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);
 		gasGiant.position = new Vector2 (-800000f, -100000f);
-		gasGiant.mass = 1e+20f;
+		gasGiant.mass = 1e+25f;
 		gasGiant.GetComponent<SpriteRenderer> ().sprite = gasPlanetSprite;
 		gasGiant.foodSupplies = 100;
 		gasGiant.maxFoodSupplies = 100;
 		gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
-		gasGiant.soi = 100000;
+		gasGiant.soi = 200000;
 		gasGiant.canMove = false;
 		gasGiant.ResourceDepleted+= HandleResourceDepleted;
 		
@@ -88,7 +91,7 @@ public class ShipSpawner : MonoBehaviour {
 		solarSystem.AddBody (bluePlanet);
 
 		createdObjects.Add (bluePlanet.gameObject);
-		
+
 		PopulatePool ();
 		
 

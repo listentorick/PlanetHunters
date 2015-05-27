@@ -49,10 +49,10 @@ public class MeshHelper {
 	
 	}
 
-	public void BuildDisc(MeshBuilder meshBuilder, float innerRadius, float outerRadius, int numEdges, float maxAngle){
+	public void BuildDisc(MeshBuilder meshBuilder, float innerRadius, float outerRadius, int numEdges, float minAngle, float maxAngle){
 	
-		List<Vector2> innerCircle = GetCircleEdge (innerRadius, numEdges, 0f,maxAngle * Mathf.Deg2Rad);
-		List<Vector2> outerCircle = GetCircleEdge (outerRadius, numEdges,0f,maxAngle * Mathf.Deg2Rad);
+		List<Vector2> innerCircle = GetCircleEdge (innerRadius, numEdges, minAngle * Mathf.Deg2Rad,maxAngle * Mathf.Deg2Rad);
+		List<Vector2> outerCircle = GetCircleEdge (outerRadius, numEdges,minAngle * Mathf.Deg2Rad,maxAngle * Mathf.Deg2Rad);
 
 		Vector3 normal = Vector3.up;
 
