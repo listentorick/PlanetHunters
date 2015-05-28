@@ -8,11 +8,19 @@ public class GUIController : MonoBehaviour {
 	public GameObject gameOver;
 	public ShipSpawner gameController;
 	public Button replay;
+	public Economy economy;
+	public Text money;
 
 	// Use this for initialization
 	void Start () {
 		ResetControls ();
 		gameController.GameOver+= HandleGameOver;
+		economy.Profit += HandleProfit;
+	}
+
+	void HandleProfit (float profit)
+	{
+		money.text = economy.playersMoney.ToString();
 	}
 
 	private void ResetControls(){

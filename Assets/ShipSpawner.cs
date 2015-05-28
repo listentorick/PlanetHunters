@@ -16,6 +16,7 @@ public class ShipSpawner : MonoBehaviour {
 
 	private float elaspedTime = 0;
 	private float nextTime = 0;
+	public Economy economy;
 
 	public WarpGate warpGatePrefab;
 	private WarpGate warpGate;
@@ -31,6 +32,17 @@ public class ShipSpawner : MonoBehaviour {
 		nextTime = 0f;
 		shipPool.Clear ();
 		BuildLevel ();
+		economy.Reset ();
+	}
+
+	void AddResource(Planet p, Cargo type, float cost, int current, int max, float timeToConsumeOneUnit) {
+	
+		Resource r = p.gameObject.AddComponent<Resource> ();
+		r.max = max;
+		r.current = current;
+		r.resourceType = type;
+		r.price = cost;
+		r.timeToConsumeOneUnit = timeToConsumeOneUnit;
 	}
 
 	void BuildLevel() {
@@ -45,16 +57,19 @@ public class ShipSpawner : MonoBehaviour {
 
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);
-		gasGiant.position = new Vector2 (-800000f, -100000f);
+		gasGiant.position = new Vector2 (-600000f, -100000f);
 		gasGiant.mass = 1e+25f;
 		gasGiant.GetComponent<SpriteRenderer> ().sprite = gasPlanetSprite;
-		gasGiant.foodSupplies = 100;
-		gasGiant.maxFoodSupplies = 100;
-		gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
+		//gasGiant.foodSupplies = 100;
+		//gasGiant.maxFoodSupplies = 100;
+		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
 		gasGiant.soi = 200000;
 		gasGiant.canMove = false;
 		gasGiant.ResourceDepleted+= HandleResourceDepleted;
-		
+
+		AddResource (gasGiant, Cargo.Food, 100f, 100, 100,1f);
+		gasGiant.BuildResourceCharts ();
+
 		solarSystem.AddBody (gasGiant);
 
 		createdObjects.Add (gasGiant.gameObject);
@@ -64,30 +79,37 @@ public class ShipSpawner : MonoBehaviour {
 		redPlanet.position = new Vector2 (200000f, 40000);
 		redPlanet.mass = 1e+20f;
 		redPlanet.GetComponent<SpriteRenderer> ().sprite = redPlanetSprite;
-		redPlanet.foodSupplies = 100;
-		redPlanet.maxFoodSupplies = 100;
-		redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
+		//redPlanet.foodSupplies = 100;
+		//redPlanet.maxFoodSupplies = 100;
+		//redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
 		redPlanet.soi = 100000;
 		redPlanet.canMove = false;
 		redPlanet.ResourceDepleted+= HandleResourceDepleted;
-		
+
+		AddResource (redPlanet, Cargo.Food, 100f, 100, 100, 5f);
+		redPlanet.BuildResourceCharts ();
+
 		solarSystem.AddBody (redPlanet);
 
 		createdObjects.Add (redPlanet.gameObject);
 		
 		
 		Planet bluePlanet = Instantiate (planetPrefab);
-		bluePlanet.position = new Vector2 (700000, 500000);
+		bluePlanet.position = new Vector2 (700000, 400000);
 		bluePlanet.mass = 1e+24f;
 		bluePlanet.GetComponent<SpriteRenderer> ().sprite = bluePlanetSprite;
-		bluePlanet.foodSupplies = 100;
-		bluePlanet.maxFoodSupplies = 100;
-		bluePlanet.rateOfConsumptionFoodlSupplies = 0.5f;
+		//bluePlanet.foodSupplies = 100;
+		//bluePlanet.maxFoodSupplies = 100;
+		//bluePlanet.rateOfConsumptionFoodlSupplies = 0.5f;
 		
 		bluePlanet.soi = 150000;
 		bluePlanet.canMove = false;
 		bluePlanet.ResourceDepleted+= HandleResourceDepleted;
-		
+
+		AddResource (bluePlanet, Cargo.Food, 100f, 100, 100,5f);
+		bluePlanet.BuildResourceCharts ();
+
+
 		solarSystem.AddBody (bluePlanet);
 
 		createdObjects.Add (bluePlanet.gameObject);
@@ -148,7 +170,7 @@ public class ShipSpawner : MonoBehaviour {
 			Ship newShip = Instantiate (shipPrefab);
 			newShip.position = new Vector2 (10000000f,1000000f);
 			newShip.cargoType = Cargo.Food;
-			newShip.cargo = 100f;
+			newShip.cargo = 100;
 			newShip.fuel = 1f;
 			shipPool.Add(newShip);
 			newShip.gameObject.SetActive(false);

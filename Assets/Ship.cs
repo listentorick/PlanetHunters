@@ -8,7 +8,7 @@ public enum Cargo {
 
 public class Ship : Body {
 
-	public float cargo;
+	public int cargo;
 	public Cargo cargoType;
 	private float rechargeTime = 0;
 	private Transform shipRendererTransform;

@@ -21,11 +21,8 @@ public class ResourceChart : MonoBehaviour {
 	public float radius = 5;
 	public float thickness = 0.1f;
 
-	void Start () {
-
-
-	
-	}
+	public Cargo resourceType;
+	//public Material chartMa
 
 	public void Set(float s) {
 		if (value != s) {
@@ -38,6 +35,16 @@ public class ResourceChart : MonoBehaviour {
 	private void Render(){
 		meshFilter = GetComponent<MeshFilter>();
 		meshRenderer = GetComponent<MeshRenderer>();
+
+		//the resource type impacts the color
+		if (resourceType == Cargo.Food) {
+			meshRenderer.material.color = new Color (85f/255f, 255f/255f, 85f/255f);
+		} else if (resourceType == Cargo.Medical) {
+			meshRenderer.material.color = new Color (175f/255f, 221f/255f, 233f/255f);
+		} else if (resourceType == Cargo.Technology) {
+			meshRenderer.material.color = new Color(255f/255f,153f/255f,85f/255f);
+		}
+
 		
 		meshBuilder = new MeshBuilder();
 		meshHelper = new MeshHelper ();
