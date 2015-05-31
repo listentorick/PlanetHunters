@@ -45,15 +45,27 @@ public class ShipSpawner : MonoBehaviour {
 		r.timeToConsumeOneUnit = timeToConsumeOneUnit;
 	}
 
+
+	//when a ship enters a warp gate we add the cargo to this.
+	//We then randomly pop off this queue when we spawn 
+	List<Cargo> cargoQueue = new List<Cargo>();
+
+
+	private void CreateWarpGate(Cargo type, Vector3 position){
+		WarpGate warpGate = (WarpGate)Instantiate (warpGatePrefab,position, Quaternion.identity);
+		warpGate.ShipEnteredWarpGate+= HandleShipEnteredWarpGate;
+		warpGate.cargoType = type;
+		
+		createdObjects.Add (warpGate.gameObject);
+
+	}
+
 	void BuildLevel() {
 		//position 3 planets ramdomly
 		
-		warpGate = (WarpGate)Instantiate (warpGatePrefab, new Vector3(-2,1,0), Quaternion.identity);
-		warpGate.ShipEnteredWarpGate+= HandleShipEnteredWarpGate;
 
-		createdObjects.Add (warpGate.gameObject);
-
-
+		CreateWarpGate (Cargo.Food, new Vector3 (-2, 1, 0));
+		CreateWarpGate (Cargo.Medical, new Vector3 (4, 3, 0));
 
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);
@@ -87,6 +99,7 @@ public class ShipSpawner : MonoBehaviour {
 		redPlanet.ResourceDepleted+= HandleResourceDepleted;
 
 		AddResource (redPlanet, Cargo.Food, 100f, 100, 100, 5f);
+		AddResource (redPlanet, Cargo.Medical, 100f, 100, 100, 2f);
 		redPlanet.BuildResourceCharts ();
 
 		solarSystem.AddBody (redPlanet);
@@ -131,12 +144,13 @@ public class ShipSpawner : MonoBehaviour {
 		this.GameOver();
 	}
 
-	void HandleShipEnteredWarpGate (Ship ship)
+	void HandleShipEnteredWarpGate (Ship ship, WarpGate warpGate)
 	{
 		shipPool.Add (ship);
 		solarSystem.RemoveBody (ship);
 		ship.transform.position = new Vector2(100f,100f);
 		ship.gameObject.SetActive (false);
+		cargoQueue.Add (warpGate.cargoType);
 		//Hidden (ship.gameObject, true);
 	}
 
@@ -183,6 +197,8 @@ public class ShipSpawner : MonoBehaviour {
 
 	void HandleShipCollided (Ship ship, GameObject other)
 	{
+		Destroy (ship.gameObject);
+		Destroy (other.gameObject);
 		GameOver ();
 	}
 
@@ -259,6 +275,13 @@ public class ShipSpawner : MonoBehaviour {
 				pooledShip.position = new Vector2(x * scale,y * scale);
 				solarSystem.AddBody(pooledShip);
 				pooledShip.gameObject.SetActive(true);
+				pooledShip.fuel = 1f;
+				if(cargoQueue.Count>0) {
+
+					pooledShip.cargoType = cargoQueue[0];
+					pooledShip.cargo = pooledShip.maxCargo;
+					cargoQueue.RemoveAt(0);
+				}
 
 			}
 

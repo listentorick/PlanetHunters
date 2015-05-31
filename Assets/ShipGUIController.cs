@@ -7,6 +7,9 @@ public class ShipGUIController : MonoBehaviour {
 	public Slider slider;
 	public SpriteRenderer selected;
 	public Image fill;
+	public Slider cargo;
+	public Image cargoFill;
+
 
 	// Use this for initialization
 	void Start () {
@@ -17,8 +20,12 @@ public class ShipGUIController : MonoBehaviour {
 	void Update () {
 	
 		selected.enabled = ship.IsSelected;
+
+
+		cargoFill.color = Helpers.GetCargoColor (ship.cargoType);
+
 			
-	
+		cargo.value = (float)ship.cargo / (float)ship.maxCargo;
 
 		if (ship.fuel == 0) {
 			fill.color = Color.red;

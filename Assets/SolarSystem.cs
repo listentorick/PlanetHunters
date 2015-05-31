@@ -5,7 +5,7 @@ using System.Linq;
 
 public class SolarSystem : MonoBehaviour {
 
-	List<Body> bodies = new List<Body> ();
+	public List<Body> bodies = new List<Body> ();
 	Vector2[,] forces = new Vector2[10,10];
 	//List<List<Vector2>> forces = new List<List<Vector2>> ();
 	Dictionary<Body,Vector2> preAcc = new Dictionary<Body,Vector2>();
@@ -17,6 +17,8 @@ public class SolarSystem : MonoBehaviour {
 		bodies.Add (body);
 		//forces.Add (new List<Vector2>());
 	}
+
+//	public Bo
 
 	public void RemoveBody(Body body) {
 		//do this at the end of the update cycle?

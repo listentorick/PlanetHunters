@@ -36,14 +36,9 @@ public class ResourceChart : MonoBehaviour {
 		meshFilter = GetComponent<MeshFilter>();
 		meshRenderer = GetComponent<MeshRenderer>();
 
-		//the resource type impacts the color
-		if (resourceType == Cargo.Food) {
-			meshRenderer.material.color = new Color (85f/255f, 255f/255f, 85f/255f);
-		} else if (resourceType == Cargo.Medical) {
-			meshRenderer.material.color = new Color (175f/255f, 221f/255f, 233f/255f);
-		} else if (resourceType == Cargo.Technology) {
-			meshRenderer.material.color = new Color(255f/255f,153f/255f,85f/255f);
-		}
+		meshRenderer.material.color = Helpers.GetCargoColor (resourceType);
+
+
 
 		
 		meshBuilder = new MeshBuilder();

@@ -4,14 +4,16 @@ using System.Collections;
 public class WarpGate : MonoBehaviour {
 
 
-	public delegate void ShipEnteredWarpGateHandler(Ship ship);
+	public delegate void ShipEnteredWarpGateHandler(Ship ship, WarpGate warpGate);
 	public event ShipEnteredWarpGateHandler ShipEnteredWarpGate;
+	public Cargo cargoType;
 
 
 
 	// Use this for initialization
 	void Start () {
 	
+		this.GetComponent<SpriteRenderer> ().color = Helpers.GetCargoColor (cargoType);
 	}
 	
 	// Update is called once per frame
@@ -21,7 +23,7 @@ public class WarpGate : MonoBehaviour {
 
 	public void OnTriggerEnter2D(Collider2D other) {
 		Ship ship = other.gameObject.GetComponent<Ship>();
-		if(ship!=null) ShipEnteredWarpGate(ship);
+		if(ship!=null) ShipEnteredWarpGate(ship, this);
 	}
 	
 }
