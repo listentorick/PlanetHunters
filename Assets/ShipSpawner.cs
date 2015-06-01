@@ -223,6 +223,87 @@ public class ShipSpawner : MonoBehaviour {
 		return dimensions;
 	}
 
+
+	bool HasClearPath(Vector2 position, Vector2 direction) {
+		Debug.Log("testing path " + position.x + " " + position.y + " " +direction.x + " " + direction.y);
+		Debug.DrawRay (new Vector3 (position.x, position.y, 0), direction, Color.green,2f);
+		bool hasCollision = Physics2D.Raycast (new Vector3 (position.x, position.y), direction.normalized);
+		Debug.Log (!hasCollision);
+		return !hasCollision;
+	}
+
+	void SpawnThisShip(Ship ship) {
+		Vector2 position = new Vector2 ();
+		Vector2 velocity = new Vector2 ();
+		PickPositionAndDirection (ref position, ref velocity);
+		for(var i=0; i<10;i++) {
+			if(!HasClearPath(position,velocity)) {
+				Debug.Log("collision at " + position.x + " " + position.y);
+				PickPositionAndDirection (ref position, ref velocity);
+			}else {
+				Debug.Log("spawn at " + position.x + " " + position.y + " " + velocity.x + " " + velocity.y);
+				float scale = 100000f;
+				ship.velocity = velocity;
+				ship.AlignToVector(velocity);
+				ship.position = position * scale;
+				solarSystem.AddBody(ship);
+				ship.gameObject.SetActive(true);
+				ship.fuel = 1f;
+				if(cargoQueue.Count>0) {
+					
+					ship.cargoType = cargoQueue[0];
+					ship.cargo = ship.maxCargo;
+					cargoQueue.RemoveAt(0);
+				}
+				break;
+			
+			}
+		}
+	
+	}
+	//Vector2 P
+
+
+	void PickPositionAndDirection( ref Vector2 position, ref Vector2 velocity) {
+			Vector2 dimensions = CalculateScreenSizeInWorldCoords();
+	
+			int side = Random.Range(0,4);
+			float x = 0;
+			float y = 0;
+			
+			Vector2 accn = new Vector2();
+			float velocityMagnitude = 50000f;
+			if(side==0) {
+				//going from top
+				
+				x =  Random.Range(-dimensions.x/2f,dimensions.x/2f);
+				y = dimensions.y/2f;
+				accn = new Vector2(0,-velocityMagnitude);
+				
+				
+			} else if(side==1){
+				//going from right
+				x = dimensions.x/2f;
+				y = Random.Range(-dimensions.y/2f,dimensions.y/2f);
+				accn = new Vector2(-velocityMagnitude,0f);
+				
+			} else if(side==2){
+				//going from bottom
+				x = Random.Range(-dimensions.x/2f,dimensions.x/2f);
+				y = -dimensions.y/2f;
+				accn = new Vector2(0f,velocityMagnitude);
+			} else if(side==3){
+				//going from left
+				x = -dimensions.x/2f;
+				y = Random.Range(-dimensions.y/2f,dimensions.y/2f);
+				accn = new Vector2(velocityMagnitude,0f);
+			}
+		Debug.Log ("spawn side is " + side);
+		position.Set (x, y);
+		velocity.Set(accn.x,accn.y);
+
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -231,58 +312,11 @@ public class ShipSpawner : MonoBehaviour {
 			nextTime = Random.Range(5,10);
 			elaspedTime = 0f;
 
-			Vector2 dimensions = CalculateScreenSizeInWorldCoords();
-
 			if(shipPool.Count>0) { // ships in the pool
 				Ship pooledShip = shipPool[0];
 				shipPool.RemoveAt(0);
 
-				int side = Random.Range(0,3);
-				float x = 0;
-				float y = 0;
-
-				Vector2 accn = new Vector2();
-				float velocity = 100000f;
-				if(side==0) {
-					//going from top
-
-					x =  Random.Range(-dimensions.x/2f,dimensions.x/2f);
-					y = dimensions.y/2f;
-					accn = new Vector2(0,-velocity);
-
-
-				} else if(side==1){
-					//going from right
-					x = dimensions.x/2f;
-					y = Random.Range(-dimensions.y/2f,dimensions.y/2f);
-					accn = new Vector2(-velocity,0f);
-
-				} else if(side==2){
-					//going from bottom
-					x = Random.Range(-dimensions.x/2f,dimensions.x/2f);
-					y = -dimensions.y/2f;
-					accn = new Vector2(0f,-velocity);
-				} else if(side==3){
-					//going from left
-					x = -dimensions.x/2f;
-					y = Random.Range(-dimensions.y/2f,dimensions.y/2f);
-					accn = new Vector2(velocity,0f);
-				}
-
-				float scale = 100000f;
-				pooledShip.velocity = accn;
-				pooledShip.AlignToVector(accn);
-				pooledShip.position = new Vector2(x * scale,y * scale);
-				solarSystem.AddBody(pooledShip);
-				pooledShip.gameObject.SetActive(true);
-				pooledShip.fuel = 1f;
-				if(cargoQueue.Count>0) {
-
-					pooledShip.cargoType = cargoQueue[0];
-					pooledShip.cargo = pooledShip.maxCargo;
-					cargoQueue.RemoveAt(0);
-				}
-
+				SpawnThisShip(pooledShip);
 			}
 
 			//warped out ships are added back to the pool

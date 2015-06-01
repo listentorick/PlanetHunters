@@ -37,7 +37,7 @@ public class GuesturesHandler : MonoBehaviour {
 
 	void OnFingerDown( FingerDownEvent e ) 
 	{
-		if (e.Selection == null && selectedBody!=null) {
+		if (e.Selection == null || e.Selection.GetComponent<Ship>()==null && selectedBody!=null) {
 
 
 			//var camera = this.cam<Camera>();

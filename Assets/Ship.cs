@@ -62,7 +62,7 @@ public class Ship : Body {
 			angle = 90;
 		}
 		if (v.x > 0 && v.y == 0) {
-			angle = 0;
+			angle = -90;
 		}
 
 		if (shipRendererTransform == null) {
@@ -150,7 +150,10 @@ public class Ship : Body {
 
 	void ScreenWrap()
 	{
-		
+	//	if (shipRendererTransform == null) {
+	//		shipRendererTransform = this.gameObject.transform.GetChild (0);
+		//}
+		//shipRendererTransform.GetComponent<Sprite
 		
 		if(IsRendererVisible())
 		{
@@ -166,15 +169,26 @@ public class Ship : Body {
 		var cam = Camera.main;
 		var viewportPosition = cam.WorldToViewportPoint(transform.position);
 		var newPosition = transform.position;
-		
-		if (!isWrappingX && (viewportPosition.x > 1 || viewportPosition.x < 0))
+
+		//could see if vector is towards boundardy, if so, we dont need to wrap
+		//use a raycast? 
+
+		//wrapping occurs in region after spawn area
+
+		//if just spawned track this and when enter view port, remove is spawned
+		//then can wrap
+
+		//or only wrap if travell
+
+		if (!isWrappingX && ((viewportPosition.x > 1 && this.velocity.x>0) || (viewportPosition.x < 0 && this.velocity.x<0)))
 		{
+
 			newPosition.x = -newPosition.x;
 			
 			isWrappingX = true;
 		}
 		
-		if (!isWrappingY && (viewportPosition.y > 1 || viewportPosition.y < 0))
+		if (!isWrappingY && ((viewportPosition.y > 1 && this.velocity.y>0)|| (viewportPosition.y < 0 && this.velocity.y<0)))
 		{
 			newPosition.y = -newPosition.y;
 			
