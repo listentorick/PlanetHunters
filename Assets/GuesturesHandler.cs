@@ -10,15 +10,27 @@ public class GuesturesHandler : MonoBehaviour {
 		camera = (Camera) GameObject.FindObjectOfType(typeof(Camera));
 	}
 
+	private Ship GetShipFromSelection(GameObject selection){
+		Ship s = selection.GetComponent<Ship> ();
+		if (s != null)
+			return s;
+		return selection.GetComponentInParent<Ship> ();
+	}
+
 	void OnTap( TapGesture gesture ) 
 	{
 		if (gesture.Selection) {
-			if(selectedBody!=null ) {
-				selectedBody.IsSelected = false;
-			}
 
-			if(gesture.Selection.GetComponent<Ship>()){
-				selectedBody = gesture.Selection.GetComponent<Ship> ();
+			Ship s = GetShipFromSelection(gesture.Selection);
+
+			//this breaks encapsulation
+			if(s){
+
+				if(selectedBody!=null ) {
+					selectedBody.IsSelected = false;
+				}
+
+				selectedBody = s;
 				selectedBody.IsSelected = true;
 			}
 
@@ -37,42 +49,19 @@ public class GuesturesHandler : MonoBehaviour {
 
 	void OnFingerDown( FingerDownEvent e ) 
 	{
-		if (e.Selection == null || e.Selection.GetComponent<Ship>()==null && selectedBody!=null) {
+		//if the finger hasnt hit anything 
+		//and not a ship
+		//and there is a selected body
+		if ((e.Selection == null || GetShipFromSelection(e.Selection)==null) && selectedBody!=null) {
 
-
-			//var camera = this.cam<Camera>();
 			var p = camera.ScreenToWorldPoint(new Vector3(e.Position.x, e.Position.y, 0));
 
 			var dir = p -selectedBody.transform.position;
-			/*
-			var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		
+			selectedBody.Thrust( dir.normalized * 50000f);
 
-			if(dir.x<0 && dir.y>0) {
-				//topleft
-				angle-=90;
-			}
-			if(dir.x>0  && dir.y>0) {
-				angle+=270;
-			}
-			if(dir.x>0  && dir.y<0) {
-				angle-=90;
-			}
-			if(dir.x<0  && dir.y<0) {
-				angle+=270;
-			}*/
-
-//			selectedBody.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
-
-			//rotate the ship in the direction we want
-			//selectedBody.transform.LookAt(e.Position);
-			//selectedBody.thrustersOn = true;
-			Debug.Log ("fire thrusters");
-			selectedBody.Thrust( dir.normalized * 100000f);
-			Debug.Log(selectedBody.additionalForce);
 		}
-		// time the finger has been held down before being released
-		//float elapsedTime = e.;
+
 
 	}
 }

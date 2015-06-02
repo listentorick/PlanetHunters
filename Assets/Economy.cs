@@ -14,7 +14,12 @@ public class Economy : MonoBehaviour {
 
 	public float GetPrice(Resource r) {
 		//what percentage of the items do we have in stock
-		return (r.max / r.current); //the more we have the cheaper
+		return 10f * (r.max - r.current); //10f is the base price
+	}
+
+	public float CalculateMaxCost(Resource r) {
+		//what percentage of the items do we have in stock
+		return 10f * r.max;
 		
 	}
 

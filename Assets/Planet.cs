@@ -37,15 +37,14 @@ public class Planet : Body {
 		float deltaAngle = 360 / resourceComponents.Length;
 		for(int i=0; i<resourceComponents.Length;i++) { 
 			Resource r = resourceComponents[i];
-			r.ResourceLevelChanged += HandleResourceLevelChanged;
-			
+
 			ResourceChart rC = (ResourceChart)Instantiate(resourceChartPrefab);
 			rC.transform.parent = this.transform;
 			rC.transform.localPosition = new Vector3(0,0,-6f);
 			rC.resourceType = r.resourceType;
 			resourceCharts[i] =rC;
 
-			rC.Set(r.current);
+			rC.Set(r);
 			
 			rC.minAngle = minAngle;
 			rC.maxAngle = rC.minAngle + deltaAngle;
@@ -59,14 +58,7 @@ public class Planet : Body {
 
 	void HandleResourceLevelChanged (Cargo type, float value)
 	{
-		//find the first resourceChart that supports this type...
 
-		for (int i=0; i< resourceCharts.Length; i++) {
-			if(resourceCharts[i].resourceType==type) {
-				resourceCharts[i].Set(value);
-				return;
-			}
-		}
 
 	}
 

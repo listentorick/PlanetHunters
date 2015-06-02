@@ -14,6 +14,7 @@ public class ResourceChart : MonoBehaviour {
 
 	public float minAngle = 0f;
 	public float maxAngle = 360f;
+	public Economy economy;
 
 
 
@@ -23,13 +24,28 @@ public class ResourceChart : MonoBehaviour {
 
 	public Cargo resourceType;
 	//public Material chartMa
+	private Resource resource;
 
-	public void Set(float s) {
-		if (value != s) {
-			value = s;
-			Render();
+	public void Set(Resource r) {
+		resource = r;
+		r.ResourceLevelChanged += HandleResourceLevelChanged;
+	}
+
+	public Economy GetEconomy() {
+		if (economy == null) {
+			economy = FindObjectOfType<Economy> ();
 		}
+		return economy;
+	}
 
+
+	public void Start() {
+		economy = FindObjectOfType<Economy> ();
+	}
+
+	void HandleResourceLevelChanged (Cargo type, float value)
+	{
+		Render ();
 	}
 
 	private void Render(){
@@ -43,10 +59,17 @@ public class ResourceChart : MonoBehaviour {
 		
 		meshBuilder = new MeshBuilder();
 		meshHelper = new MeshHelper ();
-		//value = 0.1f;
+		value = (float)resource.current/(float)resource.max;
 
-		
-		meshHelper.BuildDisc (meshBuilder, radius, radius + thickness, 32, minAngle, minAngle + (maxAngle - minAngle) * value);
+		float maxValue = 1;
+	
+		float percentageOfResource = (float)resource.current /(float)resource.max;
+
+		float cost = GetEconomy().GetPrice (resource); //10f is the base price
+		float maxCost = GetEconomy().CalculateMaxCost (resource);
+
+		float height =cost/maxCost + 0.1f;
+		meshHelper.BuildDisc (meshBuilder, radius, radius + height/1.25f, 32, minAngle, minAngle + (maxAngle - minAngle) * percentageOfResource);
 		
 		meshFilter.mesh = meshBuilder.CreateMesh();
 	}

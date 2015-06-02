@@ -18,7 +18,7 @@ public class Ship : Body {
 	private Renderer[] renderers;
 
 	public float fuel = 1f;
-	public float burnRate = 0.01f;
+	public float burnRate = 0.0025f;
 
 	public void Start(){
 		shipRendererTransform = this.gameObject.transform.GetChild (0);
@@ -80,44 +80,11 @@ public class Ship : Body {
 			thruster.Play();
 			if(fuel<0){
 				fuel = 0;
+				additionalForce = Vector2.zero;
 				rechargeTime =0;
+			} else {
+				AlignToVector(additionalForce);
 			}
-
-			AlignToVector(additionalForce);
-			//var angle = Mathf.Atan2 (additionalForce.y, additionalForce.x) * Mathf.Rad2Deg;
-
-		//if(additionalForce.x==0 && additionalForce.y>0) {
-				//pointing down
-		//		angle += 180;
-		//	}
-		//	if(additionalForce.x==0 && additionalForce.y>0) {
-		//		//pointing up
-		//		angle += 180;
-		//	}
-			/*
-			
-			if (additionalForce.x < 0 && additionalForce.y > 0) {
-				//topleft
-				angle -= 90;
-			}
-			if (additionalForce.x > 0 && additionalForce.y > 0) {
-				angle += 270;
-			}
-			if (additionalForce.x > 0 && additionalForce.y < 0) {
-				angle -= 90;
-			}
-			if (additionalForce.x < 0 && additionalForce.y < 0) {
-				angle += 270;
-			}
-			if (additionalForce.x >= 0 && additionalForce.y < 0) {
-				angle -= 90;
-			}
-			if (additionalForce.x >= 0 && additionalForce.y > 0) {
-				angle += 90;
-			}
-			
-			shipRendererTransform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
-			*/
 		} else {
 			
 			if(thruster!=null)thruster.Stop();
@@ -150,11 +117,7 @@ public class Ship : Body {
 
 	void ScreenWrap()
 	{
-	//	if (shipRendererTransform == null) {
-	//		shipRendererTransform = this.gameObject.transform.GetChild (0);
-		//}
-		//shipRendererTransform.GetComponent<Sprite
-		
+
 		if(IsRendererVisible())
 		{
 			isWrappingX = false;
@@ -169,16 +132,6 @@ public class Ship : Body {
 		var cam = Camera.main;
 		var viewportPosition = cam.WorldToViewportPoint(transform.position);
 		var newPosition = transform.position;
-
-		//could see if vector is towards boundardy, if so, we dont need to wrap
-		//use a raycast? 
-
-		//wrapping occurs in region after spawn area
-
-		//if just spawned track this and when enter view port, remove is spawned
-		//then can wrap
-
-		//or only wrap if travell
 
 		if (!isWrappingX && ((viewportPosition.x > 1 && this.velocity.x>0) || (viewportPosition.x < 0 && this.velocity.x<0)))
 		{
@@ -205,8 +158,13 @@ public class Ship : Body {
 
 
 	public void OnTriggerEnter2D(Collider2D other) {
+		if (other.tag == "selection") { //this collision is coming from the child
+			return;
+		}
 		Ship ship = other.gameObject.GetComponent<Ship>();
 		if (ship != null) {
+			//if((this.position - ship.position).magnitude>10000) return; //we're using 1 larger collider 
+
 			//raise ship collision event
 			ShipCollided(this,ship.gameObject);
 		}

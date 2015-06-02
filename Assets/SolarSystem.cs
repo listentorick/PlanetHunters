@@ -101,6 +101,30 @@ public class SolarSystem : MonoBehaviour {
 	public delegate void ShipEnteredOrbitHandler(Body s, Body p);
 	public event ShipEnteredOrbitHandler ShipEnteredOrbit;
 
+	public Vector2 CalculateForceAtPoint(Vector2 position) {
+		Vector2 force = Vector2.zero;
+		for(var j = 0; j < bodies.Count; j++){
+			force +=  this.CalculateForce(position,1f,bodies[j].position, bodies[j].mass);
+		}
+		return force;
+	}
+
+	private Vector2 CalculateForce(Vector2 position1, float mass1, Vector2 position2, float mass2) {  //vector force on body 1 from body 2
+		var GM1M2 = G*mass1*mass2;
+		var delX = position2.x - position1.x;    //x2 - x1;
+		var delY = position2.y - position1.y;    //y2 - y1;
+		var distSq = delX*delX + delY*delY;
+		var dist = UnityEngine.Mathf.Sqrt(distSq);
+		float product = GM1M2/(distSq*dist);  
+		var force = new Vector2 (product*delX,product*delY);
+		return force;
+	}
+
+
+
+
+
+
 	private void UpdateForces (float dt) { //delta is the num of milliseconds which have passed between updates
 		
 		//Body body;

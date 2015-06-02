@@ -70,12 +70,12 @@ public class ShipSpawner : MonoBehaviour {
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);
 		gasGiant.position = new Vector2 (-600000f, -100000f);
-		gasGiant.mass = 1e+25f;
+		gasGiant.mass = 2e+25f;
 		gasGiant.GetComponent<SpriteRenderer> ().sprite = gasPlanetSprite;
 		//gasGiant.foodSupplies = 100;
 		//gasGiant.maxFoodSupplies = 100;
 		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
-		gasGiant.soi = 200000;
+		gasGiant.soi = 150000;
 		gasGiant.canMove = false;
 		gasGiant.ResourceDepleted+= HandleResourceDepleted;
 
@@ -89,12 +89,12 @@ public class ShipSpawner : MonoBehaviour {
 		
 		Planet redPlanet = Instantiate (planetPrefab);
 		redPlanet.position = new Vector2 (200000f, 40000);
-		redPlanet.mass = 1e+20f;
+		redPlanet.mass = 1e+24f;
 		redPlanet.GetComponent<SpriteRenderer> ().sprite = redPlanetSprite;
 		//redPlanet.foodSupplies = 100;
 		//redPlanet.maxFoodSupplies = 100;
 		//redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
-		redPlanet.soi = 100000;
+		redPlanet.soi = 150000;
 		redPlanet.canMove = false;
 		redPlanet.ResourceDepleted+= HandleResourceDepleted;
 
@@ -246,6 +246,7 @@ public class ShipSpawner : MonoBehaviour {
 				ship.velocity = velocity;
 				ship.AlignToVector(velocity);
 				ship.position = position * scale;
+				ship.gameObject.transform.position = new Vector3(-100,-100,-8); //set start position to ensure z value is correct
 				solarSystem.AddBody(ship);
 				ship.gameObject.SetActive(true);
 				ship.fuel = 1f;

@@ -45,6 +45,10 @@ public class MeshHelper {
 			points.Add(point);
 		}
 
+		y = radius  * Mathf.Cos (angle);
+		x = radius * Mathf.Sin (angle);
+		points.Add (new Vector2 (x - 0.001f, y - 0.001f));
+
 		return points;
 	
 	}
@@ -56,10 +60,10 @@ public class MeshHelper {
 
 		Vector3 normal = Vector3.up;
 
-	//	innerCircle.Add (new Vector2 (-0.001f, innerRadius));
+		//innerCircle.Add (new Vector2 (-0.001f, innerRadius));
 		innerCircle.Reverse ();
 
-	//	outerCircle.Add (new Vector2 (-0.001f, outerRadius));
+		//outerCircle.Add (new Vector2 (-0.001f, outerRadius));
 	//	//outerCircle.Add (new Vector2 (0, innerRadius));
 		outerCircle.AddRange (innerCircle);
 
