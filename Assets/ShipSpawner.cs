@@ -22,6 +22,8 @@ public class ShipSpawner : MonoBehaviour {
 	private WarpGate warpGate;
 	private List<GameObject> createdObjects = new List<GameObject>();
 
+	public ContourRenderer contourRenderer;
+
 
 	public void Reset(){
 		solarSystem.Clear ();
@@ -128,6 +130,8 @@ public class ShipSpawner : MonoBehaviour {
 		createdObjects.Add (bluePlanet.gameObject);
 
 		PopulatePool ();
+
+		contourRenderer.Build ();
 		
 
 	}
