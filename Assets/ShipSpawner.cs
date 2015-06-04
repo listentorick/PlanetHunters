@@ -304,6 +304,7 @@ public class ShipSpawner : MonoBehaviour {
 			int side = Random.Range(0,4);
 			float x = 0;
 			float y = 0;
+			float delta = 2f;
 			
 			Vector2 accn = new Vector2();
 			float velocityMagnitude = 50000f;
@@ -311,24 +312,24 @@ public class ShipSpawner : MonoBehaviour {
 				//going from top
 				
 				x =  Random.Range(-dimensions.x/2f,dimensions.x/2f);
-				y = dimensions.y/2f;
+				y = dimensions.y/2f + delta;
 				accn = new Vector2(0,-velocityMagnitude);
 				
 				
 			} else if(side==1){
 				//going from right
-				x = dimensions.x/2f;
+				x = dimensions.x/2f + delta;
 				y = Random.Range(-dimensions.y/2f,dimensions.y/2f);
 				accn = new Vector2(-velocityMagnitude,0f);
 				
 			} else if(side==2){
 				//going from bottom
 				x = Random.Range(-dimensions.x/2f,dimensions.x/2f);
-				y = -dimensions.y/2f;
+				y = -dimensions.y/2f -delta;
 				accn = new Vector2(0f,velocityMagnitude);
 			} else if(side==3){
 				//going from left
-				x = -dimensions.x/2f;
+				x = -dimensions.x/2f - delta;
 				y = Random.Range(-dimensions.y/2f,dimensions.y/2f);
 				accn = new Vector2(velocityMagnitude,0f);
 			}
