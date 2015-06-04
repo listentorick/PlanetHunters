@@ -63,53 +63,6 @@ public class Planet : Body {
 	}
 
 	void Update () {
-
-		/*
-		//foodPriceChart.Set (1);
-		//medicalPriceChart.Set (1);
-		medicalSupplyTimer += Time.deltaTime;
-		if (medicalSupplyTimer > rateOfConsumptionMedicalSupplies) {
-			medicalSupplyTimer = 0;
-			medicalSupplies-=1;
-			if(medicalSupplies<=0){
-				ResourceDepleted(Cargo.Medical);
-				medicalSupplies = 0;
-			}
-
-		}
-
-		medicalSuppliesChart.Set(medicalSupplies/maxMedicalSupplies);
-
-
-		foodSupplyTimer += Time.deltaTime;
-		if (foodSupplyTimer > rateOfConsumptionFoodlSupplies) {
-			foodSupplyTimer = 0;
-			foodSupplies-=1;
-			if(foodSupplies<=0){
-				ResourceDepleted(Cargo.Food);
-				foodSupplies = 0;
-			}
-			
-		}
-		
-		foodSuppliesChart.Set(foodSupplies/maxFoodSupplies);
-
-
-		technologySupplyTimer += Time.deltaTime;
-		if (technologySupplyTimer > rateOfConsumptionTechnologySupplies) {
-			technologySupplyTimer = 0;
-			technologySupplies-=1;
-			if(technologySupplies<=0){
-				ResourceDepleted(Cargo.Technology);
-				technologySupplies = 0;
-			}
-			
-		}
-		
-		technologySuppliesChart.Set(technologySupplies/maxTechnologySupplies);
-
-*/
-
 		base.Update ();
 
 	}

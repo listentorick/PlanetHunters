@@ -45,6 +45,7 @@ public class ShipSpawner : MonoBehaviour {
 		r.resourceType = type;
 		r.price = cost;
 		r.timeToConsumeOneUnit = timeToConsumeOneUnit;
+		r.ResourceDepleted += HandleResourceDepleted;
 	}
 
 
@@ -79,7 +80,7 @@ public class ShipSpawner : MonoBehaviour {
 		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
 		gasGiant.soi = 150000;
 		gasGiant.canMove = false;
-		gasGiant.ResourceDepleted+= HandleResourceDepleted;
+		//gasGiant.ResourceDepleted+= HandleResourceDepleted;
 
 		AddResource (gasGiant, Cargo.Food, 100f, 100, 100,1f);
 		gasGiant.BuildResourceCharts ();
@@ -87,7 +88,29 @@ public class ShipSpawner : MonoBehaviour {
 		solarSystem.AddBody (gasGiant);
 
 		createdObjects.Add (gasGiant.gameObject);
+
+
+		/*
+		//Gas Giant
+		Planet moon = Instantiate (planetPrefab);
+		moon.position = new Vector2 (-400000f, -7000f);
+		moon.mass = 2e+24f;
+		moon.GetComponent<SpriteRenderer> ().sprite = gasPlanetSprite;
+		//gasGiant.foodSupplies = 100;
+		//gasGiant.maxFoodSupplies = 100;
+		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
+		moon.soi = 0;
+		moon.canMove = false;
+		moon.ResourceDepleted+= HandleResourceDepleted;
 		
+		//AddResource (moon, Cargo.Food, 100f, 100, 100,1f);
+		//gasGiant.BuildResourceCharts ();
+		
+		solarSystem.AddBody (moon);
+		
+		createdObjects.Add (moon.gameObject);
+
+		*/
 		
 		Planet redPlanet = Instantiate (planetPrefab);
 		redPlanet.position = new Vector2 (200000f, 40000);
@@ -98,7 +121,7 @@ public class ShipSpawner : MonoBehaviour {
 		//redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
 		redPlanet.soi = 150000;
 		redPlanet.canMove = false;
-		redPlanet.ResourceDepleted+= HandleResourceDepleted;
+		//redPlanet.ResourceDepleted+= HandleResourceDepleted;
 
 		AddResource (redPlanet, Cargo.Food, 100f, 100, 100, 5f);
 		AddResource (redPlanet, Cargo.Medical, 100f, 100, 100, 2f);
@@ -119,7 +142,7 @@ public class ShipSpawner : MonoBehaviour {
 		
 		bluePlanet.soi = 150000;
 		bluePlanet.canMove = false;
-		bluePlanet.ResourceDepleted+= HandleResourceDepleted;
+		//bluePlanet.ResourceDepleted+= HandleResourceDepleted;
 
 		AddResource (bluePlanet, Cargo.Food, 100f, 100, 100,5f);
 		bluePlanet.BuildResourceCharts ();
