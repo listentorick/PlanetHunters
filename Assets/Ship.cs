@@ -15,14 +15,14 @@ public class Ship : Body {
 	private Transform shipRendererTransform;
 	private bool isWrappingX;
 	private bool isWrappingY;
-	private Renderer[] renderers;
+	//private Renderer[] renderers;
 
 	public float fuel = 1f;
 	public float burnRate = 0.0025f;
 
 	public void Start(){
 		shipRendererTransform = this.gameObject.transform.GetChild (0);
-		renderers = this.GetComponentsInChildren<Renderer> ();
+		//renderers = this.GetComponentsInChildren<Renderer> ();
 	}
 
 	//public 
@@ -107,12 +107,13 @@ public class Ship : Body {
 	}
 
 	private bool IsRendererVisible() {
-		foreach (Renderer r in renderers) {
-			if(r.isVisible==true){
-				return true;
-			}
-		}
-		return false;
+		return shipRendererTransform.gameObject.GetComponent<SpriteRenderer>().isVisible;
+		//foreach (Renderer r in renderers) {
+	//		if(r.isVisible==true){
+	//			return true;
+	//		}
+	//	}
+	//	return false;
 	}
 
 	void ScreenWrap()

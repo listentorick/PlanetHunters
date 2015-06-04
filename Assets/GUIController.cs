@@ -26,6 +26,7 @@ public class GUIController : MonoBehaviour {
 	private void ResetControls(){
 		replay.gameObject.SetActive (false);
 		gameOver.SetActive (false);
+		money.text = "0";
 	}
 
 	public void Reset() {

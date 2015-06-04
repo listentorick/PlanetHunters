@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class ShipSpawner : MonoBehaviour {
 
+	public ShipIndicator shipIndicatorPrefab;
+
 	private IList<Ship> shipPool = new List<Ship> ();
 	//private int shipPoolSize = 5;
 	public int maxNumShips = 1;
@@ -217,8 +219,12 @@ public class ShipSpawner : MonoBehaviour {
 			newShip.gameObject.SetActive(false);
 			newShip.ShipCollided+= HandleShipCollided;
 
-			
 			createdObjects.Add (newShip.gameObject);
+
+			ShipIndicator shipIndicator = Instantiate(shipIndicatorPrefab);
+			shipIndicator.ship = newShip;
+			createdObjects.Add (shipIndicator.gameObject);
+
 		}
 	}
 
