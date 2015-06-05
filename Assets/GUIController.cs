@@ -10,12 +10,20 @@ public class GUIController : MonoBehaviour {
 	public Button replay;
 	public Economy economy;
 	public Text money;
+	public Text numShips;
 
 	// Use this for initialization
 	void Start () {
 		ResetControls ();
 		gameController.GameOver+= HandleGameOver;
 		economy.Profit += HandleProfit;
+		gameController.ShipCollided += HandleShipCollided;
+		HandleShipCollided ();
+	}
+
+	void HandleShipCollided ()
+	{
+		numShips.text = gameController.GetNumberOfShips ().ToString ();
 	}
 
 	void HandleProfit (float profit)
@@ -27,6 +35,7 @@ public class GUIController : MonoBehaviour {
 		replay.gameObject.SetActive (false);
 		gameOver.SetActive (false);
 		money.text = "0";
+		numShips.text = "0";
 	}
 
 	public void Reset() {

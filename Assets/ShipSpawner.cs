@@ -40,6 +40,9 @@ public class ShipSpawner : MonoBehaviour {
 		BuildLevel ();
 		economy.Reset ();
 	}
+	public int GetNumberOfShips(){
+		return ships.Count;
+	}
 
 	void AddResource(Planet p, Cargo type, float cost, int current, int max, float timeToConsumeOneUnit) {
 	
@@ -264,12 +267,23 @@ public class ShipSpawner : MonoBehaviour {
 		} else {
 			Destroy (other.gameObject);
 		}
-		if(ships.Count==0) GameOver ();
+
+		ShipCollided ();
+
+		if (ships.Count == 0) {
+			GameOver ();
+		}
+		
+
 	}
 
 	
 	public delegate void GameOverHandler();
 	public event GameOverHandler GameOver;
+
+	public delegate void ShipCollidedHandler();
+	public event ShipCollidedHandler ShipCollided;
+
 	
 
 	public Vector2 CalculateScreenSizeInWorldCoords ()  {
