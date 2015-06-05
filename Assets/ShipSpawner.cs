@@ -5,8 +5,9 @@ using System.Collections.Generic;
 public class ShipSpawner : MonoBehaviour {
 
 	public ShipIndicator shipIndicatorPrefab;
-
+	private IList<Ship> ships = new List<Ship> (); //this is all the ships
 	private IList<Ship> shipPool = new List<Ship> ();
+	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 	//private int shipPoolSize = 5;
 	public int maxNumShips = 1;
 	public Ship shipPrefab;
@@ -35,6 +36,7 @@ public class ShipSpawner : MonoBehaviour {
 		elaspedTime = 0f;
 		nextTime = 0f;
 		shipPool.Clear ();
+		ships.Clear ();
 		BuildLevel ();
 		economy.Reset ();
 	}
@@ -224,15 +226,45 @@ public class ShipSpawner : MonoBehaviour {
 			ShipIndicator shipIndicator = Instantiate(shipIndicatorPrefab);
 			shipIndicator.ship = newShip;
 			createdObjects.Add (shipIndicator.gameObject);
+			shipIndicators.Add(shipIndicator);
+
+			ships.Add(newShip);//this is a list of all the ships. this is used to monitor the number of active (not destroyed ships)
 
 		}
 	}
 
+	private void DestroyShip(Ship ship) {
+
+		ShipIndicator toDestroy = null;
+		foreach(ShipIndicator s in shipIndicators){
+			if(s.ship==ship){
+				toDestroy = s;
+				break;
+			}	
+		}
+
+		if (toDestroy != null) {
+			Destroy(toDestroy.gameObject);
+		}
+
+		ships.Remove (ship);
+		solarSystem.RemoveBody (ship);
+		Destroy (ship.gameObject);
+	
+	}
+
 	void HandleShipCollided (Ship ship, GameObject other)
 	{
-		Destroy (ship.gameObject);
-		Destroy (other.gameObject);
-		GameOver ();
+		DestroyShip (ship);
+
+		Ship otherShip = other.GetComponent<Ship> ();
+
+		if (otherShip != null) {
+			DestroyShip (otherShip);
+		} else {
+			Destroy (other.gameObject);
+		}
+		if(ships.Count==0) GameOver ();
 	}
 
 	
