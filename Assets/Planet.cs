@@ -10,8 +10,24 @@ public class Planet : Body {
 	private Resource[] resourceComponents;
 	private ResourceChart[] resourceCharts;
 
+	public int population = 0;
+
 	public Resource[] GetResources(){
 		return resourceComponents;
+	}
+
+	public void AddPopulation(int population) {
+		this.population += population;
+		SetPopulation (this.population);
+	}
+
+	private void SetPopulation(int population) {
+	
+		//for each resource update the rate of consumption
+		foreach (Resource r in resourceComponents) {
+			//takes 1 second 1 unit
+			r.timeToConsumeOneUnit = 10f / population; 
+		}
 	}
 
 	void Start() {
@@ -74,13 +90,13 @@ public class Planet : Body {
 	public void ConsumeCargo (Ship s) {
 	
 		//whats the ship got?
-		if (s.cargoType == Cargo.Food) {
+		//if (s.cargoType == Cargo.Food) {
 			//foodSupplies+= s.cargo;
 			//if(foodSupplies>maxFoodSupplies){
 		//		foodSupplies = maxFoodSupplies;
 		//	}
-			s.cargo = 0;
-		}
+		//	s.cargo = 0;
+		//}
 	
 	
 	

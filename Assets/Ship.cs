@@ -8,9 +8,7 @@ public enum Cargo {
 
 public class Ship : Body {
 
-	public int cargo;
-	public int maxCargo;
-	public Cargo cargoType;
+
 	private float rechargeTime = 0;
 	private Transform shipRendererTransform;
 	private bool isWrappingX;
@@ -19,6 +17,7 @@ public class Ship : Body {
 
 	public float fuel = 1f;
 	public float burnRate = 0.0025f;
+	public float hull = 1f;
 
 	public void Start(){
 		shipRendererTransform = this.gameObject.transform.GetChild (0);
@@ -73,6 +72,8 @@ public class Ship : Body {
 	
 	}
 
+	private float timeInHighGravity = 0f;
+
 	public void Update() {
 	
 		if (additionalForce != Vector2.zero && canMove) {
@@ -95,6 +96,21 @@ public class Ship : Body {
 				}
 			}
 			
+		}
+
+		//ships under strong acceleration are basically fooked
+		if (this.acceleration.magnitude > 10000f) {
+			timeInHighGravity+=Time.deltaTime;
+		}
+
+		if (timeInHighGravity > 5f) {
+			Debug.Log("damage");
+			timeInHighGravity = 0;
+			hull-=0.1f;
+		}
+
+		if (hull<0) {
+			HullFailure(this);
 		}
 
 		base.Update ();
@@ -156,6 +172,9 @@ public class Ship : Body {
 
 	public delegate void ShipCollidedHandler(Ship ship, GameObject other);
 	public event ShipCollidedHandler ShipCollided;
+
+	public delegate void HullFailureHandler(Ship ship);
+	public event HullFailureHandler HullFailure;
 
 
 	public void OnTriggerEnter2D(Collider2D other) {

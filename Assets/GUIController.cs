@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GUIController : MonoBehaviour {
 
 	public GameObject gameOver;
-	public ShipSpawner gameController;
+	public GameController gameController;
 	public Button replay;
 	public Economy economy;
 	public Text money;

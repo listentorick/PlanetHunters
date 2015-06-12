@@ -66,7 +66,7 @@ public class ResourceChart : MonoBehaviour {
 		float percentageOfResource = (float)resource.current /(float)resource.max;
 
 		float cost = GetEconomy().GetPrice (resource); //10f is the base price
-		float maxCost = GetEconomy().CalculateMaxCost (resource);
+		float maxCost = GetEconomy().GetMaxPrice (resource);
 
 		float height =cost/maxCost + 0.1f;
 		meshHelper.BuildDisc (meshBuilder, radius, radius + height/1.25f, 32, minAngle, minAngle + (maxAngle - minAngle) * percentageOfResource);

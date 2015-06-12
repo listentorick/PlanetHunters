@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//this is really a resource container.
+
 public class Resource : MonoBehaviour {
 
 	public Cargo resourceType;
 	public int max;
 	public int current;
-	public float price;
+	public float basePrice; //these are functions of the economy really
+	public float maxPrice;  //these are functions of the economy really
+	
 	private float timer;
 	public float timeToConsumeOneUnit;
 
@@ -20,7 +24,7 @@ public class Resource : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		ResourceLevelChanged(resourceType, current/max);
+		if(ResourceLevelChanged!=null)ResourceLevelChanged(resourceType, current/max);
 	}
 
 	public void AddStock(int stock) {
@@ -35,7 +39,7 @@ public class Resource : MonoBehaviour {
 		if (timer > timeToConsumeOneUnit) {
 			timer = 0;
 			current-=1;
-			ResourceLevelChanged(resourceType, (float)current/(float)max);
+			if(ResourceLevelChanged!=null) ResourceLevelChanged(resourceType, (float)current/(float)max);
 			if(current<=0){
 				ResourceDepleted(resourceType);
 				current = 0;
