@@ -6,6 +6,7 @@ public class Planet : Body {
 	public soiChart soiChart;
 	public ResourceChart resourceChartPrefab;
 	private Bounds bounds;
+	public Timer timer;
 
 	private Resource[] resourceComponents;
 	private ResourceChart[] resourceCharts;
@@ -16,9 +17,29 @@ public class Planet : Body {
 		return resourceComponents;
 	}
 
-	public void AddPopulation(int population) {
-		this.population += population;
+	public void AddPopulation(int delta) {
+		this.population += delta;
+		Resource pop = GetPopulationResource ();
+		if(pop!=null) {
+			pop.AddStock(delta);
+		}
 		SetPopulation (this.population);
+	}
+
+	private Resource GetPopulationResource(){
+		return GetResource (Cargo.People);
+	}
+
+	private Resource GetResource(Cargo type){
+		if (resourceComponents == null)
+			return null;
+		foreach (Resource r in resourceComponents) {
+			//takes 1 second 1 unit
+			if(r.resourceType == type){
+				return r;
+			} 
+		}
+		return null;
 	}
 
 	private void SetPopulation(int population) {
@@ -26,7 +47,9 @@ public class Planet : Body {
 		//for each resource update the rate of consumption
 		foreach (Resource r in resourceComponents) {
 			//takes 1 second 1 unit
-			r.timeToConsumeOneUnit = 10f / population; 
+			if(r.resourceType != Cargo.People){
+				r.timeToConsumeOneUnit = 10f / population; 
+			} 
 		}
 	}
 
@@ -38,8 +61,26 @@ public class Planet : Body {
 		//}
 		soiChart.SetPlanet (this);
 
+		timer.TimerEvent+= HandleTimerEvent;
+
 
 	}
+
+	void HandleTimerEvent ()
+	{
+		Resource food = this.GetResource (Cargo.Food);
+		if (food!=null && food.current <= 0) {
+		
+			//people gunna die cos no food yo.
+			AddPopulation(-1);
+
+		
+		}
+
+
+	}
+
+
 
 	public void BuildResourceCharts() {
 
@@ -85,6 +126,9 @@ public class Planet : Body {
 
 	public delegate void ResourceDepletedHandler(Cargo type);
 	public event ResourceDepletedHandler ResourceDepleted;
+
+	public delegate void PlanetDeadHandler();
+	public event PlanetDeadHandler PlanetDead;
 
 
 	public void ConsumeCargo (Ship s) {

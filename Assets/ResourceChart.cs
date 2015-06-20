@@ -15,6 +15,7 @@ public class ResourceChart : MonoBehaviour {
 	public float minAngle = 0f;
 	public float maxAngle = 360f;
 	public Economy economy;
+	public float maxRadius = 6f;
 
 
 
@@ -69,7 +70,8 @@ public class ResourceChart : MonoBehaviour {
 		float maxCost = GetEconomy().GetMaxPrice (resource);
 
 		float height =cost/maxCost + 0.1f;
-		meshHelper.BuildDisc (meshBuilder, radius, radius + height/1.25f, 32, minAngle, minAngle + (maxAngle - minAngle) * percentageOfResource);
+		maxRadius = radius + height / 1.25f;
+		meshHelper.BuildDisc (meshBuilder, radius, maxRadius, 32, minAngle, minAngle + (maxAngle - minAngle) * percentageOfResource);
 		
 		meshFilter.mesh = meshBuilder.CreateMesh();
 	}

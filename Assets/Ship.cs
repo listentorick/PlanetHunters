@@ -3,7 +3,7 @@ using System.Collections;
 
 public enum Cargo {
 
-	Food, Medical, Technology
+	Food, Medical, Technology, People
 }
 
 public class Ship : Body {
@@ -18,6 +18,7 @@ public class Ship : Body {
 	public float fuel = 1f;
 	public float burnRate = 0.0025f;
 	public float hull = 1f;
+	public bool takesDamage = false;
 
 	public void Start(){
 		shipRendererTransform = this.gameObject.transform.GetChild (0);
@@ -103,14 +104,17 @@ public class Ship : Body {
 			timeInHighGravity+=Time.deltaTime;
 		}
 
-		if (timeInHighGravity > 5f) {
-			Debug.Log("damage");
-			timeInHighGravity = 0;
-			hull-=0.1f;
-		}
+		//should this be a component?
+		if (takesDamage == true) {
+			if (timeInHighGravity > 5f) {
+				Debug.Log ("damage");
+				timeInHighGravity = 0;
+				hull -= 0.1f;
+			}
 
-		if (hull<0) {
-			HullFailure(this);
+			if (hull < 0) {
+				HullFailure (this);
+			}
 		}
 
 		base.Update ();

@@ -38,11 +38,14 @@ public class Resource : MonoBehaviour {
 		timer += Time.deltaTime;
 		if (timer > timeToConsumeOneUnit) {
 			timer = 0;
-			current-=1;
-			if(ResourceLevelChanged!=null) ResourceLevelChanged(resourceType, (float)current/(float)max);
-			if(current<=0){
-				ResourceDepleted(resourceType);
-				current = 0;
+			if(current>0) {
+				current-=1;
+				if(ResourceLevelChanged!=null) ResourceLevelChanged(resourceType, (float)current/(float)max);
+				if(current<=0){
+					current = 0;
+					ResourceDepleted(resourceType);
+				}
+
 			}
 			
 		}

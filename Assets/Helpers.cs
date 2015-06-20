@@ -14,6 +14,9 @@ public static class Helpers  {
 		} else if (type == Cargo.Technology) {
 			return  new Color(255f/255f,153f/255f,85f/255f);
 		}
+		else if (type == Cargo.People) {
+			return  new Color(255f/255f,153f/255f,85f/255f);
+		}
 
 		return new Color ();
 

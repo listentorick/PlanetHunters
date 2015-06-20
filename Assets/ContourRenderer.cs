@@ -17,8 +17,15 @@ public class ContourRenderer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-	
+		if (lines != null && lines.Count > 0) {
+			lineRenderer = this.GetComponent<LineRenderer> ();
+			lineRenderer.SetVertexCount (lines.Count);
+			for (int i=0; i<lines.Count; i++) {
+			
+				lineRenderer.SetPosition (i, lines [i]);
+			}
+		}
+		
 	}
 
 	public Vector3[,] CalculatePoints() {
@@ -78,11 +85,8 @@ public class ContourRenderer : MonoBehaviour {
 	public void Build() {
 		ready = true;
 		gravityPoints = CalculatePoints ();
-		 lines = DrawContour (gravityPoints, 0, 50000, 20);
-		//lineRenderer.SetVertexCount (lines.Count);
-		//for(int i=0;i<lines.Count;i++){
-		//	lineRenderer.SetPosition(i,lines[i]);
-		//}
+		lines = DrawContour (gravityPoints, 0, 50000, 20);
+	
 	}
 
 	private Color mainColor = new Color(0f,1f,0f,0.1f);
@@ -90,7 +94,7 @@ public class ContourRenderer : MonoBehaviour {
 	void OnPostRender() {
 
 
-
+		return;
 		if (!ready) {
 			return;
 		}
