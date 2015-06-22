@@ -4,6 +4,25 @@ using System.Collections.Generic;
 
 public class MeshHelper {
 
+
+	public void BuildLine(MeshBuilder meshBuilder, Vector3 point1, Vector3 point2, float width) {
+	
+		//assume our line is always in the x y plane
+		Vector3 lengthDir = (point2 - point1);
+		//thus our tangent will be in the x y plane
+		Vector3 tangent = Vector3.Cross( lengthDir, Vector3.forward );
+		
+		if( tangent.magnitude == 0 )
+		{
+			tangent = Vector3.Cross( lengthDir, Vector3.up );
+		}
+
+		Vector3 widthDir = tangent.normalized * width;
+
+		BuildQuad (meshBuilder, point1, widthDir, lengthDir); 
+	
+	}
+
 	public void BuildQuad(MeshBuilder meshBuilder, Vector3 offset, Vector3 widthDir, Vector3 lengthDir)
 	{
 		Vector3 normal = Vector3.Cross(lengthDir, widthDir).normalized;

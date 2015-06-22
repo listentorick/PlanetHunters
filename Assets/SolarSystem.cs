@@ -85,15 +85,25 @@ public class SolarSystem : MonoBehaviour {
 
 	public Body GetParentBody(Body b) {
 		for(int i=0; i<this.bodies.Count;i++){
-			if(bodies[i]!=b && IsInSOI(bodies[i],b)){
+			if(bodies[i]!=b && IsInSOI(bodies[i],b.position)){
 				return bodies[i];
 			}
 		}
 		return null;
 	}
 
-	public bool IsInSOI(Body parent, Body child) {
-		float distance = UnityEngine.Mathf.Pow (child.position.x - parent.position.x, 2) + UnityEngine.Mathf.Pow (child.position.y - parent.position.y, 2);
+	public bool IsInAnySOI(Vector2 childPosition) {
+		foreach (Body parent in bodies) {
+			if(parent.canMove==false && IsInSOI(parent,childPosition)==true){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	public bool IsInSOI(Body parent, Vector2 childPosition) {
+		float distance = UnityEngine.Mathf.Pow (childPosition.x - parent.position.x, 2) + UnityEngine.Mathf.Pow (childPosition.y - parent.position.y, 2);
 		return  distance< UnityEngine.Mathf.Pow (parent.soi, 2);
 	}
 
