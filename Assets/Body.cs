@@ -17,11 +17,19 @@ public class Body : MonoBehaviour {
 	public float soi;
 	public bool IsSelected;
 	protected float scale = 100000f;
-	private Transform rendererTransform;
 	private bool isWrappingX;
 	private bool isWrappingY;
+	public bool canAlign;
 
+	private Transform rendererTransform;
 
+	public Transform GetRendererTransform() {
+		if (rendererTransform == null) {
+			rendererTransform = this.gameObject.transform.GetChild (0);
+		}
+		return rendererTransform;
+	}
+	
 	void ScreenWrap()
 	{
 		if (canMove == false)
@@ -63,6 +71,9 @@ public class Body : MonoBehaviour {
 	}
 
 	public void AlignToVector(Vector2 v) {
+
+		if (!canAlign)
+			return;
 		
 		var angle = Mathf.Atan2 (v.y, v.x) * Mathf.Rad2Deg;
 		

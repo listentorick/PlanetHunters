@@ -37,6 +37,8 @@ public class GameController : MonoBehaviour {
 
 	public ShipSpawner tradeShipSpawner;
 	public ShipSpawner colonyShipSpawner;
+	public ShipSpawner collectableSpawner;  //will spawn any object which derives from body
+	//public Collectable[] collectables;
 
 	public float popularity = 1f;
 
