@@ -3,12 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ShipSpawner : MonoBehaviour {
-
-	public Ship shipPrefab;
-	public IList<Ship> shipPool;
+	
 	public SolarSystem solarSystem;
-
-
 	private float elaspedTime = 0;
 	private float nextTime = 0;
 
@@ -77,16 +73,14 @@ public class ShipSpawner : MonoBehaviour {
 		return !hasCollision;
 	}
 
-	public void SpawnThisShip(Ship ship) {
+	public void Spawn(Body ship) {
 		Vector2 position = new Vector2 ();
 		Vector2 velocity = new Vector2 ();
 		PickPositionAndDirection (ref position, ref velocity);
 		for(var i=0; i<10;i++) {
 			if(!HasClearPath(position,velocity)) {
-				Debug.Log("collision at " + position.x + " " + position.y);
 				PickPositionAndDirection (ref position, ref velocity);
 			}else {
-				Debug.Log("spawn at " + position.x + " " + position.y + " " + velocity.x + " " + velocity.y);
 				float scale = 100000f;
 				ship.velocity = velocity;
 				ship.AlignToVector(velocity);
@@ -94,7 +88,6 @@ public class ShipSpawner : MonoBehaviour {
 				ship.gameObject.transform.position = new Vector3(-100,-100,-8); //set start position to ensure z value is correct
 				solarSystem.AddBody(ship);
 				ship.gameObject.SetActive(true);
-				ship.fuel = 1f;
 				break;
 				
 			}
@@ -102,31 +95,7 @@ public class ShipSpawner : MonoBehaviour {
 		
 	}
 
-	public delegate void ShipSpawnedHandler(Ship ship);
-	public event ShipSpawnedHandler ShipSpawned;
-
-	/*
+	public delegate void SpawnedHandler(Body body);
+	public event SpawnedHandler Spawned;
 	
-	// Update is called once per frame
-	void Update () {
-
-		if (elaspedTime > nextTime) {
-			
-			nextTime = Random.Range(minTimeToEmit,maxTimeToEmit);
-			elaspedTime = 0f;
-			
-			if(shipPool!=null && shipPool.Count>0) { // ships in the pool
-				Ship pooledShip = shipPool[0];
-				shipPool.RemoveAt(0);
-				
-				SpawnThisShip(pooledShip);
-				if(ShipSpawned!=null)ShipSpawned(pooledShip);
-
-			}
-			
-			//warped out ships are added back to the pool
-		}
-		elaspedTime += Time.deltaTime;
-	
-	}*/
 }

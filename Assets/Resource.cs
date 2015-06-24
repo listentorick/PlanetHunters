@@ -17,19 +17,19 @@ public class Resource : MonoBehaviour {
 	public delegate void ResourceDepletedHandler(Cargo type);
 	public event ResourceDepletedHandler ResourceDepleted;
 
-	public delegate void ResourceLevelChangedHandler(Cargo type, float value);
+	public delegate void ResourceLevelChangedHandler(Resource resource, float value, float delta);
 	public event ResourceLevelChangedHandler ResourceLevelChanged;
 	
 
 
 	// Use this for initialization
 	void Start () {
-		if(ResourceLevelChanged!=null)ResourceLevelChanged(resourceType, current/max);
+		if(ResourceLevelChanged!=null)ResourceLevelChanged(this, current/max,0);
 	}
 
 	public void AddStock(int stock) {
 		current += stock;
-		ResourceLevelChanged(resourceType, current/max);
+		ResourceLevelChanged(this, current/max, stock);
 	}
 	
 	// Update is called once per frame
@@ -40,7 +40,7 @@ public class Resource : MonoBehaviour {
 			timer = 0;
 			if(current>0) {
 				current-=1;
-				if(ResourceLevelChanged!=null) ResourceLevelChanged(resourceType, (float)current/(float)max);
+				if(ResourceLevelChanged!=null) ResourceLevelChanged(this, (float)current/(float)max,-1);
 				if(current<=0){
 					current = 0;
 					ResourceDepleted(resourceType);

@@ -45,34 +45,13 @@ public class ContourRenderer2D : ContourRenderer {
 	private List<Vector3> lines;
 	List<Mesh> meshes = new List<Mesh> ();
 	Mesh uberMesh;
+
+	List<VectorLine> vectorLines = new List<VectorLine>();
 	public override void Build() {
 		ready = true;
-		gravityPoints = fieldHelper.CalculatePoints ();
+		gravityPoints = fieldHelper.CalculatePoints (50);
 		Debug.Log ("forces " + minForce +  " " + maxForce);
 	
-		//automate this... look at distribution of values...
-		float[] zLevels = new float[19];
-		zLevels [0] = 0;
-		zLevels [1] = 1000;
-		zLevels [2] = 2000;
-		zLevels [3] = 3000;
-		zLevels [4] = 4000;
-		zLevels [5] = 5000;
-		zLevels [6] = 6000;
-		zLevels [7] = 7000;
-		zLevels [8] = 8000;
-		zLevels [9] = 9000;
-		zLevels [10] = 10000;
-		zLevels [11] = 15000;
-		zLevels [12] = 20000;
-		zLevels [13] = 25000;
-		zLevels [14] = 30000;
-		zLevels [15] = 35000;
-		zLevels [16] = 40000;
-		zLevels [17] = 45000;
-		zLevels [18] = 50000;
-
-		//lines = DrawContour (gravityPoints, zLevels);
 		lines = DrawContour (gravityPoints, 0, 50000f, 20);
 		//lines = DrawContour (gravityPoints, minForce, maxForce, 50);
 		CreateLineMaterial ();
@@ -87,7 +66,7 @@ public class ContourRenderer2D : ContourRenderer {
 			Vector2 solPos = new Vector2(lines[i].x * 100000f,lines[i].y * 100000f);
 			//if(!sol.IsInAnySOI(solPos)){
 				VectorLine l = VectorLine.SetLine3D (new Color(0,1,0,0.1f), new Vector3(lines[i].x,lines[i].y, 1),new Vector3(lines[i+1].x,lines[i+1].y, 1));
-
+				vectorLines.Add(l);
 			//}
 			i++;
 		}
@@ -339,5 +318,16 @@ public class ContourRenderer2D : ContourRenderer {
 		}
 
 		return DrawContour(pts,zlevels);
+	}
+
+	private void DestroyLine(VectorLine v){
+		VectorLine.Destroy(ref v);
+	}
+
+	public override void Reset() {
+		foreach (VectorLine v in vectorLines) {
+			DestroyLine(v);
+		}
+		vectorLines.Clear ();
 	}
 }

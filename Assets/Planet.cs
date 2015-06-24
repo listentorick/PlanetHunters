@@ -24,6 +24,12 @@ public class Planet : Body {
 			pop.AddStock(delta);
 		}
 		SetPopulation (this.population);
+		//if (delta < 0) {
+			//need to highlight the chart
+		//	GetResourceChart (Cargo.People).Highlight(true);
+		//} //else {
+			//GetResourceChart (Cargo.People).Highlight(false);
+		//}
 	}
 
 	private Resource GetPopulationResource(){
@@ -34,6 +40,18 @@ public class Planet : Body {
 		if (resourceComponents == null)
 			return null;
 		foreach (Resource r in resourceComponents) {
+			//takes 1 second 1 unit
+			if(r.resourceType == type){
+				return r;
+			} 
+		}
+		return null;
+	}
+
+	private ResourceChart GetResourceChart(Cargo type){
+		if (resourceCharts == null)
+			return null;
+		foreach (ResourceChart r in resourceCharts) {
 			//takes 1 second 1 unit
 			if(r.resourceType == type){
 				return r;
@@ -113,15 +131,21 @@ public class Planet : Body {
 	
 	}
 
-	void HandleResourceLevelChanged (Cargo type, float value)
-	{
+	//void HandleResourceLevelChanged (Cargo type, float value)
+//	{
 
 
-	}
+//	}
 
 	void Update () {
 		base.Update ();
-
+		if (GetResource (Cargo.Food).current > 0) {
+			//we have food so people are no longer dying
+			GetResourceChart (Cargo.People).Highlight (false);
+		} else {
+			//we have food so people are dying
+			GetResourceChart (Cargo.People).Highlight(true);
+		}
 	}
 
 	public delegate void ResourceDepletedHandler(Cargo type);

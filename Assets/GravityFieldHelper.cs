@@ -5,7 +5,7 @@ public class GravityFieldHelper: MonoBehaviour  {
 
 	public SolarSystem sol;
 
-	public Vector3[,] CalculatePoints() {
+	public Vector3[,] CalculatePoints(int density) {
 		
 		
 		var cam = Camera.main;
@@ -16,7 +16,7 @@ public class GravityFieldHelper: MonoBehaviour  {
 		float width = (p2 - p1).magnitude;
 		float height = (p3 - p2).magnitude;
 		
-		int density = 500;
+		//int density = 1000;
 		float delta = width / density;
 		
 		Vector3[,] points = new Vector3 [density, density];

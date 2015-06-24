@@ -51,8 +51,10 @@ public class GameController : MonoBehaviour {
 		traderShipPool.Clear ();
 		colonyShipPool.Clear ();
 		ships.Clear ();
-		BuildLevel ();
 		economy.Reset ();
+		contourRenderer.Reset ();
+		BuildLevel ();
+
 	}
 	public int GetNumberOfShips(){
 		return ships.Count;
@@ -69,8 +71,11 @@ public class GameController : MonoBehaviour {
 		r.maxPrice = maxPrice;
 		r.timeToConsumeOneUnit = 10000000f; //default value (assumes nobody on planet)
 		r.ResourceDepleted += HandleResourceDepleted;
+		r.ResourceLevelChanged += HandleResourceLevelChanged;
 		return r;
 	}
+
+
 
 
 	//when a ship enters a warp gate we add the cargo to this.
@@ -201,8 +206,8 @@ public class GameController : MonoBehaviour {
 		createdObjects.Add (bluePlanet.gameObject);
 
 
-		colonyShipSpawner.ShipSpawned+= HandleShipSpawned;
-		tradeShipSpawner.ShipSpawned+= HandleTradeShipSpawned;
+		colonyShipSpawner.Spawned+= HandleShipSpawned;
+		tradeShipSpawner.Spawned+= HandleTradeShipSpawned;
 
 		traderShipPool = PopulatePool<TraderShip> (traderShipPrefab, 1);
 		//tradeShipSpawner.shipPool = 
@@ -220,7 +225,7 @@ public class GameController : MonoBehaviour {
 		//create our initial ship
 		TraderShip s = traderShipPool[0];
 		traderShipPool.RemoveAt (0);
-		tradeShipSpawner.SpawnThisShip (s);
+		tradeShipSpawner.Spawn (s);
 		s.cargoType = Cargo.Food;
 		s.cargo = 100;
 		ships.Add (s);
@@ -228,7 +233,7 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	void HandleTradeShipSpawned (Ship ship)
+	void HandleTradeShipSpawned (Body ship)
 	{
 
 		((TraderShip)ship).cargoType = shipStateQueue [0].type;
@@ -236,7 +241,7 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	void HandleShipSpawned (Ship ship)
+	void HandleShipSpawned (Body ship)
 	{
 
 	}
@@ -256,7 +261,8 @@ public class GameController : MonoBehaviour {
 		if(traderShipPool.Count>0) { // ships in the pool
 			TraderShip pooledShip = traderShipPool[0];
 			traderShipPool.RemoveAt(0);
-			tradeShipSpawner.SpawnThisShip(pooledShip);
+			pooledShip.fuel = 1f;
+			tradeShipSpawner.Spawn(pooledShip);
 		}
 
 	}
@@ -265,8 +271,9 @@ public class GameController : MonoBehaviour {
 	{
 		if(colonyShipPool.Count>0) { // ships in the pool
 			ColonyShip pooledShip = colonyShipPool[0];
+			pooledShip.fuel = 1f;
 			colonyShipPool.RemoveAt(0);
-			colonyShipSpawner.SpawnThisShip(pooledShip);
+			colonyShipSpawner.Spawn(pooledShip);
 		}
 
 	}
@@ -282,9 +289,21 @@ public class GameController : MonoBehaviour {
 
 	void HandleResourceDepleted (Cargo type)
 	{
-		ReducePopularityBy(0.5f);
+		if (type == Cargo.People) {
+			//people are dying
+			//ReducePopularityBy (0.5f);
+		}
 
 		//this.GameOver();
+	}
+
+	void HandleResourceLevelChanged (Resource r, float percentage, float change)
+	{
+		if (r.resourceType == Cargo.People && change<0){
+			//somebody has died
+			ReducePopularityBy (0.1f);
+		}
+		
 	}
 
 	void ReducePopularityBy(float delta) {

@@ -44,7 +44,7 @@ public class ResourceChart : MonoBehaviour {
 		economy = FindObjectOfType<Economy> ();
 	}
 
-	void HandleResourceLevelChanged (Cargo type, float value)
+	void HandleResourceLevelChanged (Resource r, float value, float change)
 	{
 		Render ();
 	}
@@ -75,9 +75,23 @@ public class ResourceChart : MonoBehaviour {
 		
 		meshFilter.mesh = meshBuilder.CreateMesh();
 	}
+
+	private bool highlight;
+
+	public void Highlight(bool highlight) {
+		this.highlight = highlight;
+
+
+	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (highlight == true) {
+			float lerp = Mathf.PingPong (Time.time, 1.0f) / 1.0f;
+			meshRenderer.material.color = Color.Lerp (Helpers.GetCargoColor (resourceType), new Color (1, 0, 0), lerp);
+		} else {
+			meshRenderer.material.color = Helpers.GetCargoColor (resourceType);
+		}
+
 	}
 }
