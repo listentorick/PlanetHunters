@@ -28,7 +28,7 @@ public class CollectablesController : MonoBehaviour {
 	void HandleCollected (Collectable collectable, Ship ship)
 	{
 		solarSystem.RemoveBody (collectable);
-		Destroy (collectable.gameObject);
+
 
 	}
 
