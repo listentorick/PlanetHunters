@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 
-public class GUIController : MonoBehaviour {
+public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	public GameObject gameOver;
 	public GameController gameController;
@@ -44,12 +44,12 @@ public class GUIController : MonoBehaviour {
 		gameOver.SetActive (false);
 		money.text = "0";
 		numShips.text = "0";
+		popularity.value = popularityController.popularity;
 	}
 
-	public void Reset() {
-		ResetControls ();
-		gameController.Reset ();
-	}
+	//public void Reset() {
+
+//	}
 
 	void HandleGameOver ()
 	{
@@ -65,4 +65,21 @@ public class GUIController : MonoBehaviour {
 		replay.gameObject.SetActive (true);
 		gameOver.SetActive (true);
 	}
+
+	public void Replay() 
+	{
+
+		gameController.Reset ();
+	}
+
+	public void Reset() 
+	{
+		ResetControls ();
+	}
+
+	public void Build() 
+	{
+		numShips.text = gameController.GetNumberOfShips ().ToString ();
+	}
+
 }

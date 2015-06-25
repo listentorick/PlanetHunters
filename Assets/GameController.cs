@@ -44,7 +44,10 @@ public class GameController : MonoBehaviour {
 	//public float popularity = 1f;
 	public CollectablesController collectablesController;
 
+	public GUIController guiController;
+
 	public void Reset(){
+		guiController.Reset ();
 		solarSystem.Clear ();
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
@@ -112,7 +115,7 @@ public class GameController : MonoBehaviour {
 	private float FOOD_MAX_PRICE = 500f;
 	void BuildLevel() {
 		//position 3 planets ramdomly
-		
+
 		collectablesController.Build ();
 
 		CreateWarpGate (Cargo.Food, new Vector3 (-2, 1, 0));
@@ -235,7 +238,7 @@ public class GameController : MonoBehaviour {
 		s.cargoType = Cargo.Food;
 		s.cargo = 100;
 		ships.Add (s);
-		
+		guiController.Build ();
 
 	}
 
