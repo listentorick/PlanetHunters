@@ -5,11 +5,11 @@ using System.Collections.Generic;
 public class Pool : MonoBehaviour {
 
 	public int poolSize = 20;
-	private List<GameObject> pool;
+	private List<GameObject> pool = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
-		pool = new List<GameObject> ();
+
 	//	for (var i=0; i<poolSize; i++) {
 	//		GameObject obj = (GameObject)Instantiate(GameObject);
 	//		obj.SetActive(false);

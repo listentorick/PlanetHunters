@@ -12,6 +12,7 @@ public class GUIController : MonoBehaviour {
 	public Text money;
 	public Text numShips;
 	public Slider popularity;
+	public PopularityController popularityController;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +20,7 @@ public class GUIController : MonoBehaviour {
 		gameController.GameOver+= HandleGameOver;
 		economy.Profit += HandleProfit;
 		gameController.ShipCollided += HandleShipCollided;
-		gameController.PopularityChanged += HandlePopularityChanged;
+		popularityController.PopularityChanged += HandlePopularityChanged;
 		HandleShipCollided ();
 	}
 

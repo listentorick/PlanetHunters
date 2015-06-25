@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
+	public PopularityController popularityController;
 	public ShipIndicator shipIndicatorPrefab;
 	private IList<Ship> ships = new List<Ship> (); //this is all the ships
 	private IList<TraderShip> traderShipPool = new List<TraderShip> ();
@@ -40,7 +41,7 @@ public class GameController : MonoBehaviour {
 	public ShipSpawner collectableSpawner;  //will spawn any object which derives from body
 	//public Collectable[] collectables;
 
-	public float popularity = 1f;
+	//public float popularity = 1f;
 
 
 	public void Reset(){
@@ -256,6 +257,14 @@ public class GameController : MonoBehaviour {
 		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
 		colonyShipTimer.TimerEvent += ColonyShipTimerEvent;
 		traderShipTimer.TimerEvent += TraderShipTimer;
+		popularityController.PopularityChanged += HandlePopularityChanged;
+	}
+
+	void HandlePopularityChanged (float popularity)
+	{
+		if (popularity < 0) {
+			this.GameOver();
+		}
 	}
 
 	void TraderShipTimer ()
@@ -303,17 +312,9 @@ public class GameController : MonoBehaviour {
 	{
 		if (r.resourceType == Cargo.People && change<0){
 			//somebody has died
-			ReducePopularityBy (0.1f);
+			popularityController.IncrementPopularityBy (-0.1f);
 		}
 		
-	}
-
-	void ReducePopularityBy(float delta) {
-		this.popularity -= delta;
-		this.PopularityChanged (this.popularity);
-		if (popularity < 0) {
-			this.GameOver();
-		}
 	}
 
 	void HandleShipEnteredWarpGate (Ship ship, WarpGate warpGate)
@@ -430,7 +431,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		if (other.GetComponent<ColonyShip> () || ship.gameObject.GetComponent<ColonyShip>()) {
-			ReducePopularityBy(0.1f);
+			popularityController.IncrementPopularityBy(-0.1f);
 		}
 
 		ShipCollided ();
