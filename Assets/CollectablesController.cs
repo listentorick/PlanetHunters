@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CollectablesController : MonoBehaviour {
+public class CollectablesController : MonoBehaviour, IReset, IBuild {
 	
 	public ShipSpawner spawner;
 	public SolarSystem solarSystem;
@@ -30,6 +30,18 @@ public class CollectablesController : MonoBehaviour {
 		solarSystem.RemoveBody (collectable);
 
 
+	}
+
+	public void Reset(){
+		foreach (BaseCollectableController b in controllers) {
+			b.Reset();
+		}
+	}
+
+	public void Build() {
+		foreach (BaseCollectableController b in controllers) {
+			b.Build();
+		}
 	}
 
 }

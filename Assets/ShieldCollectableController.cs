@@ -10,12 +10,7 @@ public class ShieldCollectableController : BaseCollectableController {
 	//public CollectablesController controller;
 	public void Start(){
 		timer.TimerEvent += HandleTimerEvent;
-		pool.PopulatePool (delegate() {
-			Collectable c = (Collectable)Instantiate (collectablePrefab);
-			c.type = CollectableType.Shield;
-			c.Collected += HandleCollected;
-			return c.gameObject;
-		});
+
 	}
 
 	bool ShieldNeeded() {
@@ -48,8 +43,20 @@ public class ShieldCollectableController : BaseCollectableController {
 
 	}
 
-	void Update(){
-
-	
+	public override void Reset()
+	{
+		pool.Reset ();
 	}
+
+	public override void Build()
+	{
+		pool.PopulatePool (delegate() {
+			Collectable c = (Collectable)Instantiate (collectablePrefab);
+			c.type = CollectableType.Shield;
+			c.Collected += HandleCollected;
+			return c.gameObject;
+		});
+	}
+
+
 }

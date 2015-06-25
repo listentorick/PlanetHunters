@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PopularityController : MonoBehaviour {
+public class PopularityController : MonoBehaviour, IReset {
 
 	public delegate void PopularityChangedHandler(float popularity);
 	public event PopularityChangedHandler PopularityChanged;
@@ -24,5 +24,10 @@ public class PopularityController : MonoBehaviour {
 		}
 		this.PopularityChanged (this.popularity);
 
+	}
+
+	public void Reset()
+	{
+		popularity = 1f;
 	}
 }

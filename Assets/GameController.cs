@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour {
 	//public Collectable[] collectables;
 
 	//public float popularity = 1f;
-
+	public CollectablesController collectablesController;
 
 	public void Reset(){
 		solarSystem.Clear ();
@@ -56,6 +56,8 @@ public class GameController : MonoBehaviour {
 		ships.Clear ();
 		economy.Reset ();
 		contourRenderer.Reset ();
+		collectablesController.Reset ();
+		popularityController.Reset ();
 		BuildLevel ();
 
 	}
@@ -111,9 +113,10 @@ public class GameController : MonoBehaviour {
 	void BuildLevel() {
 		//position 3 planets ramdomly
 		
+		collectablesController.Build ();
 
 		CreateWarpGate (Cargo.Food, new Vector3 (-2, 1, 0));
-		CreateWarpGate (Cargo.Medical, new Vector3 (4, 3, 0));
+		//CreateWarpGate (Cargo.Medical, new Vector3 (4, 3, 0));
 
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class BaseCollectableController : MonoBehaviour {
+public abstract class BaseCollectableController : MonoBehaviour, IReset, IBuild {
 
 	public Collectable collectablePrefab; 
 	public delegate void SpawnRequestHandler(BaseCollectableController type, Collectable c);
@@ -11,6 +11,18 @@ public abstract class BaseCollectableController : MonoBehaviour {
 			SpawnRequest(this,c);
 		}
 	}
+
+	public virtual void Reset(){
+		
+		
+	}
+
+	public virtual void Build(){
+		
+		
+	}
+
+
 
 
 }

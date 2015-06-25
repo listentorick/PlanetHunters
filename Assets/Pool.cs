@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Pool : MonoBehaviour {
+public class Pool : MonoBehaviour, IReset {
 
 	public int poolSize = 20;
 	private List<GameObject> pool = new List<GameObject>();
@@ -35,6 +35,14 @@ public class Pool : MonoBehaviour {
 			}
 		}
 		return null;
+	}
+
+	public void Reset() 
+	{
+		foreach(GameObject go in pool){
+			Destroy(go);
+		}
+		pool.Clear();
 	}
 
 }
