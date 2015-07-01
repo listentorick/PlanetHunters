@@ -124,8 +124,8 @@ public class GameController : MonoBehaviour {
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);
 		gasGiant.position = new Vector2 (-600000f, -100000f);
-		gasGiant.mass = 2e+25f;
-		gasGiant.GetComponent<SpriteRenderer> ().sprite = gasPlanetSprite;
+		gasGiant.mass = 1e+25f;
+		gasGiant.SetSprite(gasPlanetSprite);
 		//gasGiant.foodSupplies = 100;
 		//gasGiant.maxFoodSupplies = 100;
 		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
@@ -171,7 +171,7 @@ public class GameController : MonoBehaviour {
 		Planet redPlanet = Instantiate (planetPrefab);
 		redPlanet.position = new Vector2 (200000f, 40000);
 		redPlanet.mass = 1e+24f;
-		redPlanet.GetComponent<SpriteRenderer> ().sprite = redPlanetSprite;
+		redPlanet.SetSprite(redPlanetSprite);
 		//redPlanet.foodSupplies = 100;
 		//redPlanet.maxFoodSupplies = 100;
 		//redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
@@ -195,7 +195,7 @@ public class GameController : MonoBehaviour {
 		Planet bluePlanet = Instantiate (planetPrefab);
 		bluePlanet.position = new Vector2 (700000, 400000);
 		bluePlanet.mass = 1e+24f;
-		bluePlanet.GetComponent<SpriteRenderer> ().sprite = bluePlanetSprite;
+		bluePlanet.SetSprite(bluePlanetSprite);
 		//bluePlanet.foodSupplies = 100;
 		//bluePlanet.maxFoodSupplies = 100;
 		//bluePlanet.rateOfConsumptionFoodlSupplies = 0.5f;

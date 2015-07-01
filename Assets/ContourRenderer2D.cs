@@ -49,7 +49,7 @@ public class ContourRenderer2D : ContourRenderer {
 	List<VectorLine> vectorLines = new List<VectorLine>();
 	public override void Build() {
 		ready = true;
-		gravityPoints = fieldHelper.CalculatePoints (50);
+		gravityPoints = fieldHelper.CalculatePoints (50,50);
 		Debug.Log ("forces " + minForce +  " " + maxForce);
 	
 		lines = DrawContour (gravityPoints, 0, 50000f, 20);

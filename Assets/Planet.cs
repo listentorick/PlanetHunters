@@ -154,6 +154,10 @@ public class Planet : Body {
 	public delegate void PlanetDeadHandler();
 	public event PlanetDeadHandler PlanetDead;
 
+	public void SetSprite(Sprite sprite) 
+	{
+		this.GetRendererTransform ().GetComponent<SpriteRenderer> ().sprite = sprite;
+	}
 
 	public void ConsumeCargo (Ship s) {
 	

@@ -5,7 +5,7 @@ public class GravityFieldHelper: MonoBehaviour  {
 
 	public SolarSystem sol;
 
-	public Vector3[,] CalculatePoints(int density) {
+	public Vector3[,] CalculatePoints(int xdensity, int ydensity) {
 		
 		
 		var cam = Camera.main;
@@ -17,18 +17,19 @@ public class GravityFieldHelper: MonoBehaviour  {
 		float height = (p3 - p2).magnitude;
 		
 		//int density = 1000;
-		float delta = width / density;
-		
-		Vector3[,] points = new Vector3 [density, density];
+		float xdelta = width / xdensity;
+		float ydelta = height / ydensity;
+
+		Vector3[,] points = new Vector3 [xdensity, ydensity];
 		float xpos = 0;
 		float ypos = 0;
 		float currentForce = 0;
-		for (int x=0; x<density; x++) {
+		for (int x=0; x<xdensity; x++) {
 			
-			for(int y=0;y<density;y++){
+			for(int y=0;y<ydensity;y++){
 				
-				xpos = (float)x*delta - width/2;
-				ypos = (float)y*delta - height/2;
+				xpos = (float)x*xdelta - width/2;
+				ypos = (float)y*ydelta - height/2;
 				
 				Vector2 solPos = new Vector2(xpos * 100000f,ypos * 100000f);
 				//if(!sol.IsInAnySOI(solPos)){

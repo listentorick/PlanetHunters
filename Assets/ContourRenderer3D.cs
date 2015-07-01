@@ -10,7 +10,7 @@ public class ContourRenderer3D : ContourRenderer {
 	// Use this for initialization
 	public override void Build () {
 
-		Vector3[,] points = fieldHelper.CalculatePoints (500);
+		Vector3[,] points = fieldHelper.CalculatePoints (500,500);
 
 		MinMax minMax = GetMinMax (points);
 
