@@ -43,7 +43,8 @@ public class GuesturesHandler : MonoBehaviour {
 	void OnFingerUp( FingerUpEvent e ) 
 	{
 		if (selectedBody != null) {
-			selectedBody.additionalForce = new Vector2(0,0);
+			selectedBody.Thrust(new Vector2(0,0));
+			//selectedBody.additionalForce = new Vector2(0,0);
 		}
 	}
 

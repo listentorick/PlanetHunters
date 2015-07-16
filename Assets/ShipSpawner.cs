@@ -85,7 +85,7 @@ public class ShipSpawner : MonoBehaviour {
 				ship.velocity = velocity;
 				ship.AlignToVector(velocity);
 				ship.position = position * scale;
-				ship.gameObject.transform.position = new Vector3(-100,-100,-8); //set start position to ensure z value is correct
+				ship.gameObject.transform.position = new Vector3(-100,-100,0); //set start position to ensure z value is correct
 				solarSystem.AddBody(ship);
 				ship.gameObject.SetActive(true);
 				break;

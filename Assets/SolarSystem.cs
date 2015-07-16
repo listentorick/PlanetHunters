@@ -6,7 +6,7 @@ using System.Linq;
 public class SolarSystem : MonoBehaviour {
 
 	public List<Body> bodies = new List<Body> ();
-	Vector2[,] forces = new Vector2[10,10];
+	Vector2[,] forces = new Vector2[50,50];
 	//List<List<Vector2>> forces = new List<List<Vector2>> ();
 	Dictionary<Body,Vector2> preAcc = new Dictionary<Body,Vector2>();
 

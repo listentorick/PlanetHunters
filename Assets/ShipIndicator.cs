@@ -28,7 +28,11 @@ public class ShipIndicator : MonoBehaviour {
 	void Update () {
 	
 		//if (IsShipOffScreen ()) {
-		
+		if (!ship.gameObject.activeSelf) {
+			this.transform.position = new Vector3(100,100,this.transform.position.z);
+			return;
+		}
+
 			//where is the ship?
 		if (ship.gameObject.transform.position.y > topRight.y) {
 

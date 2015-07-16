@@ -4,11 +4,19 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
+	public Blades bladePrefab;
+	public Explosion explosionPrefab;
+	public AudioSource audioSource;
+	public AudioClip backgroundSound;
+	public AudioClip profitSound;
+	public AudioClip warpSound;
+
 	public PopularityController popularityController;
 	public ShipIndicator shipIndicatorPrefab;
 	private IList<Ship> ships = new List<Ship> (); //this is all the ships
 	private IList<TraderShip> traderShipPool = new List<TraderShip> ();
 	private IList<ColonyShip> colonyShipPool = new List<ColonyShip> ();
+	public Material lightMaterial;
 
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 	//private int shipPoolSize = 5;
@@ -25,6 +33,7 @@ public class GameController : MonoBehaviour {
 	public Sprite gasPlanetSprite;
 	public Sprite bluePlanetSprite;
 	public Sprite redPlanetSprite;
+	public Sprite sunSprite;
 
 	private float elaspedTime = 0;
 	private float nextTime = 0;
@@ -35,6 +44,7 @@ public class GameController : MonoBehaviour {
 	private List<GameObject> createdObjects = new List<GameObject>();
 
 	public ContourRenderer contourRenderer;
+	public Shadows shadowsRenderer;
 
 	public ShipSpawner tradeShipSpawner;
 	public ShipSpawner colonyShipSpawner;
@@ -113,6 +123,7 @@ public class GameController : MonoBehaviour {
 
 	private float FOOD_BASE_PRICE = 100f;
 	private float FOOD_MAX_PRICE = 500f;
+
 	void BuildLevel() {
 		//position 3 planets ramdomly
 
@@ -121,11 +132,26 @@ public class GameController : MonoBehaviour {
 		CreateWarpGate (Cargo.Food, new Vector3 (-2, 1, 0));
 		//CreateWarpGate (Cargo.Medical, new Vector3 (4, 3, 0));
 
+
+		Planet sun = Instantiate (planetPrefab);
+		sun.SetSprite (sunSprite);
+		sun.position = new Vector2 (600000f, -100000f);
+		sun.mass = 1e+25f;
+		sun.canMove = false;
+		sun.IsLightSource (true);
+		sun.imageScale = 1f;
+		solarSystem.AddBody (sun);
+		
+
+
+		//DynamicLight dl = sun.gameObject.AddComponent<DynamicLight> ();
+		//dl.lightMaterial = lightMaterial;
 		//Gas Giant
 		Planet gasGiant = Instantiate (planetPrefab);
 		gasGiant.position = new Vector2 (-600000f, -100000f);
 		gasGiant.mass = 1e+25f;
 		gasGiant.SetSprite(gasPlanetSprite);
+		//sun.IsLightSource (false);
 		//gasGiant.foodSupplies = 100;
 		//gasGiant.maxFoodSupplies = 100;
 		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
@@ -146,27 +172,7 @@ public class GameController : MonoBehaviour {
 		createdObjects.Add (gasGiant.gameObject);
 
 
-		/*
-		//Gas Giant
-		Planet moon = Instantiate (planetPrefab);
-		moon.position = new Vector2 (-400000f, -7000f);
-		moon.mass = 2e+24f;
-		moon.GetComponent<SpriteRenderer> ().sprite = gasPlanetSprite;
-		//gasGiant.foodSupplies = 100;
-		//gasGiant.maxFoodSupplies = 100;
-		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
-		moon.soi = 0;
-		moon.canMove = false;
-		moon.ResourceDepleted+= HandleResourceDepleted;
-		
-		//AddResource (moon, Cargo.Food, 100f, 100, 100,1f);
-		//gasGiant.BuildResourceCharts ();
-		
-		solarSystem.AddBody (moon);
-		
-		createdObjects.Add (moon.gameObject);
 
-		*/
 		
 		Planet redPlanet = Instantiate (planetPrefab);
 		redPlanet.position = new Vector2 (200000f, 40000);
@@ -176,6 +182,7 @@ public class GameController : MonoBehaviour {
 		//redPlanet.maxFoodSupplies = 100;
 		//redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
 		redPlanet.soi = 150000;
+		redPlanet.imageScale = 0.75f;
 		redPlanet.canMove = false;
 		//redPlanet.ResourceDepleted+= HandleResourceDepleted;
 
@@ -193,13 +200,13 @@ public class GameController : MonoBehaviour {
 		
 		
 		Planet bluePlanet = Instantiate (planetPrefab);
-		bluePlanet.position = new Vector2 (700000, 400000);
+		bluePlanet.position = new Vector2 (700000, 250000);
 		bluePlanet.mass = 1e+24f;
 		bluePlanet.SetSprite(bluePlanetSprite);
 		//bluePlanet.foodSupplies = 100;
 		//bluePlanet.maxFoodSupplies = 100;
 		//bluePlanet.rateOfConsumptionFoodlSupplies = 0.5f;
-		
+		bluePlanet.imageScale = 0.75f;
 		bluePlanet.soi = 150000;
 		bluePlanet.canMove = false;
 		//bluePlanet.ResourceDepleted+= HandleResourceDepleted;
@@ -231,6 +238,8 @@ public class GameController : MonoBehaviour {
 
 		contourRenderer.Build ();
 
+		shadowsRenderer.Build ();
+
 		//create our initial ship
 		TraderShip s = traderShipPool[0];
 		traderShipPool.RemoveAt (0);
@@ -239,6 +248,11 @@ public class GameController : MonoBehaviour {
 		s.cargo = 100;
 		ships.Add (s);
 		guiController.Build ();
+
+
+		audioSource.volume = 1f;
+		audioSource.clip = backgroundSound;
+		audioSource.Play();
 
 	}
 
@@ -264,6 +278,14 @@ public class GameController : MonoBehaviour {
 		colonyShipTimer.TimerEvent += ColonyShipTimerEvent;
 		traderShipTimer.TimerEvent += TraderShipTimer;
 		popularityController.PopularityChanged += HandlePopularityChanged;
+		economy.Profit+= HandleProfit;
+	}
+
+	void HandleProfit (float profit)
+	{
+		if (profit > 0) {
+			audioSource.PlayOneShot (profitSound);
+		}
 	}
 
 	void HandlePopularityChanged (float popularity)
@@ -286,6 +308,7 @@ public class GameController : MonoBehaviour {
 
 	void ColonyShipTimerEvent ()
 	{
+	
 		if(colonyShipPool.Count>0) { // ships in the pool
 			ColonyShip pooledShip = colonyShipPool[0];
 			pooledShip.fuel = 1f;
@@ -300,8 +323,22 @@ public class GameController : MonoBehaviour {
 		if (p is Planet && s is ColonyShip) {
 			int pop = ((ColonyShip)s).population;
 			((Planet)p).AddPopulation(pop);
+
+			//Remove ship from solar system and 
+			solarSystem.RemoveBody (s);
+			s.gameObject.transform.position = new Vector2(100f,100f);
+			s.gameObject.SetActive (false);
+			colonyShipPool.Add(((ColonyShip)s));
+
+			//play an applause sound??
+
+			Vector3 position = p.gameObject.transform.position;
+			Blades b = (Blades)Instantiate (bladePrefab, position, Quaternion.identity);
+			b.color = Helpers.GetCargoColor(Cargo.People);
+			audioSource.PlayOneShot (profitSound);
 		}
 	}
+
 
 
 	void HandleResourceDepleted (Cargo type)
@@ -316,6 +353,12 @@ public class GameController : MonoBehaviour {
 
 	void HandleResourceLevelChanged (Resource r, float percentage, float change)
 	{
+		if (r.resourceType == Cargo.Food && change > 0) {
+
+			Vector3 position = r.gameObject.transform.position;
+			Blades b = (Blades)Instantiate (bladePrefab, position, Quaternion.identity);
+			b.color = 	b.color = Helpers.GetCargoColor(Cargo.Food);
+		}
 		if (r.resourceType == Cargo.People && change<0){
 			//somebody has died
 			popularityController.IncrementPopularityBy (-0.1f);
@@ -341,6 +384,8 @@ public class GameController : MonoBehaviour {
 			}
 
 			shipStateQueue.Add (new ShipState (trader.cargoType, trader.cargo));
+
+			audioSource.PlayOneShot(warpSound,1f);
 		}
 
 
@@ -348,14 +393,7 @@ public class GameController : MonoBehaviour {
 		//Hidden (ship.gameObject, true);
 	}
 
-	public void Hidden(GameObject gameObject, bool isHidden)
-	{
-		Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
-		foreach (Renderer r in renderers)
-		{
-			r.enabled = !isHidden;
-		}
-	}
+
 	
 	
 	//planet will add itself
@@ -394,6 +432,8 @@ public class GameController : MonoBehaviour {
 			shipIndicator.ship = newShip;
 			createdObjects.Add (shipIndicator.gameObject);
 			shipIndicators.Add(shipIndicator);
+
+			//newShip.gameObject.SetActive(false);
 		}
 		return shipPool;
 	}
@@ -420,13 +460,34 @@ public class GameController : MonoBehaviour {
 
 		ships.Remove (ship);
 		solarSystem.RemoveBody (ship);
+	
+		//should come from a pool
+		Explosion e = (Explosion)Instantiate (explosionPrefab);
+		e.transform.position = ship.transform.position;
+		e.position = ship.position;
+		e.velocity = ship.velocity;
+		e.mass = ship.mass;
+		e.acceleration = ship.acceleration;
+		e.canMove = true;
+		e.canAlign = true;
+		solarSystem.AddBody (e);
+		e.AlignToVector (ship.velocity);
 		Destroy (ship.gameObject);
+
+
 	
 	}
 
 	void HandleShipCollided (Ship ship, GameObject other)
 	{
+	//	return;
 		DestroyShip (ship);
+
+		//audioSource.Stop();
+		//audioSource.volume = 1f;
+		//audioSource.clip = explosionSound;
+		//audioSource.PlayOneShot(explosionSound);
+
 
 		Ship otherShip = other.GetComponent<Ship> ();
 

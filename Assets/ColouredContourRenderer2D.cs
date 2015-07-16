@@ -6,6 +6,7 @@ public class ColouredContourRenderer2D : ContourRenderer {
 	public GravityFieldHelper fieldHelper;
 	public Terrain terrain;
 
+
 	void ResizeSpriteToScreen(GameObject theSprite, Camera theCamera, int fitToScreenWidth, int fitToScreenHeight)
 	{        
 		SpriteRenderer sr = theSprite.GetComponent<SpriteRenderer>();
@@ -103,7 +104,7 @@ public class ColouredContourRenderer2D : ContourRenderer {
 
 		if (value < 0.2f) {
 
-			alpha = 0.2f;
+			alpha = 0f;
 			
 		} else if (value < 0.4f) {
 			alpha = 0.4f;
@@ -113,9 +114,11 @@ public class ColouredContourRenderer2D : ContourRenderer {
 			alpha = 0.8f;
 		
 		} else if (value <= 1f) {
-			alpha = 1f;
+			alpha = 1.0f;
 		
 		}
+		//return new Color (1f,1f,0f, alpha);
+
 		return new Color (52f/255f,97f/255f,99f/255f, alpha);
 
 
@@ -151,10 +154,10 @@ public class ColouredContourRenderer2D : ContourRenderer {
 		}
 		duplicateHeightMap.Apply();
 
-		byte[] myBytes = duplicateHeightMap.EncodeToPNG();
+		//byte[] myBytes = duplicateHeightMap.EncodeToPNG();
 
-		System.IO.File.WriteAllBytes(Application.dataPath + "/heightmap.png", myBytes);
-		Debug.Log (Application.dataPath);
+		//System.IO.File.WriteAllBytes(Application.dataPath + "/heightmap.png", myBytes);
+		//Debug.Log (Application.dataPath);
 		
 		return duplicateHeightMap;
 	}

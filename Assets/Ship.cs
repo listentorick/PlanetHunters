@@ -8,38 +8,77 @@ public enum Cargo {
 
 public class Ship : Body {
 
+	public AudioClip thrusterSound;
+	public AudioSource audioSource;
+	//public AudioClip explosionSound;
 
 	private float rechargeTime = 0;
+	public float fuelRechargeRate = 0.1f;
 	public float fuel = 1f;
 	public float burnRate = 0.0025f;
 	public float hull = 1f;
 	public bool takesDamage = false;
-	
+	float timeToNext = 0;
+	private bool thrustersActive = false;
+
 	public void Thrust(Vector2 thrust){
-		if (fuel <= 0)
+
+		if (isExploding==true)
 			return;
+
+		thrustersActive = thrust.magnitude!=0;
 		additionalForce = thrust;
+
+		if (!thrustersActive) {
+			timeToNext = 0.25f + Time.time;
+			thruster.Stop();
+			return;
+		}
+
+		if (thrustersActive) {
+			thruster.Play();
+			//if( !audioSource.isPlaying) {
+				audioSource.volume = 1f;
+				audioSource.clip = thrusterSound;
+				audioSource.Play();
+			//}
+		}
+
+
 	}
 	
 	private float timeInHighGravity = 0f;
 
 	public void Update() {
 	
+		if (isExploding == false && thrustersActive == false && audioSource != null) {
+			float vol = Mathf.Lerp (1f, 0f, (Time.time - timeToNext) / 0.10f);
+			audioSource.volume = vol;
+			if (audioSource.volume == 0) {
+				//audioSource.Stop ();
+			}
+		} 
+		if (isExploding) {
+			audioSource.volume = 1f;
+		}
+
 		if (additionalForce != Vector2.zero && canMove) {
 			fuel -= burnRate;
-			thruster.Play();
 			if(fuel<0){
-				fuel = 0;
+
+				thrustersActive = false;
 				additionalForce = Vector2.zero;
+				thruster.Stop();
+				fuel = 0;
 				rechargeTime =0;
 			} else {
 				AlignToVector(additionalForce);
 			}
 		} else {
-			
-			if(thruster!=null)thruster.Stop();
-			if(rechargeTime>5f){ 
-				fuel +=  Time.deltaTime/10;
+			//not firing thrusters so can recharge
+			if(rechargeTime>2f){ 
+				rechargeTime = 0f; //reset recharge time.
+				fuel += fuelRechargeRate;
 				if(fuel>1){
 					fuel = 1;
 				}
@@ -68,9 +107,13 @@ public class Ship : Body {
 		base.Update ();
 
 		rechargeTime += Time.deltaTime;
+		//thrustersActive = false;
 	}
 
+	public void LateUpdate() {
 
+
+	}
 
 
 
@@ -80,7 +123,7 @@ public class Ship : Body {
 	public delegate void HullFailureHandler(Ship ship);
 	public event HullFailureHandler HullFailure;
 
-
+	bool isExploding = false;
 	public void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "selection") { //this collision is coming from the child
 			return;
@@ -89,6 +132,12 @@ public class Ship : Body {
 		if (ship != null) {
 			//if((this.position - ship.position).magnitude>10000) return; //we're using 1 larger collider 
 
+			//isExploding = true;
+			audioSource.Stop();
+			//audioSource.volume = 1f;
+			//audioSource.clip = explosionSound;
+			thrustersActive = false;
+			//audioSource.PlayOneShot (explosionSound, 1f);
 			//raise ship collision event
 			ShipCollided(this,ship.gameObject);
 		}

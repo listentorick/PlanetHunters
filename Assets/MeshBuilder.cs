@@ -15,6 +15,9 @@ public class MeshBuilder {
 
 	private List<int> m_Indices = new List<int>();
 
+	public List<int> Indices { get { return m_Indices; } }
+
+
 	public void AddTriangle(int index0, int index1, int index2)
 	{
 		m_Indices.Add(index0);

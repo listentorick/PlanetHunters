@@ -15,12 +15,12 @@ public class ResourceChart : MonoBehaviour {
 	public float minAngle = 0f;
 	public float maxAngle = 360f;
 	public Economy economy;
-	public float maxRadius = 6f;
+	private float maxRadius = 4f;
 
 
 
 	// Use this for initialization
-	public float radius = 5;
+	public float radius = 3;
 	public float thickness = 0.1f;
 
 	public Cargo resourceType;
@@ -43,9 +43,14 @@ public class ResourceChart : MonoBehaviour {
 	public void Start() {
 		economy = FindObjectOfType<Economy> ();
 	}
-
+	private bool flash = false;
+	private float flashTime = 0f;
 	void HandleResourceLevelChanged (Resource r, float value, float change)
 	{
+		if (change > 0) {
+			flashTime = 0f;
+			flash = true;
+		}
 		Render ();
 	}
 
@@ -69,9 +74,11 @@ public class ResourceChart : MonoBehaviour {
 		float cost = GetEconomy().GetPrice (resource); //10f is the base price
 		float maxCost = GetEconomy().GetMaxPrice (resource);
 
+		//float scale = this.transform.s.magnitude;
+		//Debug.Log ("scale" + scale);
 		float height =cost/maxCost + 0.1f;
 		maxRadius = radius + height / 1.25f;
-		meshHelper.BuildDisc (meshBuilder, radius, maxRadius, 32, minAngle, minAngle + (maxAngle - minAngle) * percentageOfResource);
+		meshHelper.BuildDisc (meshBuilder, radius , maxRadius , 32, minAngle, minAngle + (maxAngle - minAngle) * percentageOfResource);
 		
 		meshFilter.mesh = meshBuilder.CreateMesh();
 	}
@@ -86,11 +93,23 @@ public class ResourceChart : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (highlight == true) {
-			float lerp = Mathf.PingPong (Time.time, 1.0f) / 1.0f;
-			meshRenderer.material.color = Color.Lerp (Helpers.GetCargoColor (resourceType), new Color (1, 0, 0), lerp);
+		if (flash == true) {
+			flashTime+=Time.deltaTime * 2;
+			meshRenderer.material.color =  Color.Lerp(  Helpers.GetCargoColor (resourceType),Color.white,flashTime);
+			if (flashTime>1f) {
+				meshRenderer.material.color =  Color.Lerp( Color.white,Helpers.GetCargoColor (resourceType),flashTime -1);
+				if(flashTime>2f){
+					flash = false;
+				}
+			}
 		} else {
-			meshRenderer.material.color = Helpers.GetCargoColor (resourceType);
+
+			if (highlight == true) {
+				float lerp = Mathf.PingPong (Time.time, 1.0f) / 1.0f;
+				meshRenderer.material.color = Color.Lerp (Helpers.GetCargoColor (resourceType), new Color (1, 0, 0), lerp);
+			} else {
+				meshRenderer.material.color = Helpers.GetCargoColor (resourceType);
+			}
 		}
 
 	}

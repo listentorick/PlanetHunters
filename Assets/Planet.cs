@@ -7,6 +7,8 @@ public class Planet : Body {
 	public ResourceChart resourceChartPrefab;
 	private Bounds bounds;
 	public Timer timer;
+//	public bool castsShadows = true;
+	public float imageScale = 1f;
 
 	private Resource[] resourceComponents;
 	private ResourceChart[] resourceCharts;
@@ -36,7 +38,7 @@ public class Planet : Body {
 		return GetResource (Cargo.People);
 	}
 
-	private Resource GetResource(Cargo type){
+	public Resource GetResource(Cargo type){
 		if (resourceComponents == null)
 			return null;
 		foreach (Resource r in resourceComponents) {
@@ -71,6 +73,16 @@ public class Planet : Body {
 		}
 	}
 
+	public void IsLightSource(bool isLightSource) {
+		//if (!castsShadows) {
+		if (isLightSource) {	
+			Destroy (this.GetComponent<PolygonCollider2D> ());
+			this.GetComponentInChildren<DynamicLight>().enabled = true;
+
+		} 
+		//}
+	}
+
 	void Start() {
 		//bounds = transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.bounds;
 		//if (!canMove) {
@@ -80,6 +92,8 @@ public class Planet : Body {
 		soiChart.SetPlanet (this);
 
 		timer.TimerEvent+= HandleTimerEvent;
+		this.GetRendererTransform().localScale = new Vector3(imageScale,imageScale,imageScale);
+
 
 
 	}
@@ -115,7 +129,7 @@ public class Planet : Body {
 
 			ResourceChart rC = (ResourceChart)Instantiate(resourceChartPrefab);
 			rC.transform.parent = this.transform;
-			rC.transform.localPosition = new Vector3(0,0,-6f);
+			rC.transform.localPosition = new Vector3(0,0,3f);
 			rC.resourceType = r.resourceType;
 			resourceCharts[i] =rC;
 
@@ -139,10 +153,13 @@ public class Planet : Body {
 
 	void Update () {
 		base.Update ();
-		if (GetResource (Cargo.Food).current > 0) {
+		Resource food = GetResource (Cargo.Food);
+		Resource people = GetResource (Cargo.People);
+
+		if (food!=null && food.current > 0) {
 			//we have food so people are no longer dying
 			GetResourceChart (Cargo.People).Highlight (false);
-		} else {
+		} else if(people!=null){
 			//we have food so people are dying
 			GetResourceChart (Cargo.People).Highlight(true);
 		}
@@ -158,6 +175,8 @@ public class Planet : Body {
 	{
 		this.GetRendererTransform ().GetComponent<SpriteRenderer> ().sprite = sprite;
 	}
+
+
 
 	public void ConsumeCargo (Ship s) {
 	
