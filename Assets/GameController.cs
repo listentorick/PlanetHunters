@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour {
 	public AudioClip backgroundSound;
 	public AudioClip profitSound;
 	public AudioClip warpSound;
+	public AudioClip failSound;
 
 	public PopularityController popularityController;
 	public ShipIndicator shipIndicatorPrefab;
@@ -341,14 +342,9 @@ public class GameController : MonoBehaviour {
 
 
 
-	void HandleResourceDepleted (Cargo type)
+	void HandleResourceDepleted (Resource r, Cargo type)
 	{
-		if (type == Cargo.People) {
-			//people are dying
-			//ReducePopularityBy (0.5f);
-		}
-
-		//this.GameOver();
+	
 	}
 
 	void HandleResourceLevelChanged (Resource r, float percentage, float change)
@@ -363,6 +359,15 @@ public class GameController : MonoBehaviour {
 			//somebody has died
 			popularityController.IncrementPopularityBy (-0.1f);
 		}
+		if (r.resourceType == Cargo.People && change<0 ) {
+			
+			Vector3 position = r.gameObject.transform.position;
+			Blades b = (Blades)Instantiate (bladePrefab, position, Quaternion.identity);
+			b.color = Color.red;
+
+			audioSource.PlayOneShot(failSound,1f);
+		}
+
 		
 	}
 

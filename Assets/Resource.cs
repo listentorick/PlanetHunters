@@ -14,7 +14,7 @@ public class Resource : MonoBehaviour {
 	private float timer;
 	public float timeToConsumeOneUnit;
 
-	public delegate void ResourceDepletedHandler(Cargo type);
+	public delegate void ResourceDepletedHandler(Resource resource, Cargo type);
 	public event ResourceDepletedHandler ResourceDepleted;
 
 	public delegate void ResourceLevelChangedHandler(Resource resource, float value, float delta);
@@ -43,7 +43,7 @@ public class Resource : MonoBehaviour {
 				if(ResourceLevelChanged!=null) ResourceLevelChanged(this, (float)current/(float)max,-1);
 				if(current<=0){
 					current = 0;
-					ResourceDepleted(resourceType);
+					ResourceDepleted(this, resourceType);
 				}
 
 			}
