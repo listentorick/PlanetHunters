@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameController : MonoBehaviour {
+public class GameController : MonoBehaviour, IGameController {
 
 	public Blades bladePrefab;
 	public Explosion explosionPrefab;
@@ -56,6 +56,59 @@ public class GameController : MonoBehaviour {
 	public CollectablesController collectablesController;
 
 	public GUIController guiController;
+
+	public void Visit (Level visitable){
+	
+	}
+
+	public void Visit (BaseConfiguration visitable){
+		
+	}
+
+	public void Visit (PlanetConfiguration visitable){
+
+		Planet planet = Instantiate (planetPrefab);
+		planet.position = new Vector2 (visitable.Position.X, visitable.Position.Y);
+		planet.mass = visitable.Mass;
+
+		if (visitable.Type == PlanetType.Red) {
+			planet.SetSprite(redPlanetSprite);
+		} else if (visitable.Type == PlanetType.Blue) {
+			planet.SetSprite(bluePlanetSprite);
+		}else if (visitable.Type == PlanetType.GasGiant) {
+			planet.SetSprite(gasPlanetSprite);
+		}
+
+		planet.soi = visitable.SOI;
+		planet.canMove = false;
+
+		AddResource (planet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
+		AddResource (planet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
+
+		planet.BuildResourceCharts ();
+		
+		solarSystem.AddBody (planet);
+		
+		createdObjects.Add (planet.gameObject);
+	
+	}
+
+	public void Visit (WormHoleConfiguration visitable){
+		CreateWarpGate (Cargo.Food, new Vector3(visitable.Position.X,visitable.Position.Y,visitable.Position.Z));
+	}
+
+	public void Visit (SunConfiguration visitable){
+
+		Planet sun = Instantiate (planetPrefab);
+		sun.SetSprite (sunSprite);
+		sun.position = new Vector2 (visitable.Position.X, visitable.Position.Y);
+		sun.mass = 1e+25f;
+		sun.canMove = false;
+		sun.IsLightSource (true);
+		sun.imageScale = 1f;
+		solarSystem.AddBody (sun);
+
+	}
 
 	public void Reset(){
 		guiController.Reset ();
@@ -119,21 +172,24 @@ public class GameController : MonoBehaviour {
 
 		warpGate.resource = AddResource (warpGate.gameObject, type, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100000, 100000,1f);
 		createdObjects.Add (warpGate.gameObject);
+		solarSystem.AddBody (warpGate);
+		warpGate.mass = 1;
+		warpGate.canMove = false;
+		warpGate.position = position;
 
 	}
 
 	private float FOOD_BASE_PRICE = 100f;
 	private float FOOD_MAX_PRICE = 500f;
 
-	void BuildLevel() {
+	public void BuildLevel() {
 		//position 3 planets ramdomly
 
 		collectablesController.Build ();
 
-		CreateWarpGate (Cargo.Food, new Vector3 (-2, 1, 0));
 		//CreateWarpGate (Cargo.Medical, new Vector3 (4, 3, 0));
 
-
+		/*
 		Planet sun = Instantiate (planetPrefab);
 		sun.SetSprite (sunSprite);
 		sun.position = new Vector2 (600000f, -100000f);
@@ -221,7 +277,7 @@ public class GameController : MonoBehaviour {
 		solarSystem.AddBody (bluePlanet);
 
 		createdObjects.Add (bluePlanet.gameObject);
-
+*/
 
 		colonyShipSpawner.Spawned+= HandleShipSpawned;
 		tradeShipSpawner.Spawned+= HandleTradeShipSpawned;
@@ -273,7 +329,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		BuildLevel ();
+		//BuildLevel ();
 
 		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
 		colonyShipTimer.TimerEvent += ColonyShipTimerEvent;

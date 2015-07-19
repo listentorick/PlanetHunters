@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WarpGate : MonoBehaviour {
+public class WarpGate : Body {
 
 
 	public delegate void ShipEnteredWarpGateHandler(Ship ship, WarpGate warpGate);
@@ -27,11 +27,7 @@ public class WarpGate : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	//	lerpTime += (Time.deltaTime)/2f;
-	//	transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Lerp(start, finish, lerpTime));
-	//	if (lerpTime>=1f) { 
-	//		lerpTime = 0;
-	//	}
+		base.Update ();
 		if (animate) {
 			time+=Time.deltaTime * 3f;
 			//his.transform.localScale = new Vector3 (1f,1f,);
