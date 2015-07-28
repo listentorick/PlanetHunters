@@ -3,6 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+public struct Link{
+	public Body body1;
+	public Body body2;
+	public float length;
+	public float stiffness;
+	public Link (Body b1, Body b2, float len, float stiffness){
+		body1 =b1;
+		body2 = b2;
+		length = len;
+		this.stiffness = stiffness;
+	}
+}
+
 public class SolarSystem : MonoBehaviour {
 
 	public List<Body> bodies = new List<Body> ();
@@ -18,6 +31,28 @@ public class SolarSystem : MonoBehaviour {
 		//forces.Add (new List<Vector2>());
 	}
 
+
+	private List<Link> links = new List<Link>();
+
+	public void AddConnection(Body b1, Body b2, float length, float springConstant)
+	{
+
+		links.Add (new Link(b1, b2, length,springConstant));
+	
+	}
+
+	public void RemoveConnectionsForBody(Body b) {
+		List<Link> connectionsToRemove = new List<Link> ();
+		foreach (Link l in links) {
+			if(l.body1 == b || l.body2 ==b){
+				connectionsToRemove.Add(l);
+			}
+		}
+		foreach (Link l in connectionsToRemove) {
+			links.Remove(l);
+		}
+	}
+
 //	public Bo
 
 	public void RemoveBody(Body body) {
@@ -29,7 +64,7 @@ public class SolarSystem : MonoBehaviour {
 		bodies.Clear ();
 	}
 	
-	private Vector2 CalculateForce(Body body1, Body body2) {  //vector force on body 1 from body 2
+	public Vector2 CalculateForce(Body body1, Body body2) {  //vector force on body 1 from body 2
 		var GM1M2 = G*body1.mass*body2.mass;
 		var delX = body2.position.x - body1.position.x;    //x2 - x1;
 		var delY = body2.position.y - body1.position.y;    //y2 - y1;
@@ -61,10 +96,40 @@ public class SolarSystem : MonoBehaviour {
 				}
 
 		}
+		/*
+		foreach (Link l in links) {
+			//calculate the forces on the bodies
+			//assume body 1 is the parent
+
+			Vector2 springVector = l.body1.position - l.body2.position;
+
+			//Vector2 pivot = springVector.normalized * (300000f/2f);
+
+		//	springVector  = pivot - s.body2.position;
+
+			float r = springVector.magnitude; //distance between.
+
+			if(r!=0){
+
+				Vector2 force = -(springVector / r) * (r - l.length) * ;
+				//force += -(s.body1.velocity - s.body2.velocity) * 100f; 
+
+				//hack! update the additional force on the object
+				//s.body1.additionalForce = force;
+				s.body2.additionalForce -= force;
+
+			}
+
+		}*/
 	}
 
 	public void Update () {
-		UpdateForces(Time.deltaTime);
+	//	UpdateForces(Time.deltaTime);
+	}
+
+	public void FixedUpdate() {
+		//UpdateForces (Time.fixedDeltaTime);
+		UpdateForces (Time.fixedDeltaTime);
 	}
 
 	public Body ClosestBody(Body body) {
@@ -131,36 +196,76 @@ public class SolarSystem : MonoBehaviour {
 	}
 
 
+	float tearSensitivity =100000f;
+	private void SolveLinks(){
+		foreach (Link l in links) {
 
+			Vector2 distance = l.body1.position - l.body2.position;
 
+			float d = distance.magnitude;
+
+			// calculate the distance between the two PointMasss
+			//float diffX = p1.x - p2.x;
+			//float diffY = p1.y - p2.y;
+			//float d = sqrt(diffX * diffX + diffY * diffY);
+			
+			// find the difference, or the ratio of how far along the restingDistance the actual distance is.
+			float difference = (l.length - d) / d;
+			
+			// if the distance is more than curtainTearSensitivity, the cloth tears
+		//	if (d > tearSensitivity) 
+		//		links.Remove(l)p1.removeLink(this);
+			
+			// Inverse the mass quantities
+			float im1 = 1 / l.body1.mass;
+			float im2 = 1 / l.body2.mass;
+			float scalarP1 = (im1 / (im1 + im2)) * l.stiffness;
+			float scalarP2 = l.stiffness - scalarP1;
+			
+			// Push/pull based on mass
+			// heavier objects will be pushed/pulled less than attached light objects
+			l.body1.position+= distance * scalarP1 * difference;
+			l.body2.position -= distance * scalarP2 * difference;
+
+		}
+	
+	}
 
 
 	private void UpdateForces (float dt) { //delta is the num of milliseconds which have passed between updates
 		
-		//Body body;
+
 		Vector2 pos;
 		Vector2 acc;
 		Vector2 vel;
-		//Vector2 accCopy;
 
 		foreach (Body body in bodies) {
-			//for(var i=0; i< bodies.length;i++ ){
-			//body.inOrbit = false;
-			//body.justEnteredOrbit = false;
 			if(body.canMove){
 				Body SOIParent= GetParentBody(body);
 				if(SOIParent!=null){
-				
+					
 					if(body.inOrbit==false) {
 						body.justEnteredOrbit = true;
+
+						//add a link
+						this.RemoveConnectionsForBody (body);
+						this.AddConnection(SOIParent, body,(body.position-SOIParent.position).magnitude,1f);
+
+
+						Vector2 f = CalculateForce(body,SOIParent);
+						float radius = Vector2.Distance( body.position,SOIParent.position);
+						float v = UnityEngine.Mathf.Sqrt(G * SOIParent.mass /radius );
+						Vector2 vvector = new Vector2(f.normalized.y,-f.normalized.x) * v;
+						body.lastPosition = body.position - vvector * dt;
+
 
 						if(ShipEnteredOrbit != null)
 						{
 							// All listeners will be invoked
 							ShipEnteredOrbit(body,SOIParent);
 						}
-
-
+						
+						
 					} else {
 						body.justEnteredOrbit = false;
 					}
@@ -169,99 +274,70 @@ public class SolarSystem : MonoBehaviour {
 					//object should now just stop..
 					//continue;
 				}else {
-					//body.parentBody=null;
+	
 					body.inOrbit = false;
-					//body.justEnteredOrbit = false;
 				}
-
+				
 			}
 
-			//body = bodies[i];
-			pos = body.position;
-			vel = body.velocity;
-			acc = body.acceleration;
-			//accCopy = 
-			preAcc[body] = new Vector2 (acc.x, acc.y);
-			//pos.elements[0] = pos.elements[0] + vel.elements[0]*dt + (0.5)*acc.elements[0]*dt*dt;
-			//pos.elements[1] = pos.elements[1] + vel.elements[1]*dt + (0.5)*acc.elements[1]*dt*dt;
-			//body.preAcc = accCopy;
-			float x = pos.x + vel.x * dt + (0.5f) * acc.x * dt * dt;
-			float y = pos.y + vel.y * dt + (0.5f) * acc.y * dt * dt;
-			if(body.canMove) {
-				body.position.Set (x, y);
+			for (int i=0; i<10; i++) { 
+				SolveLinks ();
 			}
 		}
 		
 		UpdateForcesAndAccels();
 		
-
+		
 		//update accelerations of bodies
 		for (var n = 0; n < bodies.Count; n++) {
 			bodies [n].acceleration.x = 0;
 			bodies [n].acceleration.y = 0;
 			var massN = bodies [n].mass;
 
-
-
-			
 			for (var m = 0; m < bodies.Count; m++) {
 
-				if(bodies[n].inOrbit) {
-				
-
-					Vector2 f = CalculateForce(bodies[n],bodies[n].parentBody);
-					bodies [n].acceleration.x = f.x / massN;
-					bodies [n].acceleration.y = f.y / massN; 
-
-					if(bodies[n].justEnteredOrbit){
-						float radius = Vector2.Distance( bodies[n].position,bodies[n].parentBody.position);
-						// (-dy, dx) and (dy, -dx).
-						//calculate the desired init velocity to maintain orbit
-						float v = UnityEngine.Mathf.Sqrt(G * bodies[n].parentBody.mass /radius );
-						Vector2 vvector = new Vector2(f.normalized.y,-f.normalized.x) * v;
-
-						//The velocity should be directed at 90s to the direction of the force...
-
-						//Direction of velocity should be 90 degrees
-						bodies [n].velocity.x = vvector.x;
-						bodies [n].velocity.y = vvector.y;
-						preAcc[bodies[n]] = new Vector2(0,0);
-						bodies[n].justEnteredOrbit = false;
-						bodies[n].additionalForce = new Vector2(0,0);
-					}
-
-
-				} else {
-
-					bodies [n].acceleration.x += forces [n,m].x / massN;
-					bodies [n].acceleration.y += forces [n,m].y / massN;    
-
-				}
+				bodies [n].acceleration.x += forces [n,m].x / massN;
+				bodies [n].acceleration.y += forces [n,m].y / massN;    
+					
 
 				//move this out?
-				if(bodies[n].additionalForce!=null){
-					
+				if(bodies[n].additionalForce!=null && bodies[n].additionalForce.magnitude>0){
+					if(bodies[n].inOrbit) this.RemoveConnectionsForBody (bodies[n]);
+					//if(bodies[n].parentBody && 
 					bodies [n].acceleration.x +=bodies [n].additionalForce.x/massN;
 					bodies [n].acceleration.y +=bodies [n].additionalForce.y/massN;
 					
 				}
 			}
 		}
-
+		
 		//Vector2 preAcc;
 		for (var i=0; i< bodies.Count; i++) {
+
+			if(bodies[i].canMove) {
+
+				vel = bodies[i].position - bodies[i].lastPosition;
+
+				float timeStepSq = dt * dt;
+				
+				// calculate the next position using Verlet Integration
+				float nextX  = bodies[i].position.x +  vel.x + 0.5f * bodies [i].acceleration.x * timeStepSq;
+				float nextY  =  bodies[i].position.y +  vel.y + 0.5f * bodies [i].acceleration.y * timeStepSq;
+
+				
+				// reset variables
+				bodies [i].lastPosition  = new Vector2(bodies [i].position.x,bodies [i].position.y);
+				
+				bodies[i].position = new Vector2(nextX,nextY);
 			
-		
-			vel = bodies [i].velocity;
-			acc = bodies [i].acceleration;
-			//preAcc = preAcc[bodies [i]];
-			
-			bodies [i].velocity.x = vel.x + (0.5f) * (acc.x + preAcc[bodies [i]].x) * dt;
-			bodies [i].velocity.y = vel.y + (0.5f) * (acc.y + preAcc[bodies [i]].y) * dt;
-			
-			
+
+			}
+
 		}
 	}
+
+
+
 
 }
 

@@ -5,6 +5,7 @@ public class Body : MonoBehaviour {
 
 	public ParticleSystem thruster;
 
+	public Vector2 lastPosition;
 	public Vector2 position;
 	public Vector2 velocity;
 	public Vector2 acceleration;
@@ -16,7 +17,7 @@ public class Body : MonoBehaviour {
 	public Vector2 additionalForce = new Vector2(0,0);
 	public float soi;
 	public bool IsSelected;
-	protected float scale = 100000f;
+	//protected float scale = 100000f;
 	private bool isWrappingX;
 	private bool isWrappingY;
 	public bool canAlign;
@@ -65,7 +66,7 @@ public class Body : MonoBehaviour {
 			isWrappingY = true;
 		}
 		
-		position = new Vector2(newPosition.x,newPosition.y) * scale;
+		position = new Vector2(newPosition.x,newPosition.y) * GameController.SCALE;
 		
 		this.transform.position = newPosition;
 	}
@@ -121,7 +122,7 @@ public class Body : MonoBehaviour {
 
 	public void Update () {
 
-		this.transform.position = new Vector3(position.x/100000f, position.y/100000f, this.transform.position.z);
+		this.transform.position = new Vector3(position.x/GameController.SCALE, position.y/GameController.SCALE, this.transform.position.z);
 		ScreenWrap ();
 	}
 

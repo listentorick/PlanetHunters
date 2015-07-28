@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour, IGameController {
 	private IList<TraderShip> traderShipPool = new List<TraderShip> ();
 	private IList<ColonyShip> colonyShipPool = new List<ColonyShip> ();
 	public Material lightMaterial;
+	public const float SCALE = 100000;
 
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 	//private int shipPoolSize = 5;
@@ -182,128 +183,31 @@ public class GameController : MonoBehaviour, IGameController {
 	private float FOOD_BASE_PRICE = 100f;
 	private float FOOD_MAX_PRICE = 500f;
 
+
 	public void BuildLevel() {
 		//position 3 planets ramdomly
 
 		collectablesController.Build ();
 
-		//CreateWarpGate (Cargo.Medical, new Vector3 (4, 3, 0));
-
-		/*
-		Planet sun = Instantiate (planetPrefab);
-		sun.SetSprite (sunSprite);
-		sun.position = new Vector2 (600000f, -100000f);
-		sun.mass = 1e+25f;
-		sun.canMove = false;
-		sun.IsLightSource (true);
-		sun.imageScale = 1f;
-		solarSystem.AddBody (sun);
-		
-
-
-		//DynamicLight dl = sun.gameObject.AddComponent<DynamicLight> ();
-		//dl.lightMaterial = lightMaterial;
-		//Gas Giant
-		Planet gasGiant = Instantiate (planetPrefab);
-		gasGiant.position = new Vector2 (-600000f, -100000f);
-		gasGiant.mass = 1e+25f;
-		gasGiant.SetSprite(gasPlanetSprite);
-		//sun.IsLightSource (false);
-		//gasGiant.foodSupplies = 100;
-		//gasGiant.maxFoodSupplies = 100;
-		//gasGiant.rateOfConsumptionFoodlSupplies = 0.5f;
-		gasGiant.soi = 150000;
-		gasGiant.canMove = false;
-		//gasGiant.ResourceDepleted+= HandleResourceDepleted;
-
-		AddResource (gasGiant.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
-
-		AddResource (gasGiant.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
-
-
-		//AddResource (gasGiant.gameObject, Cargo.Food, 100f, 100, 100,1f);
-		gasGiant.BuildResourceCharts ();
-
-		solarSystem.AddBody (gasGiant);
-
-		createdObjects.Add (gasGiant.gameObject);
-
-
-
-		
-		Planet redPlanet = Instantiate (planetPrefab);
-		redPlanet.position = new Vector2 (200000f, 40000);
-		redPlanet.mass = 1e+24f;
-		redPlanet.SetSprite(redPlanetSprite);
-		//redPlanet.foodSupplies = 100;
-		//redPlanet.maxFoodSupplies = 100;
-		//redPlanet.rateOfConsumptionFoodlSupplies = 0.5f;
-		redPlanet.soi = 150000;
-		redPlanet.imageScale = 0.75f;
-		redPlanet.canMove = false;
-		//redPlanet.ResourceDepleted+= HandleResourceDepleted;
-
-
-		AddResource (redPlanet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
-		AddResource (redPlanet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
-
-		//AddResource (redPlanet.gameObject, Cargo.Food, 100f, 100, 100, 5f);
-		//AddResource (redPlanet.gameObject, Cargo.Medical, 100f, 100, 100, 2f);
-		redPlanet.BuildResourceCharts ();
-
-		solarSystem.AddBody (redPlanet);
-
-		createdObjects.Add (redPlanet.gameObject);
-		
-		
-		Planet bluePlanet = Instantiate (planetPrefab);
-		bluePlanet.position = new Vector2 (700000, 250000);
-		bluePlanet.mass = 1e+24f;
-		bluePlanet.SetSprite(bluePlanetSprite);
-		//bluePlanet.foodSupplies = 100;
-		//bluePlanet.maxFoodSupplies = 100;
-		//bluePlanet.rateOfConsumptionFoodlSupplies = 0.5f;
-		bluePlanet.imageScale = 0.75f;
-		bluePlanet.soi = 150000;
-		bluePlanet.canMove = false;
-		//bluePlanet.ResourceDepleted+= HandleResourceDepleted;
-
-		AddResource (bluePlanet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
-		AddResource (bluePlanet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
-		//AddResource (bluePlanet.gameObject, Cargo.Food, 100f, 100, 100,5f);
-		bluePlanet.BuildResourceCharts ();
-
-
-		solarSystem.AddBody (bluePlanet);
-
-		createdObjects.Add (bluePlanet.gameObject);
-*/
-
 		colonyShipSpawner.Spawned+= HandleShipSpawned;
 		tradeShipSpawner.Spawned+= HandleTradeShipSpawned;
 
 		traderShipPool = PopulatePool<TraderShip> (traderShipPrefab, 1);
-		//tradeShipSpawner.shipPool = 
 
 		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 10);
-		//colonyShipSpawner.shipPool = colonyShipPool;
-		//PopulatePool ();
-		//PopulateColonyPool ();
-
-
-
 
 		contourRenderer.Build ();
 
 		shadowsRenderer.Build ();
 
-		//create our initial ship
 		TraderShip s = traderShipPool[0];
 		traderShipPool.RemoveAt (0);
 		tradeShipSpawner.Spawn (s);
 		s.cargoType = Cargo.Food;
 		s.cargo = 100;
 		ships.Add (s);
+
+
 		guiController.Build ();
 
 
@@ -377,6 +281,8 @@ public class GameController : MonoBehaviour, IGameController {
 
 	void HandleShipEnteredOrbit (Body s, Body p)
 	{
+		//solarSystem.RemoveConnectionsForBody (s);
+
 		if (p is Planet && s is ColonyShip) {
 			int pop = ((ColonyShip)s).population;
 			((Planet)p).AddPopulation(pop);
@@ -514,6 +420,8 @@ public class GameController : MonoBehaviour, IGameController {
 				break;
 			}	
 		}
+
+		solarSystem.RemoveConnectionsForBody (ship);
 
 		if (toDestroy != null) {
 			Destroy(toDestroy.gameObject);

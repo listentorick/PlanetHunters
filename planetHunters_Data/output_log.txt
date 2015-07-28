@@ -18,7 +18,7 @@ Platform assembly: C:\code\Planet Hunters\planetHunters_Data\Managed\UnityEngine
 Loading C:\code\Planet Hunters\planetHunters_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\code\Planet Hunters\planetHunters_Data\Managed\pseudoSinCos.dll (this message is harmless)
 Loading C:\code\Planet Hunters\planetHunters_Data\Managed\pseudoSinCos.dll into Unity Child Domain
-- Completed reload, in  0.083 seconds
+- Completed reload, in  0.304 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
@@ -47,7 +47,7 @@ spawn side is 1
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path 10.88889 4.360387 -50000 0
+testing path 10.88889 3.469434 -50000 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
@@ -56,7 +56,7 @@ True
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 1968 -> priority: 1 
+  Thread -> id: 1788 -> priority: 1 
 17.77778 10
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
@@ -65,215 +65,11 @@ spawn side is 3
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path -10.88889 4.79826 50000 0
+testing path -10.88889 2.582168 50000 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-True
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-<RI.Hid> Failed to create device file:
- 57 The parameter is incorrect.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 57 The parameter is incorrect.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 3 The system cannot find the path specified.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 2 The system cannot find the file specified.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to create device file:
- 57 The parameter is incorrect.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 57 The parameter is incorrect.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 57 The parameter is incorrect.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 3 The system cannot find the path specified.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 2 The system cannot find the file specified.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 57 The parameter is incorrect.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-<RI.Hid> Failed to create device file:
- 1f A device attached to the system is not functioning.
-
- 
-(Filename:  Line: 54)
-
-Tapped object: selected
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-No object was tapped at (1447.0, 863.0) 1.644905
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-No object was tapped at (1229.0, 1050.0) 1.309858
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-InvalidOperationException: Collection was modified; enumeration operation may not execute.
-  at System.Collections.Generic.List`1+Enumerator[Body].VerifyState () [0x00000] in <filename unknown>:0 
-  at System.Collections.Generic.List`1+Enumerator[Body].MoveNext () [0x00000] in <filename unknown>:0 
-  at SolarSystem.UpdateForces (Single dt) [0x00000] in <filename unknown>:0 
-  at SolarSystem.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-No object was tapped at (1123.0, 811.0) 2.155636
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
+False
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
@@ -285,11 +81,54 @@ spawn side is 2
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path -0.1433849 -7 0 50000
+testing path -8.755881 -7 0 50000
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
 True
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+<RI.Hid> Failed to get preparsed data: The request is not supported.
+
+ 
+(Filename:  Line: 78)
+
+InvalidOperationException: Collection was modified; enumeration operation may not execute.
+  at System.Collections.Generic.List`1+Enumerator[Body].VerifyState () [0x00000] in <filename unknown>:0 
+  at System.Collections.Generic.List`1+Enumerator[Body].MoveNext () [0x00000] in <filename unknown>:0 
+  at SolarSystem.UpdateForces (Single dt) [0x00000] in <filename unknown>:0 
+  at SolarSystem.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
 

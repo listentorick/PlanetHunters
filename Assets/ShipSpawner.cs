@@ -61,6 +61,7 @@ public class ShipSpawner : MonoBehaviour {
 		}
 		Debug.Log ("spawn side is " + side);
 		position.Set (x, y);
+
 		velocity.Set(accn.x,accn.y);
 		
 	}
@@ -82,9 +83,10 @@ public class ShipSpawner : MonoBehaviour {
 				PickPositionAndDirection (ref position, ref velocity);
 			}else {
 				float scale = 100000f;
-				ship.velocity = velocity;
+				//ship.velocity = velocity;
 				ship.AlignToVector(velocity);
 				ship.position = position * scale;
+				ship.lastPosition = ship.position - (velocity * Time.fixedDeltaTime);
 				ship.gameObject.transform.position = new Vector3(-100,-100,0); //set start position to ensure z value is correct
 				solarSystem.AddBody(ship);
 				ship.gameObject.SetActive(true);
