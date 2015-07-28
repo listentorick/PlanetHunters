@@ -50,6 +50,7 @@ public class SolarSystem : MonoBehaviour {
 		}
 		foreach (Link l in connectionsToRemove) {
 			links.Remove(l);
+			ConnectionBroken(l.body1,l.body2);
 		}
 	}
 
@@ -175,6 +176,10 @@ public class SolarSystem : MonoBehaviour {
 
 	public delegate void ShipEnteredOrbitHandler(Body s, Body p);
 	public event ShipEnteredOrbitHandler ShipEnteredOrbit;
+
+	public delegate void ConnectionBrokenHandler(Body s, Body p);
+	public event ConnectionBrokenHandler ConnectionBroken;
+
 
 	public Vector2 CalculateForceAtPoint(Vector2 position) {
 		Vector2 force = Vector2.zero;

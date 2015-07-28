@@ -11,12 +11,25 @@ public class TractorBeam : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		solarSystem = FindObjectOfType<SolarSystem> ();
+		solarSystem.ConnectionBroken+= HandleConnectionBroken;
 
 		//needs to knwow where other ships are within a 
 		//needs to draw triangle from ship to extents of other ship.
 		//if I'm moving away from the ship apply a force to the other ship (what ever force is acting on us)
 		//if i'm moving towards it do nothing
 	
+	}
+
+	void HandleConnectionBroken (Body s, Body p)
+	{
+		//this ship owned the connection
+		if ((s == parent && p == connectedBody) || (s== connectedBody || p == parent)) {
+			//the connected body
+			//if(s== connectedBody || p == connectedBody){
+				connectedBody = null;
+				connection = false;
+			//}
+		}
 	}
 
 	IList<Body> ships = new List<Body>();
@@ -45,9 +58,10 @@ public class TractorBeam : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		connectedBody = GetClosestBody ();
-		if (connectedBody != null && connection == false) {
+		Body closestBody = GetClosestBody ();
+		if (closestBody != null && connection == false) {
 			connection = true;
+			connectedBody  = closestBody;
 
 			//thoughts
 			//1) Once within soi becomes increasingly difficult for the object to move
