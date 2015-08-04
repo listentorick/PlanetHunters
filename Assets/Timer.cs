@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Timer : MonoBehaviour {
+public class Timer : MonoBehaviour, IReset {
 
 	public float minTime;
 	public float maxTime;
@@ -11,12 +11,20 @@ public class Timer : MonoBehaviour {
 	public bool emitOnAwake = true;
 	private bool play = false;
 
+	public void Reset(){
+		CalculateNextTime ();
+	}
+
+	private void CalculateNextTime()
+	{
+		nextTime = Random.Range (minTime, maxTime);
+	}
+
 	// Use this for initialization
 	void Start () {
 		if (startOnAwake) {
 			Play();
 		}
-		//nextTime = Random.Range(minTime,maxTime);
 	}
 	public void Play() 
 	{
@@ -24,7 +32,7 @@ public class Timer : MonoBehaviour {
 		if (emitOnAwake) {
 			nextTime = 0f;
 		} else {
-			nextTime = Random.Range (minTime, maxTime);
+			CalculateNextTime();
 		}
 	}
 
@@ -40,7 +48,7 @@ public class Timer : MonoBehaviour {
 
 		if (elapsedTime > nextTime) {
 			
-			nextTime = Random.Range(minTime,maxTime);
+			CalculateNextTime();
 			elapsedTime = 0f;
 			
 			if(TimerEvent!=null) {

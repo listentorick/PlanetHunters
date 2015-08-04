@@ -50,23 +50,32 @@ public class Body : MonoBehaviour {
 		var cam = Camera.main;
 		var viewportPosition = cam.WorldToViewportPoint(transform.position);
 		var newPosition = transform.position;
-		
-		if (!isWrappingX && ((viewportPosition.x > 1 && this.velocity.x>0) || (viewportPosition.x < 0 && this.velocity.x<0)))
-		{
+		var velocity = position - lastPosition;
+
+		if (!isWrappingX){
+
+			if((viewportPosition.x > 1 && velocity.x>0) || (viewportPosition.x < 0 && velocity.x<0)) {
+				isWrappingX = true;
+				newPosition.x = -newPosition.x;
+				lastPosition.x =  (newPosition.x * GameController.SCALE)  - velocity.x;
 			
-			newPosition.x = -newPosition.x;
-			
-			isWrappingX = true;
+			}
+				
 		}
 		
-		if (!isWrappingY && ((viewportPosition.y > 1 && this.velocity.y>0)|| (viewportPosition.y < 0 && this.velocity.y<0)))
+		if (!isWrappingY )
 		{
-			newPosition.y = -newPosition.y;
-			
-			isWrappingY = true;
+			if((viewportPosition.y > 1 && velocity.y>0 ) || (viewportPosition.y < 0 && velocity.y<0)) {
+				isWrappingY = true;
+				newPosition.y = -newPosition.y;
+				lastPosition.y = (newPosition.y * GameController.SCALE)  - velocity.y;
+				
+			} 
 		}
 		
 		position = new Vector2(newPosition.x,newPosition.y) * GameController.SCALE;
+		//lastPosition = position +  velocity;
+		//lastPosition = new Vector2(velocity.x,velocity.y) * GameController.SCALE;
 		
 		this.transform.position = newPosition;
 	}

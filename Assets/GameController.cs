@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameController : MonoBehaviour, IGameController {
+public class GameController : MonoBehaviour, IGameController, IWinCondition {
+
+	//public delegate void WinConditionHandler();
+	public event WinConditionHandler Win;
 
 	public Blades bladePrefab;
 	public Explosion explosionPrefab;
@@ -58,6 +61,9 @@ public class GameController : MonoBehaviour, IGameController {
 
 	public GUIController guiController;
 
+
+	public List<IWinCondition> winConditions = new List<IWinCondition>();
+
 	public void Visit (Level visitable){
 	
 	}
@@ -112,6 +118,7 @@ public class GameController : MonoBehaviour, IGameController {
 	}
 
 	public void Reset(){
+		winConditions.Clear ();
 		guiController.Reset ();
 		solarSystem.Clear ();
 		foreach (GameObject g in createdObjects) {
@@ -187,6 +194,8 @@ public class GameController : MonoBehaviour, IGameController {
 	public void BuildLevel() {
 		//position 3 planets ramdomly
 
+
+
 		collectablesController.Build ();
 
 		colonyShipSpawner.Spawned+= HandleShipSpawned;
@@ -194,7 +203,7 @@ public class GameController : MonoBehaviour, IGameController {
 
 		traderShipPool = PopulatePool<TraderShip> (traderShipPrefab, 1);
 
-		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 10);
+		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 0);
 
 		contourRenderer.Build ();
 
@@ -211,10 +220,22 @@ public class GameController : MonoBehaviour, IGameController {
 		guiController.Build ();
 
 
+		//lets add the win conditions. These may in the future be configured
+		PlanetsPopulatedWinCondition winCondition = new PlanetsPopulatedWinCondition ();
+		winCondition.solarSystem = solarSystem;
+		winCondition.Build ();
+		winCondition.Win += HandleWin;
+		winConditions.Add (winCondition);
+
 		audioSource.volume = 1f;
 		audioSource.clip = backgroundSound;
 		audioSource.Play();
 
+	}
+
+	void HandleWin ()
+	{
+		Win ();
 	}
 
 	void HandleTradeShipSpawned (Body ship)
@@ -267,16 +288,18 @@ public class GameController : MonoBehaviour, IGameController {
 
 	}
 
-	void ColonyShipTimerEvent ()
-	{
-	
+	void TrySpawnColonyShip(){
 		if(colonyShipPool.Count>0) { // ships in the pool
 			ColonyShip pooledShip = colonyShipPool[0];
 			pooledShip.fuel = 1f;
 			colonyShipPool.RemoveAt(0);
 			colonyShipSpawner.Spawn(pooledShip);
 		}
+	}
 
+	void ColonyShipTimerEvent ()
+	{
+		TrySpawnColonyShip ();
 	}
 
 	void HandleShipEnteredOrbit (Body s, Body p)
@@ -299,6 +322,12 @@ public class GameController : MonoBehaviour, IGameController {
 			Blades b = (Blades)Instantiate (bladePrefab, position, Quaternion.identity);
 			b.color = Helpers.GetCargoColor(Cargo.People);
 			audioSource.PlayOneShot (profitSound);
+
+			//immediately spawn another colony ship
+			TrySpawnColonyShip();
+			colonyShipTimer.Reset();
+
+
 		}
 	}
 
@@ -434,7 +463,7 @@ public class GameController : MonoBehaviour, IGameController {
 		Explosion e = (Explosion)Instantiate (explosionPrefab);
 		e.transform.position = ship.transform.position;
 		e.position = ship.position;
-		e.velocity = ship.velocity;
+		e.lastPosition = ship.lastPosition;
 		e.mass = ship.mass;
 		e.acceleration = ship.acceleration;
 		e.canMove = true;

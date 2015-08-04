@@ -20,7 +20,9 @@ public class Resource : MonoBehaviour {
 	public delegate void ResourceLevelChangedHandler(Resource resource, float value, float delta);
 	public event ResourceLevelChangedHandler ResourceLevelChanged;
 	
-
+	public bool IsFull(){
+		return current == max;
+	}
 
 	// Use this for initialization
 	void Start () {

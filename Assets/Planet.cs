@@ -126,7 +126,7 @@ public class Planet : Body {
 		float deltaAngle = 360 / resourceComponents.Length;
 		for(int i=0; i<resourceComponents.Length;i++) { 
 			Resource r = resourceComponents[i];
-
+			r.ResourceLevelChanged+= HandleResourceLevelChanged;
 			ResourceChart rC = (ResourceChart)Instantiate(resourceChartPrefab);
 			rC.transform.parent = this.transform;
 			rC.transform.localPosition = new Vector3(0,0,3f);
@@ -143,6 +143,16 @@ public class Planet : Body {
 			
 		}
 	
+	}
+
+	public delegate void ResourceLevelChangedHandler(Resource resource, float value, float delta);
+	public event ResourceLevelChangedHandler ResourceLevelChanged;
+
+	void HandleResourceLevelChanged (Resource resource, float value, float delta)
+	{
+		if (ResourceLevelChanged != null) {
+			ResourceLevelChanged(resource,value,delta);
+		}
 	}
 
 	//void HandleResourceLevelChanged (Cargo type, float value)
@@ -165,8 +175,7 @@ public class Planet : Body {
 		}
 	}
 
-	public delegate void ResourceDepletedHandler(Cargo type);
-	public event ResourceDepletedHandler ResourceDepleted;
+
 
 	public delegate void PlanetDeadHandler();
 	public event PlanetDeadHandler PlanetDead;

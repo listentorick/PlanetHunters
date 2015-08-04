@@ -13,15 +13,22 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	public Text numShips;
 	public Slider popularity;
 	public PopularityController popularityController;
+	public GameObject win;
 
 	// Use this for initialization
 	void Start () {
 		ResetControls ();
 		gameController.GameOver+= HandleGameOver;
+		gameController.Win += HandleWin;
 		economy.Profit += HandleProfit;
 		gameController.ShipCollided += HandleShipCollided;
 		popularityController.PopularityChanged += HandlePopularityChanged;
 		HandleShipCollided ();
+	}
+
+	void HandleWin ()
+	{
+		win.gameObject.SetActive (true);
 	}
 
 	void HandlePopularityChanged (float pop)
@@ -42,9 +49,11 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	private void ResetControls(){
 		replay.gameObject.SetActive (false);
 		gameOver.SetActive (false);
+
 		money.text = "0";
 		numShips.text = "0";
 		popularity.value = popularityController.popularity;
+		win.SetActive (false);
 	}
 
 	//public void Reset() {
