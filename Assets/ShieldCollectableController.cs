@@ -1,19 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ShieldCollectableController : BaseCollectableController {
-
-	public Timer timer;
-	public Pool pool;
-	public SolarSystem solarSystem;
-
-	//public CollectablesController controller;
-	public void Start(){
-		timer.TimerEvent += HandleTimerEvent;
-
-	}
-
-	bool ShieldNeeded() {
+public class ShieldCollectableController : BaseTimerCollectableController {
+	
+	public override bool IsNeeded() {
 		foreach (Body b in solarSystem.bodies) {
 			if(b is TraderShip){
 				//only provide a shield if required....
@@ -24,18 +14,8 @@ public class ShieldCollectableController : BaseCollectableController {
 		}
 		return false;
 	}
-	void HandleTimerEvent ()
-	{
-		if (ShieldNeeded ()) {
-			GameObject g = pool.GetPooledObject ();
-			if (g!=null) {
-				OnSpawnRequest (g.GetComponent<Collectable> ());
-			}
-		}
-
-	}
-
-	void HandleCollected (Collectable collectable, Ship ship)
+	
+	public override void HandleCollected (Collectable collectable, Ship ship)
 	{
 		//what should this do?
 		ship.hull = 1f;
@@ -43,20 +23,13 @@ public class ShieldCollectableController : BaseCollectableController {
 
 	}
 
-	public override void Reset()
-	{
-		pool.Reset ();
+
+	public override Collectable BuildCollectable (Collectable c) {
+
+		c.type = CollectableType.Shield;
+		return c;
 	}
 
-	public override void Build()
-	{
-		pool.PopulatePool (delegate() {
-			Collectable c = (Collectable)Instantiate (collectablePrefab);
-			c.type = CollectableType.Shield;
-			c.Collected += HandleCollected;
-			return c.gameObject;
-		});
-	}
 
 
 }

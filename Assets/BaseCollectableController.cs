@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// This is the base class for each type of controller
+/// These controllers implement the logic of when/how to spawn
+/// They request objects are spawned by the CollectablesController
+/// </summary>
 public abstract class BaseCollectableController : MonoBehaviour, IReset, IBuild {
 
 	public Collectable collectablePrefab; 

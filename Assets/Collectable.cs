@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public enum CollectableType {	
-	Shield
+	Shield,
+	Power
 }
 
 public class Collectable : Body {

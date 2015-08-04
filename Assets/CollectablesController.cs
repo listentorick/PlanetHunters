@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// This collectables controller spawns the collectable.
+/// It does not control when things are spawned.
+/// </summary>
 public class CollectablesController : MonoBehaviour, IReset, IBuild {
 	
 	public ShipSpawner spawner;
@@ -8,7 +12,7 @@ public class CollectablesController : MonoBehaviour, IReset, IBuild {
 
 	private BaseCollectableController[] controllers;
 	void Start () {
-		controllers = this.GetComponents<BaseCollectableController> ();
+		controllers = FindObjectsOfType<BaseCollectableController> ();
 		foreach (BaseCollectableController b in controllers) {
 			b.SpawnRequest += HandleSpawnRequest;
 		}
@@ -22,6 +26,7 @@ public class CollectablesController : MonoBehaviour, IReset, IBuild {
 
 	void Spawn(Collectable c){
 		c.Collected+= HandleCollected;
+		//The ship spawner is really a body spawner
 		spawner.Spawn (c);
 	}
 	

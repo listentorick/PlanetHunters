@@ -203,7 +203,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 		traderShipPool = PopulatePool<TraderShip> (traderShipPrefab, 1);
 
-		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 0);
+		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 10);
 
 		contourRenderer.Build ();
 
