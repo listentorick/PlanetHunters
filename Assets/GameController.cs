@@ -466,7 +466,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 		ships.Remove (ship);
 		solarSystem.RemoveBody (ship);
-	
+
 		//should come from a pool
 		Explosion e = (Explosion)Instantiate (explosionPrefab);
 		e.transform.position = ship.transform.position;
