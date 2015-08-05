@@ -30,55 +30,6 @@ public class Body : MonoBehaviour {
 		}
 		return rendererTransform;
 	}
-	
-	void ScreenWrap()
-	{
-		if (canMove == false)
-			return;
-
-		if(IsRendererVisible())
-		{
-			isWrappingX = false;
-			isWrappingY = false;
-			return;
-		}
-		
-		if(isWrappingX && isWrappingY) {
-			return;
-		}
-		
-		var cam = Camera.main;
-		var viewportPosition = cam.WorldToViewportPoint(transform.position);
-		var newPosition = transform.position;
-		var velocity = position - lastPosition;
-
-		if (!isWrappingX){
-
-			if((viewportPosition.x > 1 && velocity.x>0) || (viewportPosition.x < 0 && velocity.x<0)) {
-				isWrappingX = true;
-				newPosition.x = -newPosition.x;
-				lastPosition.x =  (newPosition.x * GameController.SCALE)  - velocity.x;
-			
-			}
-				
-		}
-		
-		if (!isWrappingY )
-		{
-			if((viewportPosition.y > 1 && velocity.y>0 ) || (viewportPosition.y < 0 && velocity.y<0)) {
-				isWrappingY = true;
-				newPosition.y = -newPosition.y;
-				lastPosition.y = (newPosition.y * GameController.SCALE)  - velocity.y;
-				
-			} 
-		}
-		
-		position = new Vector2(newPosition.x,newPosition.y) * GameController.SCALE;
-		//lastPosition = position +  velocity;
-		//lastPosition = new Vector2(velocity.x,velocity.y) * GameController.SCALE;
-		
-		this.transform.position = newPosition;
-	}
 
 	public void AlignToVector(Vector2 v) {
 
@@ -122,7 +73,7 @@ public class Body : MonoBehaviour {
 		
 	}
 
-	private bool IsRendererVisible() {
+	public  bool IsRendererVisible() {
 		if (rendererTransform == null)
 			return false;
 		return rendererTransform.gameObject.GetComponent<SpriteRenderer>().isVisible;
@@ -132,7 +83,7 @@ public class Body : MonoBehaviour {
 	public void Update () {
 
 		this.transform.position = new Vector3(position.x/GameController.SCALE, position.y/GameController.SCALE, this.transform.position.z);
-		ScreenWrap ();
+	
 	}
 
 

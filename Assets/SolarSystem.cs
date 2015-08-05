@@ -18,6 +18,17 @@ public struct Link{
 
 public class SolarSystem : MonoBehaviour {
 
+
+	//adding wrapping by specifying world bounds
+
+	private Vector2 worldBounds;
+
+	public void SetWorldBounds(Vector2 worldBounds) {
+	
+		this.worldBounds = worldBounds;
+	
+	}
+
 	public List<Body> bodies = new List<Body> ();
 	Vector2[,] forces = new Vector2[50,50];
 	//List<List<Vector2>> forces = new List<List<Vector2>> ();
@@ -332,17 +343,72 @@ public class SolarSystem : MonoBehaviour {
 				
 				// reset variables
 				bodies [i].lastPosition  = new Vector2(bodies [i].position.x,bodies [i].position.y);
-				
+
+				//Lets check this new position against the world bounds...
+
+
 				bodies[i].position = new Vector2(nextX,nextY);
-			
+				Wrap (bodies[i]);
 
 			}
 
 		}
 	}
 
+	private List<Body> wrappingBodiesX = new List<Body>();
+	private List<Body> wrappingBodiesY = new List<Body>();
 
 
+	private bool IsWrappingX(Body b){
+		return wrappingBodiesX.Contains (b);
+	}
+
+	private bool IsWrappingY(Body b){
+		return wrappingBodiesY.Contains (b);
+	}
+
+
+	private void Wrap(Body b) {
+	
+		if (b.IsRendererVisible ()) {
+			if(IsWrappingX(b)){
+				wrappingBodiesX.Remove(b);
+			}
+			if(IsWrappingY(b)){
+				wrappingBodiesY.Remove(b);
+			}
+			return;
+		}
+
+		if (IsWrappingX (b) && IsWrappingY (b)) {
+			return;
+		}
+
+		//var newPosition = transform.position;
+		var velocity = b.position - b.lastPosition;
+
+		if (!IsWrappingX (b)){
+
+			if((b.position.x> (worldBounds.x/2f) && velocity.x>0)  || (b.position.x < (-worldBounds.x/2f) && velocity.x <0)) {
+				wrappingBodiesX.Add(b);
+				b.position.x = -b.position.x;
+				b.lastPosition.x = b.position.x - velocity.x;
+				this.RemoveConnectionsForBody(b);
+			}
+		}
+
+		if (!IsWrappingY (b)){
+			
+			if((b.position.y> (worldBounds.y/2f) && velocity.y>0)  || (b.position.y < (-worldBounds.y/2f) && velocity.y <0)) {
+				wrappingBodiesY.Add(b);
+				b.position.y = -b.position.y;
+				b.lastPosition.y = b.position.y - velocity.y;
+
+				this.RemoveConnectionsForBody(b);
+			}
+		}
+	
+	}
 
 }
 

@@ -15,27 +15,29 @@ public class TractorBeamRenderer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(target!=null) {
+		if (target != null) {
 			sprite.enabled = true;
 			//we center the sprite between the two objects
 			Vector3 diff = target.gameObject.transform.position - this.transform.parent.transform.position;
 			Vector3 direction = diff.normalized;
-			Vector3 position = direction * (diff.magnitude/2f);
+			Vector3 position = direction * (diff.magnitude / 2f);
 			sprite.transform.localPosition = position;
 			//sprite.transform.LookAt(target.gameObject.transform.position);
 
 			Quaternion rotation = Quaternion.LookRotation
-				(diff, transform.parent.transform.TransformDirection(Vector3.up));
+				(diff, transform.parent.transform.TransformDirection (Vector3.up));
 
-			rotation = rotation * Quaternion.Euler(0,0,90);
+			rotation = rotation * Quaternion.Euler (0, 0, 90);
 
 		
-			sprite.transform.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
+			sprite.transform.rotation = new Quaternion (0, 0, rotation.z, rotation.w);
 
-			float multiplier = initialLength/diff.magnitude;
-			sprite.transform.localScale = new Vector3(1,multiplier,multiplier);
+			float multiplier = initialLength / diff.magnitude;
+			sprite.transform.localScale = new Vector3 (1, multiplier, multiplier);
 
 
+		} else {
+			sprite.enabled = false;
 		}
 	
 	}

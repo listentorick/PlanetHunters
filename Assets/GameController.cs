@@ -91,9 +91,17 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 		AddResource (planet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
 		AddResource (planet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
-
+	
 		planet.BuildResourceCharts ();
-		
+
+		//Calculate world bones
+		Vector2 topRight = new Vector2 (1, 1);
+		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
+		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
+
+		solarSystem.SetWorldBounds (worldBounds);
+
+
 		solarSystem.AddBody (planet);
 		
 		createdObjects.Add (planet.gameObject);
