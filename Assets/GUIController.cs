@@ -7,6 +7,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	public GameObject gameOver;
 	public GameController gameController;
+	public GameManager gameManager;
 	public Button replay;
 	public Economy economy;
 	public Text money;
@@ -77,8 +78,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	public void Replay() 
 	{
-
-		gameController.Reset ();
+		gameManager.ResetLevel ();
 	}
 
 	public void Reset() 

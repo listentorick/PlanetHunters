@@ -122,6 +122,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		sun.IsLightSource (true);
 		sun.imageScale = 1f;
 		solarSystem.AddBody (sun);
+		createdObjects.Add (sun.gameObject);
 
 	}
 
@@ -129,9 +130,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		winConditions.Clear ();
 		guiController.Reset ();
 		solarSystem.Clear ();
-		foreach (GameObject g in createdObjects) {
-			Destroy(g);
-		}
+
 		elaspedTime = 0f;
 		nextTime = 0f;
 		traderShipPool.Clear ();
@@ -141,7 +140,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		contourRenderer.Reset ();
 		collectablesController.Reset ();
 		popularityController.Reset ();
-		BuildLevel ();
+		foreach (GameObject g in createdObjects) {
+			Destroy(g);
+		}
+		//BuildLevel ();
 
 	}
 	public int GetNumberOfShips(){
@@ -201,9 +203,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	public void BuildLevel() {
 		//position 3 planets ramdomly
-
-
-
 		collectablesController.Build ();
 
 		colonyShipSpawner.Spawned+= HandleShipSpawned;
@@ -436,6 +435,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 			shipIndicator.ship = newShip;
 			createdObjects.Add (shipIndicator.gameObject);
 			shipIndicators.Add(shipIndicator);
+			createdObjects.Add(shipIndicator.gameObject);
 
 			//newShip.gameObject.SetActive(false);
 		}
@@ -479,6 +479,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		solarSystem.AddBody (e);
 		e.AlignToVector (ship.velocity);
 		Destroy (ship.gameObject);
+		//create
+		createdObjects.Add (e.gameObject);
 
 
 	

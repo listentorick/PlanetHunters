@@ -68,11 +68,13 @@ public class SolarSystem : MonoBehaviour {
 //	public Bo
 
 	public void RemoveBody(Body body) {
+		Debug.Log ("removing a body");
 		//do this at the end of the update cycle?
 		bodies.Remove (body);
 	}
 
 	public void Clear(){
+		links.Clear ();
 		bodies.Clear ();
 	}
 	
@@ -95,52 +97,20 @@ public class SolarSystem : MonoBehaviour {
 		//indices i and j start at 0!
 		for (var i = 0; i < bodies.Count ; i++){
 
+			for(var j = i+1; j < bodies.Count; j++){
 
+				Vector2 force =  this.CalculateForce(bodies[i],bodies[j]);
 
-				//this.forces[i][i] = zeroForce;  //diagonal zeroForce forces now set in setN(N)
-				for(var j = i+1; j < bodies.Count; j++){
-
-					Vector2 force =  this.CalculateForce(bodies[i],bodies[j]);
-
-					forces[i,j] = force;
-					forces[j,i] = new Vector2(-force.x, -force.y);
-
-				}
-
-		}
-		/*
-		foreach (Link l in links) {
-			//calculate the forces on the bodies
-			//assume body 1 is the parent
-
-			Vector2 springVector = l.body1.position - l.body2.position;
-
-			//Vector2 pivot = springVector.normalized * (300000f/2f);
-
-		//	springVector  = pivot - s.body2.position;
-
-			float r = springVector.magnitude; //distance between.
-
-			if(r!=0){
-
-				Vector2 force = -(springVector / r) * (r - l.length) * ;
-				//force += -(s.body1.velocity - s.body2.velocity) * 100f; 
-
-				//hack! update the additional force on the object
-				//s.body1.additionalForce = force;
-				s.body2.additionalForce -= force;
+				forces[i,j] = force;
+				forces[j,i] = new Vector2(-force.x, -force.y);
 
 			}
 
-		}*/
+		}
+	
 	}
-
-	public void Update () {
-	//	UpdateForces(Time.deltaTime);
-	}
-
+	
 	public void FixedUpdate() {
-		//UpdateForces (Time.fixedDeltaTime);
 		UpdateForces (Time.fixedDeltaTime);
 	}
 
@@ -220,18 +190,9 @@ public class SolarSystem : MonoBehaviour {
 
 			float d = distance.magnitude;
 
-			// calculate the distance between the two PointMasss
-			//float diffX = p1.x - p2.x;
-			//float diffY = p1.y - p2.y;
-			//float d = sqrt(diffX * diffX + diffY * diffY);
-			
 			// find the difference, or the ratio of how far along the restingDistance the actual distance is.
 			float difference = (l.length - d) / d;
-			
-			// if the distance is more than curtainTearSensitivity, the cloth tears
-		//	if (d > tearSensitivity) 
-		//		links.Remove(l)p1.removeLink(this);
-			
+
 			// Inverse the mass quantities
 			float im1 = 1 / l.body1.mass;
 			float im2 = 1 / l.body2.mass;
