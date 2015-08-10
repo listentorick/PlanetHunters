@@ -95,11 +95,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		planet.BuildResourceCharts ();
 
 		//Calculate world bones
-		Vector2 topRight = new Vector2 (1, 1);
-		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
-		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
+	//	Vector2 topRight = new Vector2 (1, 1);
+	//	Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
+	//	Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
 
-		solarSystem.SetWorldBounds (worldBounds);
+	//	solarSystem.SetWorldBounds (worldBounds);
 
 
 		solarSystem.AddBody (planet);
@@ -202,6 +202,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 
 	public void BuildLevel() {
+
+		Vector2 topRight = new Vector2 (1, 1);
+		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
+		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
+		
+		solarSystem.SetWorldBounds (worldBounds);
+
 		//position 3 planets ramdomly
 		collectablesController.Build ();
 
@@ -268,6 +275,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		traderShipTimer.TimerEvent += TraderShipTimer;
 		popularityController.PopularityChanged += HandlePopularityChanged;
 		economy.Profit+= HandleProfit;
+
+	//	Vector2 topRight = new Vector2 (1, 1);
+	//	Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
+	//	Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
+		
+	//	solarSystem.SetWorldBounds (worldBounds);
+
 	}
 
 	void HandleProfit (float profit)

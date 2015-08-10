@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LevelMap>
+	<Bodies>
+		<Sun>
+			<Position x="0" y="0"></Position>
+		</Sun>
+		
+		<Sun>
+			<Position x="-500000" y="-10000"></Position>
+		</Sun>
+		
+		<Sun>
+			<Position x="-900000" y="-100000"></Position>
+		</Sun>
+		
+		<Sun>
+			<Position x="500000" y="300000"></Position>
+		</Sun>
+		
+	</Bodies>
+
+</LevelMap>
+

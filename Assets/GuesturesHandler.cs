@@ -22,8 +22,8 @@ public class GuesturesHandler : MonoBehaviour {
 		if (gesture.Selection) {
 
 			Ship s = GetShipFromSelection(gesture.Selection);
+			Selectable sel = gesture.Selection.GetComponent<Selectable>();
 
-			//this breaks encapsulation
 			if(s){
 
 				if(selectedBody!=null ) {
@@ -32,6 +32,9 @@ public class GuesturesHandler : MonoBehaviour {
 
 				selectedBody = s;
 				selectedBody.IsSelected = true;
+			} else if(sel)
+			{
+				sel.OnSelect();
 			}
 
 

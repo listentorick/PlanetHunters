@@ -7,30 +7,25 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 
 public class LevelLoader : MonoBehaviour {
-
-
-	public Level LoadLevel (string levelId) {
-
-		
-		DateTime startTime = System.DateTime.UtcNow;
+	
+	private T Load<T>(string path) where T : Level {
 
 		Stream stream = null;
 		LevelsManifest levelsManifest = null;
 		StringReader strReader = null;
 		XmlTextReader xmlFromText = null;
-		Level level = null;
+		T level = null;
 		try {
 			
-			XmlSerializer serializer = new XmlSerializer (typeof(Level));
+			XmlSerializer serializer = new XmlSerializer (typeof(T));
 			
-			TextAsset textAsset = Resources.Load(levelId.ToString()) as TextAsset;
-
+			TextAsset textAsset = Resources.Load(path) as TextAsset;
+			
 			strReader = new StringReader(textAsset.text);
 			xmlFromText = new XmlTextReader(strReader);
-			
-			
-			level = serializer.Deserialize (xmlFromText) as Level;
 
+			level = serializer.Deserialize (xmlFromText) as T;
+			
 		} catch(Exception e) {
 			Debug.LogError(e);		
 		}
@@ -38,8 +33,16 @@ public class LevelLoader : MonoBehaviour {
 			strReader.Close();
 			xmlFromText.Close();
 		}
-
+		
 		return level;
+	}
 
+	public LevelMap LoadLevelMap() {
+		return this.Load<LevelMap> ("levelMap");
+	}
+
+
+	public Level LoadLevel (string levelId) {
+		return this.Load<Level> (levelId.ToString ());
 	}
 }
