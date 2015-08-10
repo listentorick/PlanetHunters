@@ -19,7 +19,7 @@ public class Ship : Body {
 	public float hull = 1f;
 	public bool takesDamage = false;
 	float timeToNext = 0;
-	private bool thrustersActive = false;
+	protected bool thrustersActive = false;
 
 	public void Thrust(Vector2 thrust){
 

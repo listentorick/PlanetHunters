@@ -13,9 +13,21 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public Sprite sunSprite;
 	public ContourRenderer contourRenderer;
 	private List<GameObject> createdObjects = new List<GameObject>();
+	public Timer cometTimer;
+	public Body cometPrefab;
+	public ShipSpawner cometSpawner;
+	public Pool cometPool;
 
 	void Start() {
+		cometTimer.TimerEvent+= HandleTimerEvent;
+	}
 
+	void HandleTimerEvent ()
+	{
+		GameObject g = cometPool.GetPooledObject ();
+		if (g!=null) {
+			cometSpawner.Spawn (g.GetComponent<Comet> ());
+		}
 	}
 
 	public void Visit (Level visitable){
@@ -89,6 +101,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 
 	public void Reset(){
 		solarSystem.Clear ();
+		cometPool.Reset ();
 		contourRenderer.Reset ();
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
@@ -102,6 +115,12 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		
 		solarSystem.SetWorldBounds (worldBounds);
 		contourRenderer.Build ();
+
+		cometPool.PopulatePool (delegate() {
+			Body comet = (Body)Instantiate (cometPrefab);
+			createdObjects.Add(comet.gameObject);
+			return comet.gameObject;
+		});
 	}
 
 

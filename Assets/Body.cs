@@ -21,6 +21,7 @@ public class Body : MonoBehaviour {
 	private bool isWrappingX;
 	private bool isWrappingY;
 	public bool canAlign;
+	//public bool canAlignToVelocity;
 
 	private Transform rendererTransform;
 
@@ -84,6 +85,7 @@ public class Body : MonoBehaviour {
 
 		this.transform.position = new Vector3(position.x/GameController.SCALE, position.y/GameController.SCALE, this.transform.position.z);
 	
+
 	}
 
 

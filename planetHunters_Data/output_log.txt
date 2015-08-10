@@ -18,7 +18,7 @@ Platform assembly: C:\code\Planet Hunters\planetHunters_Data\Managed\UnityEngine
 Loading C:\code\Planet Hunters\planetHunters_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\code\Planet Hunters\planetHunters_Data\Managed\pseudoSinCos.dll (this message is harmless)
 Loading C:\code\Planet Hunters\planetHunters_Data\Managed\pseudoSinCos.dll into Unity Child Domain
-- Completed reload, in  0.095 seconds
+- Completed reload, in  0.254 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
@@ -37,40 +37,20 @@ FingerGestures: using Mouse Input Provider
 
 Platform assembly: C:\code\Planet Hunters\planetHunters_Data\Managed\System.Xml.dll (this message is harmless)
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 1fe4 -> priority: 1 
+  Thread -> id: 1f7c -> priority: 1 
 17.77778 10
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-spawn side is 3
+spawn side is 1
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path -10.88889 0.1762468 50000 0
+testing path 10.88889 -3.959601 -50000 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
 True
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-Tapped object: Planet(Clone)
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
@@ -82,23 +62,11 @@ spawn side is 1
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path 10.88889 1.010512 -50000 0
+testing path 10.88889 -1.02484 -50000 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-True
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-Tapped object: design
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-damage
+False
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
@@ -110,7 +78,7 @@ spawn side is 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path 3.670075 7 0 -50000
+testing path 8.711421 7 0 -50000
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
@@ -118,31 +86,19 @@ True
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-No object was tapped at (595.0, 721.0) 3.398628
+17.77778 10
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-damage
+spawn side is 2
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-No object was tapped at (611.0, 729.0) 2.881466
+testing path -2.028943 -7 0 50000
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-damage
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-No object was tapped at (988.0, 848.0) 1.416641
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-Tapped object: design
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-No object was tapped at (1334.0, 68.0) 3.782433
+True
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
@@ -154,46 +110,11 @@ spawn side is 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-testing path -4.17168 7 0 -50000
+testing path -1.210159 7 0 -50000
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
 True
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
-
-<RI.Hid> Failed to get preparsed data: The request is not supported.
-
- 
-(Filename:  Line: 78)
 

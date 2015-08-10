@@ -58,7 +58,7 @@ public class ColouredContourRenderer2D : ContourRenderer {
 		Texture2D texture = HeightMapToPNG (heightMap, 1);
 
 		SpriteRenderer r = this.GetComponent<SpriteRenderer>();
-
+	
 		r.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
 		ResizeSpriteToScreen (this.gameObject, Camera.main, 1, 0);
@@ -124,6 +124,8 @@ public class ColouredContourRenderer2D : ContourRenderer {
 
 	
 	public override void Reset() {
+		this.gameObject.transform.position = new Vector3 ();
+
 	}
 	
 	
