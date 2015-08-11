@@ -11,5 +11,6 @@ using System.Collections.Generic;
 	void Visit (PlanetConfiguration visitable);
 	void Visit (WormHoleConfiguration visitable);
 	void Visit (SunConfiguration visitable);
+	void Visit (ConstellationLineConfiguration visitable);
 
 }

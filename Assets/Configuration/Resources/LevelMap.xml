@@ -18,6 +18,12 @@
 		</Sun>
 		
 	</Bodies>
+	
+	<Lines>
+	<ConstellationLineConfiguration index1="2" index2="1"/>
+		<ConstellationLineConfiguration index1="1" index2="0"/>
+		<ConstellationLineConfiguration index1="0" index2="3"/>
+	</Lines>
 
 </LevelMap>
 

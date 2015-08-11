@@ -17,6 +17,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public Body cometPrefab;
 	public ShipSpawner cometSpawner;
 	public Pool cometPool;
+	public Line linePrefab;
 
 	void Start() {
 		cometTimer.TimerEvent+= HandleTimerEvent;
@@ -35,7 +36,21 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	}
 	
 	public void Visit (BaseConfiguration visitable){
+
+	}
+
+	public void Visit (ConstellationLineConfiguration visitable){
+
+
+
 		
+	//	for (int i = 0; i<solarSystem.bodies.Count; i+=2) {
+		Line line = (Line)Instantiate(linePrefab);
+		line.target1 = solarSystem.bodies [visitable.index1];
+		line.target2 = solarSystem.bodies [visitable.index2];
+		createdObjects.Add (line.gameObject);
+		//}
+
 	}
 	
 	public void Visit (PlanetConfiguration visitable){
@@ -115,6 +130,8 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		
 		solarSystem.SetWorldBounds (worldBounds);
 		contourRenderer.Build ();
+
+
 
 		cometPool.PopulatePool (delegate() {
 			Body comet = (Body)Instantiate (cometPrefab);

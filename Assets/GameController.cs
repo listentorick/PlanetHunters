@@ -72,6 +72,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		
 	}
 
+	public void Visit (ConstellationLineConfiguration visitable){
+		
+	}
+
+
 	public void Visit (PlanetConfiguration visitable){
 
 		Planet planet = Instantiate (planetPrefab);
@@ -129,6 +134,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 	public void Reset(){
 		winConditions.Clear ();
 		guiController.Reset ();
+		guiController.gameObject.SetActive (false);
 		solarSystem.Clear ();
 
 		elaspedTime = 0f;
@@ -244,6 +250,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		audioSource.volume = 1f;
 		audioSource.clip = backgroundSound;
 		audioSource.Play();
+
+		guiController.gameObject.SetActive (true);
 
 	}
 
