@@ -29,7 +29,8 @@ public class PlanetsPopulatedWinCondition: IWinCondition, IBuild {
 	{
 		//ask all the planets if they're full of the people resource
 		foreach (Planet p in planets) {
-			if(!p.GetResource(Cargo.People).IsFull()){
+			Resource r = p.GetResource(Cargo.People);
+			if(r!=null && !r.IsFull()){
 				return;
 			}
 		}

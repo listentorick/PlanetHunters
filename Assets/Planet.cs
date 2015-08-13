@@ -118,7 +118,8 @@ public class Planet : Body {
 
 		resourceComponents = this.GetComponents<Resource> ();
 		
-		
+		if (resourceComponents.Length == 0)
+			return;
 		//we need to add a chart for each resource...
 		//how many are there?
 		resourceCharts = new ResourceChart[resourceComponents.Length ];

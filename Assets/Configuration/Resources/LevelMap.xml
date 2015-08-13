@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LevelMap>
 	<Bodies>
-		<Sun>
-			<Position x="0" y="0"></Position>
-		</Sun>
-		
-		<Sun>
-			<Position x="-500000" y="-10000"></Position>
-		</Sun>
-		
+	
 		<Sun>
 			<Position x="-900000" y="-100000"></Position>
 		</Sun>
 		
+		
+		<Sun>
+			<Position x="-500000" y="-10000"></Position>
+		</Sun>
+	
+		<Sun>
+			<Position x="0" y="0"></Position>
+		</Sun>
+		
+		
+		
+	
 		<Sun>
 			<Position x="500000" y="300000"></Position>
 		</Sun>
@@ -20,10 +25,17 @@
 	</Bodies>
 	
 	<Lines>
-	<ConstellationLineConfiguration index1="2" index2="1"/>
-		<ConstellationLineConfiguration index1="1" index2="0"/>
-		<ConstellationLineConfiguration index1="0" index2="3"/>
+		<ConstellationLineConfiguration index1="0" index2="1"/>
+		<ConstellationLineConfiguration index1="1" index2="2"/>
+		<ConstellationLineConfiguration index1="2" index2="3"/>
 	</Lines>
+	
+	<Levels>
+		<Level name="Sol" index="0" />
+		<Level name="Sol" index="1" />
+		<Level name="Sol" index="2" />
+		<Level name="Sol" index="3" />
+	</Levels>
 
 </LevelMap>
 

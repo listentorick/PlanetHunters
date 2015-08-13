@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Level>
+
+	<Bodies>
+
+
+		<Planet Mass="1e+25" SOI="150000" Type="Red">
+			<Position x="-600000" y="-100000"></Position>
+			<Resources>
+				<Resource Max="50" Current="50" Type="Food"> </Resource>
+				<Resource Max="50" Current="0" Type="People"> </Resource>
+			</Resources>
+		</Planet>
+		
+		<Sun>
+			<Position x="-100000" y="-50000"></Position>
+		</Sun>
+		
+		<WormHole>
+			<Position x="500000" y="-30000"></Position>
+		</WormHole>
+	</Bodies>
+
+</Level>
+

@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 
-public class LevelMap : Level{
+public class LevelMap: Level{
+	
 
+	[XmlArray("Levels")]
+	[XmlArrayItem("Level",typeof(LevelMapItemConfiguration))]
+	public List<LevelMapItemConfiguration> Levels = new List<LevelMapItemConfiguration>();
 
 
 	[XmlArray("Lines")]
@@ -20,6 +24,10 @@ public class LevelMap : Level{
 		}
 
 		foreach (ConstellationLineConfiguration l in Lines) {
+			l.Accept(visitor);
+		}
+
+		foreach (LevelMapItemConfiguration l in Levels) {
 			l.Accept(visitor);
 		}
 		

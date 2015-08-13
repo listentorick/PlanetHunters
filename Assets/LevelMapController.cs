@@ -18,9 +18,10 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public ShipSpawner cometSpawner;
 	public Pool cometPool;
 	public Line linePrefab;
+	public PlayerDataController playerDataController;
 
 	void Start() {
-		cometTimer.TimerEvent+= HandleTimerEvent;
+
 	}
 
 	void HandleTimerEvent ()
@@ -42,9 +43,6 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public void Visit (ConstellationLineConfiguration visitable){
 
 
-
-		
-	//	for (int i = 0; i<solarSystem.bodies.Count; i+=2) {
 		Line line = (Line)Instantiate(linePrefab);
 		line.target1 = solarSystem.bodies [visitable.index1];
 		line.target2 = solarSystem.bodies [visitable.index2];
@@ -84,17 +82,27 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 
 	void HandleSelect (GameObject g)
 	{
+		Lock l = g.GetComponent<Lock> ();
+		if (l != null) {
+			return;
+		}
+
+		LevelDataRenderer r = g.GetComponent<LevelDataRenderer>();
+
 		//g.GetComponent<LevelCon
-		LevelSelected ("level1");
+		LevelSelected (r.LevelDefinition);
 	}
 
-	public delegate void LevelSelectedHandler(string levelName);
+	public delegate void LevelSelectedHandler(LevelMapItemConfiguration level);
 	public event LevelSelectedHandler LevelSelected;
 
+	public void Visit (PlanetResourceConfiguration visitable){
+	}
 	
 	public void Visit (WormHoleConfiguration visitable){
 	}
-	
+
+	private List<Planet> levels = new List<Planet> ();
 	public void Visit (SunConfiguration visitable){
 		
 		Planet sun = Instantiate (planetPrefab);
@@ -110,20 +118,23 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		Selectable s = sun.gameObject.AddComponent<Selectable> ();
 		s.Select += HandleSelect;
 		
-
+		levels.Add (sun);
 		
 	}
 
 	public void Reset(){
+
 		solarSystem.Clear ();
 		cometPool.Reset ();
 		contourRenderer.Reset ();
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
 		}
+		cometTimer.TimerEvent-= HandleTimerEvent;
 	}
 
 	public void Build(){
+		cometTimer.TimerEvent+= HandleTimerEvent;
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
 		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
@@ -131,14 +142,35 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		solarSystem.SetWorldBounds (worldBounds);
 		contourRenderer.Build ();
 
-
-
+	
 		cometPool.PopulatePool (delegate() {
 			Body comet = (Body)Instantiate (cometPrefab);
 			createdObjects.Add(comet.gameObject);
 			return comet.gameObject;
 		});
+
+		//lets now look at the player data to see which levels we can unlock
+		//this should be all
+
+		//if(playerDataController.IsLevelUnlocked()
+
 	}
+ 	
+	public void Visit (LevelMapItemConfiguration visitable){
+		Planet sun = levels[visitable.Index];
+
+		//Tell the playerDataController about this level
+		playerDataController.AddLevelDefinition (visitable);
+	
+		if (playerDataController.IsLevellocked (visitable)) {
+			sun.gameObject.AddComponent<Lock>();
+		}
+
+		LevelDataRenderer r = sun.gameObject.AddComponent<LevelDataRenderer>();
+		r.LevelDefinition = visitable;
+		//next add the data to the sun so when events fire we can ask questions of it
+	}
+
 
 
 

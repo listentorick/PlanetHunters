@@ -6,18 +6,34 @@ public class GameManager : MonoBehaviour {
 	public GameController gameController;
 	public LevelMapController levelMapController;
 	public LevelLoader levelLoader;
-	private string currentLevel = "level1";
+	private LevelMapItemConfiguration currentLevel;
+	public PlayerDataController playerDataController;
+
+
 
 	// Use this for initialization
 	void Start () {
 		levelMapController.LevelSelected+= HandleLevelSelected;
+		gameController.Win+= HandleWin;
+		playerDataController.Load ();
 		LoadLevelMap ();
 	}
 
-	void HandleLevelSelected (string levelName)
+	void HandleWin ()
 	{
+		//add scores etc here
+		LevelData levelData = new LevelData ();
+		levelData.Name = currentLevel.Name;
+		levelData.Index = currentLevel.Index;
+		levelData.Complete = true;
+		playerDataController.LevelCompleted (levelData);
+	}
+
+	void HandleLevelSelected (LevelMapItemConfiguration levelDefinition)
+	{
+		currentLevel = levelDefinition;
 		levelMapController.Reset ();
-		LoadLevel (levelName);
+		LoadLevel (levelDefinition.Name);
 	}
 
 	public void LoadLevelMap() {
@@ -35,7 +51,7 @@ public class GameManager : MonoBehaviour {
 
 	public void ResetLevel() {
 		gameController.Reset ();
-		LoadLevel (currentLevel);
+		LoadLevel (currentLevel.Name);
 	}
 	
 	// Update is called once per frame

@@ -62,7 +62,18 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 	public GUIController guiController;
 
 
+	public PlayerDataController playerDataController;
+
 	public List<IWinCondition> winConditions = new List<IWinCondition>();
+
+	public delegate void GameOverHandler();
+	public event GameOverHandler GameOver;
+	
+	public delegate void ShipCollidedHandler();
+	public event ShipCollidedHandler ShipCollided;
+	
+	public delegate void PopularityChangedHandler(float popularity);
+	public event PopularityChangedHandler PopularityChanged;
 
 	public void Visit (Level visitable){
 	
@@ -76,10 +87,19 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		
 	}
 
+	public void Visit (LevelMapItemConfiguration visitable){
+		
+	}
 
+	public void Visit (PlanetResourceConfiguration visitable){
+		AddResource (planetUnderConstruction.gameObject, visitable.ResourceType, FOOD_BASE_PRICE, FOOD_MAX_PRICE,visitable.Current, visitable.Max,1f);
+	}
+
+	private Planet planetUnderConstruction;
 	public void Visit (PlanetConfiguration visitable){
 
 		Planet planet = Instantiate (planetPrefab);
+		planetUnderConstruction = planet;
 		planet.position = new Vector2 (visitable.Position.X, visitable.Position.Y);
 		planet.mass = visitable.Mass;
 
@@ -94,10 +114,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		planet.soi = visitable.SOI;
 		planet.canMove = false;
 
-		AddResource (planet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
-		AddResource (planet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
+		//AddResource (planet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
+		//AddResource (planet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
 	
-		planet.BuildResourceCharts ();
+	
 
 		//Calculate world bones
 	//	Vector2 topRight = new Vector2 (1, 1);
@@ -253,10 +273,18 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 		guiController.gameObject.SetActive (true);
 
+		foreach (Body b in solarSystem.bodies) {
+			if(b is Planet){
+				((Planet)b).BuildResourceCharts ();
+			}
+		}
+
 	}
 
 	void HandleWin ()
 	{
+		//playerDataController.
+		//playerDataController.LevelCompleted(new LevelData
 		Win ();
 	}
 
@@ -421,22 +449,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	
 	
-	//planet will add itself
-	public void AddPlanet(Planet planet) {
-		
-		//each planet will have 3 resources it needs
-		//medial supplies 
-		//food
-		//technology
-
-		//we spawn ships with cargo to ensure that there is
-		//always sufficient shizzle
-		
-		
-		
-	}
-
-
 
 	List<T> PopulatePool<T>(T prefab, int num) where T:Ship {
 		List<T> shipPool = new List<T> ();
@@ -537,17 +549,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		
 
 	}
-
-	
-	public delegate void GameOverHandler();
-	public event GameOverHandler GameOver;
-
-	public delegate void ShipCollidedHandler();
-	public event ShipCollidedHandler ShipCollided;
-
-	public delegate void PopularityChangedHandler(float popularity);
-	public event PopularityChangedHandler PopularityChanged;
-	
 
 
 	public Vector2 CalculateScreenSizeInWorldCoords ()  {

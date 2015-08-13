@@ -21,7 +21,7 @@ public class Resource : MonoBehaviour {
 	public event ResourceLevelChangedHandler ResourceLevelChanged;
 	
 	public bool IsFull(){
-		return current == max;
+		return current >= max;
 	}
 
 	// Use this for initialization
