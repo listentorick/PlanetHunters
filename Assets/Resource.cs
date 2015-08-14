@@ -3,7 +3,7 @@ using System.Collections;
 
 //this is really a resource container.
 
-public class Resource : MonoBehaviour {
+public class Resource : MonoBehaviour, IStop {
 
 	public Cargo resourceType;
 	public int max;
@@ -33,10 +33,20 @@ public class Resource : MonoBehaviour {
 		current += stock;
 		ResourceLevelChanged(this, current/max, stock);
 	}
+
+	private bool stop;
+	public void Stop() {
+		stop = true;
+	}
+
+	public void Reset(){
+		stop = false;
+	}
 	
 	// Update is called once per frame
 	void Update () {
-
+		if (stop)
+			return;
 		timer += Time.deltaTime;
 		if (timer > timeToConsumeOneUnit) {
 			timer = 0;

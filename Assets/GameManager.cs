@@ -19,6 +19,12 @@ public class GameManager : MonoBehaviour {
 		LoadLevelMap ();
 	}
 
+	public void Next()
+	{
+		gameController.Reset ();
+		LoadLevelMap ();
+	}
+
 	void HandleWin ()
 	{
 		//add scores etc here

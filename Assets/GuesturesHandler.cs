@@ -24,7 +24,7 @@ public class GuesturesHandler : MonoBehaviour {
 			Ship s = GetShipFromSelection(gesture.Selection);
 			Selectable sel = gesture.Selection.GetComponent<Selectable>();
 
-			if(s){
+			if(s is TraderShip ){
 
 				if(selectedBody!=null ) {
 					selectedBody.IsSelected = false;

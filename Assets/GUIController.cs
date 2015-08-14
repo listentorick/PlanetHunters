@@ -9,6 +9,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	public GameController gameController;
 	public GameManager gameManager;
 	public Button replay;
+	public Button next;
 	public Economy economy;
 	public Text money;
 	public Text numShips;
@@ -27,9 +28,13 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		HandleShipCollided ();
 	}
 
+
+
 	void HandleWin ()
 	{
 		win.gameObject.SetActive (true);
+		next.gameObject.SetActive (true);
+		replay.gameObject.SetActive (true);
 	}
 
 	void HandlePopularityChanged (float pop)
@@ -49,6 +54,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	private void ResetControls(){
 		replay.gameObject.SetActive (false);
+		next.gameObject.SetActive (false);
 		gameOver.SetActive (false);
 
 		money.text = "0";
@@ -75,6 +81,12 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		replay.gameObject.SetActive (true);
 		gameOver.SetActive (true);
 	}
+
+	public void Next() 
+	{
+		gameManager.Next ();
+	}
+
 
 	public void Replay() 
 	{

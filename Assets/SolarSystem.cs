@@ -16,10 +16,18 @@ public struct Link{
 	}
 }
 
-public class SolarSystem : MonoBehaviour {
+public class SolarSystem : MonoBehaviour, IStop, IReset {
 
 
 	//adding wrapping by specifying world bounds
+	private bool stop = false;
+	public void Stop(){
+		stop = true;
+	}
+
+	public void Reset(){
+		stop = false;
+	}
 
 	private Vector2 worldBounds;
 
@@ -111,6 +119,8 @@ public class SolarSystem : MonoBehaviour {
 	}
 	
 	public void FixedUpdate() {
+		if (stop)
+			return;
 		UpdateForces (Time.fixedDeltaTime);
 	}
 

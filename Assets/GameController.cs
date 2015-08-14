@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameController : MonoBehaviour, IGameController, IWinCondition {
+public class GameController : MonoBehaviour, IGameController, IWinCondition, IStop {
 
 	//public delegate void WinConditionHandler();
 	public event WinConditionHandler Win;
@@ -24,6 +24,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 	public const float SCALE = 100000;
 
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
+
+	private List<IStop> stoppables = new List<IStop>();
+
 	//private int shipPoolSize = 5;
 	public int maxNumShips = 1;
 
@@ -68,6 +71,18 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	public delegate void GameOverHandler();
 	public event GameOverHandler GameOver;
+
+	public void OnGameOver () {
+
+		if (GameOver != null) {
+			GameOver();
+		}
+
+		foreach (IStop s in stoppables) {
+			s.Stop();
+		}
+	}
+
 	
 	public delegate void ShipCollidedHandler();
 	public event ShipCollidedHandler ShipCollided;
@@ -152,6 +167,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 	}
 
 	public void Reset(){
+		solarSystem.Reset ();
+		stoppables.Clear ();
 		winConditions.Clear ();
 		guiController.Reset ();
 		guiController.gameObject.SetActive (false);
@@ -188,6 +205,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		r.timeToConsumeOneUnit = 10000000f; //default value (assumes nobody on planet)
 		r.ResourceDepleted += HandleResourceDepleted;
 		r.ResourceLevelChanged += HandleResourceLevelChanged;
+
+		stoppables.Add (r);
+
 		return r;
 	}
 
@@ -220,6 +240,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 		warpGate.mass = 1;
 		warpGate.canMove = false;
 		warpGate.position = position;
+		stoppables.Add (warpGate);
 
 	}
 
@@ -281,11 +302,23 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	}
 
+	private bool stop = false;
+
+	public void Stop(){
+		stop = true;
+		foreach(IStop s in stoppables)
+		{
+			s.Stop();
+		}
+	}
+
 	void HandleWin ()
 	{
 		//playerDataController.
 		//playerDataController.LevelCompleted(new LevelData
 		Win ();
+		Stop ();
+
 	}
 
 	void HandleTradeShipSpawned (Body ship)
@@ -303,7 +336,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	// Use this for initialization
 	void Start () {
-
+		stoppables.Add (solarSystem);
 		//BuildLevel ();
 
 		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
@@ -330,12 +363,15 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 	void HandlePopularityChanged (float popularity)
 	{
 		if (popularity < 0) {
-			this.GameOver();
+			this.OnGameOver();
 		}
 	}
 
 	void TraderShipTimer ()
 	{
+		if (stop)
+			return;
+
 		if(traderShipPool.Count>0) { // ships in the pool
 			TraderShip pooledShip = traderShipPool[0];
 			traderShipPool.RemoveAt(0);
@@ -356,6 +392,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	void ColonyShipTimerEvent ()
 	{
+		if (stop)
+			return;
 		TrySpawnColonyShip ();
 	}
 
@@ -378,6 +416,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 			Vector3 position = p.gameObject.transform.position;
 			Blades b = (Blades)Instantiate (bladePrefab, position, Quaternion.identity);
 			b.color = Helpers.GetCargoColor(Cargo.People);
+			createdObjects.Add(b.gameObject);
 			audioSource.PlayOneShot (profitSound);
 
 			//immediately spawn another colony ship
@@ -571,7 +610,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition {
 
 	private void CheckShipStatus() {
 		if (ships.Count == 0) {
-			GameOver ();
+			OnGameOver ();
 		}
 	}
 
