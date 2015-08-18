@@ -3,6 +3,15 @@ using System.Collections;
 
 public static class Helpers  {
 
+
+	// UnityEngine overloads the == opeator for the GameObject type
+	// and returns null when the object has been destroyed, but 
+	// actually the object is still there but has not been cleaned up yet
+	// if we test both we can determine if the object has been destroyed.
+	public static bool IsDestroyed(this GameObject gameObject) {
+		return gameObject == null && !ReferenceEquals(gameObject, null);
+	}
+
 	// Use this for initialization
 	public static Color GetCargoColor(Cargo type){ 
 

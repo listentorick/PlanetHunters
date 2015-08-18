@@ -48,9 +48,11 @@ public class DynamicLight : MonoBehaviour {
 		lightMesh.name = "Light Mesh";															// Give it a name
 		lightMesh.MarkDynamic ();
 
+	//	layerMask = 1 << 8;
+
 
 	}
-	
+	//int layerMask;
 
 	void Update(){
 
@@ -63,7 +65,18 @@ public class DynamicLight : MonoBehaviour {
 
 
 	void getAllMeshes(){
-		allMeshes = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
+	//	allMeshes = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
+	//	return;
+		PolygonCollider2D[] temp = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
+		List<PolygonCollider2D> actual = new List<PolygonCollider2D> ();
+		for(int i=0; i< temp.Length;i++){
+			DynamicLight light = temp[i].GetComponentInChildren<DynamicLight>();
+			if(light==null || (light!=null && light.enabled==false)){
+				actual.Add(temp[i]);
+			} 
+		}
+		allMeshes = actual.ToArray();
+
 	}
 
 	void resetBounds(){

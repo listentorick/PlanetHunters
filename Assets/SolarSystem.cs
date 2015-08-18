@@ -16,7 +16,12 @@ public struct Link{
 	}
 }
 
+
+
 public class SolarSystem : MonoBehaviour, IStop, IReset {
+
+	public static float MAX_RENTRY_SPEED = 250000; 
+	public static float MAX_FORCE = 1000000; 
 
 
 	//adding wrapping by specifying world bounds
@@ -94,6 +99,7 @@ public class SolarSystem : MonoBehaviour, IStop, IReset {
 		var dist = UnityEngine.Mathf.Sqrt(distSq);
 		float product = GM1M2/(distSq*dist);  
 		var force = new Vector2 (product*delX,product*delY);
+
 		return force;
 	}
 
@@ -107,7 +113,11 @@ public class SolarSystem : MonoBehaviour, IStop, IReset {
 
 			for(var j = i+1; j < bodies.Count; j++){
 
+				//scale force
 				Vector2 force =  this.CalculateForce(bodies[i],bodies[j]);
+				if(force.magnitude>MAX_FORCE){
+					force = force * (MAX_FORCE/force.magnitude);
+				}
 
 				forces[i,j] = force;
 				forces[j,i] = new Vector2(-force.x, -force.y);
@@ -177,6 +187,10 @@ public class SolarSystem : MonoBehaviour, IStop, IReset {
 		for(var j = 0; j < bodies.Count; j++){
 			force +=  this.CalculateForce(position,1f,bodies[j].position, bodies[j].mass);
 		}
+		if(force.magnitude>SolarSystem.MAX_FORCE){
+			force = force * (SolarSystem.MAX_FORCE/force.magnitude);
+		}
+
 		return force;
 	}
 
@@ -304,7 +318,7 @@ public class SolarSystem : MonoBehaviour, IStop, IReset {
 			if(bodies[i].canMove) {
 
 				vel = bodies[i].position - bodies[i].lastPosition;
-
+				bodies[i].velocity = vel/dt;
 				float timeStepSq = dt * dt;
 				
 				// calculate the next position using Verlet Integration

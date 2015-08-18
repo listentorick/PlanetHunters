@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public Material lightMaterial;
 	public const float SCALE = 100000;
 
+
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 
 	private List<IStop> stoppables = new List<IStop>();
@@ -157,9 +158,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		Planet sun = Instantiate (planetPrefab);
 		sun.SetSprite (sunSprite);
 		sun.position = new Vector2 (visitable.Position.X, visitable.Position.Y);
-		sun.mass = 1e+25f;
+		sun.mass = 3e+25f;
 		sun.canMove = false;
-		sun.IsLightSource (true);
+		sun.SetIsLightSource (true);
 		sun.imageScale = 1f;
 		solarSystem.AddBody (sun);
 		createdObjects.Add (sun.gameObject);
@@ -186,6 +187,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
 		}
+
 		//BuildLevel ();
 
 	}
@@ -300,6 +302,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			}
 		}
 
+		colonyShipTimer.Play ();
+		traderShipTimer.Play ();
+
 	}
 
 	private bool stop = false;
@@ -400,6 +405,12 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	void HandleShipEnteredOrbit (Body s, Body p)
 	{
 		//solarSystem.RemoveConnectionsForBody (s);
+
+		if (s is Ship && s.velocity.magnitude > SolarSystem.MAX_RENTRY_SPEED) {
+			//travelling too fast
+			((Ship)s).hull=0;
+			return;
+		}
 
 		if (p is Planet && s is ColonyShip) {
 			int pop = ((ColonyShip)s).population;
@@ -555,10 +566,17 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		//create
 		createdObjects.Add (e.gameObject);
 
-
+		StartCoroutine(DestroyExplosion (e));
 	
 	}
 
+	IEnumerator DestroyExplosion(Explosion e) {
+		yield return new WaitForSeconds(3);
+		solarSystem.RemoveBody (e);
+		Destroy (e.gameObject);
+	}
+	
+	
 	void HandleShipCollided (Ship ship, GameObject other)
 	{
 	//	return;

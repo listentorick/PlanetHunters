@@ -68,10 +68,13 @@ public class WarpGate : Body, IStop {
 	private float time = 0;
 	private bool animate = false;
 	public void OnTriggerEnter2D(Collider2D other) {
-		animate = true;
-		time = 0;
-		Ship ship = other.gameObject.GetComponent<Ship>();
-		if(ship!=null) ShipEnteredWarpGate(ship, this);
-	}
+
+		TraderShip ship = other.gameObject.GetComponent<TraderShip> ();
+		if (ship != null) {
+			animate = true;
+			time = 0;
+			ShipEnteredWarpGate (ship, this);
 	
+		}
+	}
 }

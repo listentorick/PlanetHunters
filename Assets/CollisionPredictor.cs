@@ -67,25 +67,30 @@ public class CollisionPredictor : MonoBehaviour {
 			//we only care about other bodies
 			if(other!=thisBody) {
 
-				if(other is Ship) {
-					// predicted time until nearest approach of "this" and "other"
-					float time = this.PredictNearestApproachTime (other);
+				float time = this.PredictNearestApproachTime (other);
 
-					
-					// If the time is in the future, sooner than any other
-					// threatened collision...
-					if ((time >= 0) && (time < minTime))
-					{
-						Vector2 ourPos = Vector2.zero;
-						Vector2 hisPos = Vector2.zero;
-						float	dist   = this.ComputeNearestApproachPositions (other, time);
+				
+				// If the time is in the future, sooner than any other
+				// threatened collision...
+				if ((time >= 0) && (time < minTime))
+				{
+					Vector2 ourPos = Vector2.zero;
+					Vector2 hisPos = Vector2.zero;
+					float	dist   = this.ComputeNearestApproachPositions (other, time);
 
-						if(dist <50000f) {
+					if(other is Planet){
 
-						renderer.material.color = new Color(1f, 0f, 0f, 1f); // Set to opaque black
-						Debug.Log("collision" + dist);
+						if (dist <100000f &&  thisBody.velocity.magnitude > SolarSystem.MAX_RENTRY_SPEED){
+							renderer.material.color = new Color(1f, 0f, 0f, 1f); 
 						}
-						//CollisionPredicted(
+					} else if (other is Ship) {
+				
+						if(dist <100000f) {
+
+							renderer.material.color = new Color(1f, 0f, 0f, 1f); 
+							Debug.Log("collision" + dist);
+						
+						}
 					}
 				}
 			

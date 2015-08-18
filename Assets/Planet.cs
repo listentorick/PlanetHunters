@@ -73,14 +73,21 @@ public class Planet : Body {
 		}
 	}
 
-	public void IsLightSource(bool isLightSource) {
+	public void SetIsLightSource(bool isLightSource) {
 		//if (!castsShadows) {
-		if (isLightSource) {	
+		if (isLightSource) {
+			this.GetComponent<PolygonCollider2D> ().isTrigger = true;
 			Destroy (this.GetComponent<PolygonCollider2D> ());
-			this.GetComponentInChildren<DynamicLight>().enabled = true;
+			this.GetComponentInChildren<DynamicLight> ().enabled = true;
 
-		} 
+		} else {
+
+		}
 		//}
+	}
+
+	public bool IsLightSource {
+		get {return this.GetComponentInChildren<DynamicLight>().enabled;}
 	}
 
 	void Start() {
@@ -93,6 +100,7 @@ public class Planet : Body {
 
 		timer.TimerEvent+= HandleTimerEvent;
 		this.GetRendererTransform().localScale = new Vector3(imageScale,imageScale,imageScale);
+		//this.gameObject.layer = 8;
 
 
 

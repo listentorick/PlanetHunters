@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Comet : Body {
 
+	public ParticleSystem thruster;
 	// Use this for initialization
 	void Start () {
 		thruster.Play ();	

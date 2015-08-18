@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Body : MonoBehaviour {
 
-	public ParticleSystem thruster;
+	//public ParticleSystem thruster;
 
 	public Vector2 lastPosition;
 	public Vector2 position;
@@ -82,6 +82,7 @@ public class Body : MonoBehaviour {
 
 
 	public void Update () {
+
 
 		this.transform.position = new Vector3(position.x/GameController.SCALE, position.y/GameController.SCALE, this.transform.position.z);
 	

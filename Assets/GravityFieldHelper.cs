@@ -34,6 +34,9 @@ public class GravityFieldHelper: MonoBehaviour  {
 				Vector2 solPos = new Vector2(xpos * 100000f,ypos * 100000f);
 				//if(!sol.IsInAnySOI(solPos)){
 				currentForce = sol.CalculateForceAtPoint(solPos).magnitude;
+
+
+
 				points[x,y] = new Vector3(xpos,ypos,currentForce);
 				
 				//if(currentForce<minForce) {

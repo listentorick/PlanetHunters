@@ -25,7 +25,7 @@ public class Collectable : Body {
 		if (other.tag == "selection") { //this collision is coming from the child
 			return;
 		}
-		Ship ship = other.gameObject.GetComponent<Ship>();
+		TraderShip ship = other.gameObject.GetComponent<TraderShip>();
 		if (ship != null) {
 			Collected(this,ship);
 		}

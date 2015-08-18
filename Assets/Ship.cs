@@ -8,6 +8,13 @@ public enum Cargo {
 
 public class Ship : Body {
 
+	public ParticleSystem smokePrefab;
+	public ParticleSystem thrusterPrefab;
+
+	private ParticleSystem smoke;
+	private ParticleSystem thruster;
+
+
 	public AudioClip thrusterSound;
 	public AudioSource audioSource;
 	//public AudioClip explosionSound;
@@ -91,6 +98,7 @@ public class Ship : Body {
 			timeInHighGravity+=Time.deltaTime;
 		}
 
+
 		//should this be a component?
 		if (takesDamage == true) {
 			if (timeInHighGravity > 5f) {
@@ -99,9 +107,29 @@ public class Ship : Body {
 				hull -= 0.1f;
 			}
 
-			if (hull < 0) {
+			if (hull <= 0) {
 				HullFailure (this);
 			}
+		}
+
+		if (hull < 0.5f) {
+
+			//Vector3 diff = this.lastPosition-this.position;
+			//float angle = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
+			//smoke.gameObject.transform.rotation = Quaternion.AngleAxis(angle + 90,Vector3.up);
+			//smoke.gameObject.transform.localRotation = Quaternion.AngleAxis(angle,Vector3.forward);
+
+			//Vector3 diff = this.position - this.lastPosition;   
+			//float angle = Mathf.Atan2 ( diff.y, diff.x );
+			//smoke.gameObject.transform.parent.transform.localRotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg );
+
+			//smoke.gameObject.transform.rotation.eulerAngles = new Vector3(90,
+
+			//smoke.gameObject.transform.LookAt(
+			smoke.Play ();
+		
+		} else {
+			smoke.Stop();
 		}
 
 		base.Update ();
@@ -141,5 +169,32 @@ public class Ship : Body {
 			//raise ship collision event
 			ShipCollided(this,ship.gameObject);
 		}
+
+		Planet p = other.gameObject.GetComponent<Planet> ();
+
+		if (p!=null && p.IsLightSource==true) {
+			//isExploding = true;
+			audioSource.Stop();
+			//audioSource.volume = 1f;
+			//audioSource.clip = explosionSound;
+			thrustersActive = false;
+			//audioSource.PlayOneShot (explosionSound, 1f);
+			//raise ship collision event
+			ShipCollided(this,p.gameObject);
+		}
+	}
+
+	public void Start(){
+		smoke = (ParticleSystem)Instantiate (smokePrefab);
+		thruster = (ParticleSystem)Instantiate (thrusterPrefab);
+		smoke.transform.parent = this.GetRendererTransform ();
+		smoke.transform.localPosition = Vector3.zero;
+		smoke.transform.localRotation = Quaternion.Euler (new Vector3 (90f, 0, 0));
+		thruster.transform.parent = this.GetRendererTransform ();
+		thruster.transform.localPosition = Vector3.zero;
+		thruster.transform.localRotation = Quaternion.Euler(new Vector3(90f,0,0));
+
+
 	}
 }
+
