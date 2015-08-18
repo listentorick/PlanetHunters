@@ -252,6 +252,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	public void BuildLevel() {
 
+		stoppables.Add (solarSystem);
+
+
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
 		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
@@ -341,7 +344,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	// Use this for initialization
 	void Start () {
-		stoppables.Add (solarSystem);
 		//BuildLevel ();
 
 		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
