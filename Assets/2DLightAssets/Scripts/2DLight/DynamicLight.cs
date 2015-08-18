@@ -65,8 +65,8 @@ public class DynamicLight : MonoBehaviour {
 
 
 	void getAllMeshes(){
-	//	allMeshes = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
-	//	return;
+		allMeshes = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
+		return;
 		PolygonCollider2D[] temp = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
 		List<PolygonCollider2D> actual = new List<PolygonCollider2D> ();
 		for(int i=0; i< temp.Length;i++){

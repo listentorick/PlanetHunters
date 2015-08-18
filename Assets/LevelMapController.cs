@@ -131,6 +131,8 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 			Destroy(g);
 		}
 		cometTimer.TimerEvent-= HandleTimerEvent;
+		createdObjects.Clear ();
+		levels.Clear ();
 	}
 
 	public void Build(){

@@ -187,7 +187,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
 		}
-
+		createdObjects.Clear();
 		//BuildLevel ();
 
 	}
@@ -572,8 +572,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	IEnumerator DestroyExplosion(Explosion e) {
 		yield return new WaitForSeconds(3);
-		solarSystem.RemoveBody (e);
-		Destroy (e.gameObject);
+		if (!e.gameObject.IsDestroyed ()) {
+			solarSystem.RemoveBody (e);
+			createdObjects.Remove (e.gameObject);
+			Destroy (e.gameObject);
+		}
 	}
 	
 	

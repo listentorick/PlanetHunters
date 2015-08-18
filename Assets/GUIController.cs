@@ -80,6 +80,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	private void GameOver(){
 		replay.gameObject.SetActive (true);
 		gameOver.SetActive (true);
+		next.gameObject.SetActive (true);
 	}
 
 	public void Next() 
