@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private IList<ColonyShip> colonyShipPool = new List<ColonyShip> ();
 	public Material lightMaterial;
 	public const float SCALE = 100000;
+	public CometController cometController;
 
 
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
@@ -53,7 +54,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private List<GameObject> createdObjects = new List<GameObject>();
 
 	public ContourRenderer contourRenderer;
-	public Shadows shadowsRenderer;
 
 	public ShipSpawner tradeShipSpawner;
 	public ShipSpawner colonyShipSpawner;
@@ -188,6 +188,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			Destroy(g);
 		}
 		createdObjects.Clear();
+
+		cometController.Reset ();
 		//BuildLevel ();
 
 	}
@@ -250,7 +252,17 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private float FOOD_MAX_PRICE = 500f;
 
 
-	public void BuildLevel() {
+	public void Build(Ready ready) {
+
+		int count=0;
+		Ready Done = delegate() {
+			count++;
+			if(count==6){
+				//start sound and show gui
+				guiController.gameObject.SetActive (true);
+				ready();
+			}
+		};
 
 		stoppables.Add (solarSystem);
 
@@ -262,7 +274,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		solarSystem.SetWorldBounds (worldBounds);
 
 		//position 3 planets ramdomly
-		collectablesController.Build ();
+		collectablesController.Build (Done);
 
 		colonyShipSpawner.Spawned+= HandleShipSpawned;
 		tradeShipSpawner.Spawned+= HandleTradeShipSpawned;
@@ -271,9 +283,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 10);
 
-		contourRenderer.Build ();
-
-		shadowsRenderer.Build ();
+		contourRenderer.Build (Done);
 
 		TraderShip s = traderShipPool[0];
 		traderShipPool.RemoveAt (0);
@@ -283,13 +293,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		ships.Add (s);
 
 
-		guiController.Build ();
+		guiController.Build (Done);
 
 
 		//lets add the win conditions. These may in the future be configured
 		PlanetsPopulatedWinCondition winCondition = new PlanetsPopulatedWinCondition ();
 		winCondition.solarSystem = solarSystem;
-		winCondition.Build ();
+		winCondition.Build (Done);
 		winCondition.Win += HandleWin;
 		winConditions.Add (winCondition);
 
@@ -297,7 +307,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		audioSource.clip = backgroundSound;
 		audioSource.Play();
 
-		guiController.gameObject.SetActive (true);
+	
 
 		foreach (Body b in solarSystem.bodies) {
 			if(b is Planet){
@@ -307,6 +317,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 		colonyShipTimer.Play ();
 		traderShipTimer.Play ();
+
+		cometController.Build (Done);
 
 	}
 
@@ -530,41 +542,46 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	void HandleHullFailure (Ship ship)
 	{
-		DestroyShip (ship);
+		DestroyBody (ship);
 		CheckShipStatus ();
 	}
 
-	private void DestroyShip(Ship ship) {
+	private void DestroyBody(Body body) {
 
-		ShipIndicator toDestroy = null;
-		foreach(ShipIndicator s in shipIndicators){
-			if(s.ship==ship){
-				toDestroy = s;
-				break;
-			}	
+		if (body is Ship) {
+			ShipIndicator toDestroy = null;
+			foreach (ShipIndicator s in shipIndicators) {
+				if (s.ship == (Ship)body) {
+					toDestroy = s;
+					break;
+				}	
+			}
+			
+			if (toDestroy != null) {
+				Destroy(toDestroy.gameObject);
+			}
+
+			ships.Remove ((Ship)body);
 		}
 
-		solarSystem.RemoveConnectionsForBody (ship);
+		solarSystem.RemoveConnectionsForBody (body);
 
-		if (toDestroy != null) {
-			Destroy(toDestroy.gameObject);
-		}
 
-		ships.Remove (ship);
-		solarSystem.RemoveBody (ship);
+
+		solarSystem.RemoveBody (body);
 
 		//should come from a pool
 		Explosion e = (Explosion)Instantiate (explosionPrefab);
-		e.transform.position = ship.transform.position;
-		e.position = ship.position;
-		e.lastPosition = ship.lastPosition;
-		e.mass = ship.mass;
-		e.acceleration = ship.acceleration;
+		e.transform.position = body.transform.position;
+		e.position = body.position;
+		e.lastPosition = body.lastPosition;
+		e.mass = body.mass;
+		e.acceleration = body.acceleration;
 		e.canMove = true;
 		e.canAlign = true;
 		solarSystem.AddBody (e);
-		e.AlignToVector (ship.velocity);
-		Destroy (ship.gameObject);
+		e.AlignToVector (body.velocity);
+		Destroy (body.gameObject);
 		//create
 		createdObjects.Add (e.gameObject);
 
@@ -582,10 +599,16 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	}
 	
 	
-	void HandleShipCollided (Ship ship, GameObject other)
+	void HandleShipCollided (Ship ship, Body other)
 	{
+		if (other is Planet || other is Collectable || other is WarpGate) {
+			return;
+		}
+
+
+
 	//	return;
-		DestroyShip (ship);
+		DestroyBody (ship);
 
 		//audioSource.Stop();
 		//audioSource.volume = 1f;
@@ -593,15 +616,15 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		//audioSource.PlayOneShot(explosionSound);
 
 
-		Ship otherShip = other.GetComponent<Ship> ();
+		//Ship otherShip = other.GetComponent<Ship> ();
 
-		if (otherShip != null) {
-			DestroyShip (otherShip);
+		if (other != null) {
+			DestroyBody (other);
 		} else {
 			Destroy (other.gameObject);
 		}
 
-		if (other.GetComponent<ColonyShip> () || ship.gameObject.GetComponent<ColonyShip>()) {
+		if (other is ColonyShip || ship is ColonyShip) {
 			popularityController.IncrementPopularityBy(-0.1f);
 		}
 

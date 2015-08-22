@@ -14,7 +14,7 @@ public class PlanetsPopulatedWinCondition: IWinCondition, IBuild {
 		//solarSystem
 	}
 	
-	public void Build () {
+	public void Build (Ready r) {
 		planets.Clear ();
 		foreach (Body b in solarSystem.bodies) {
 			if(b is Planet){
@@ -22,6 +22,8 @@ public class PlanetsPopulatedWinCondition: IWinCondition, IBuild {
 				((Planet)b).ResourceLevelChanged+= HandleResourceLevelChanged;
 			}
 		}
+
+		r ();
 	
 	}
 

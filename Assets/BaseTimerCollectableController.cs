@@ -36,7 +36,7 @@ public abstract class BaseTimerCollectableController : BaseCollectableController
 
 	public abstract Collectable BuildCollectable (Collectable c);
 	
-	public override void Build()
+	public override void Build(Ready ready)
 	{
 		pool.PopulatePool (delegate() {
 			Collectable c = (Collectable)Instantiate (collectablePrefab);
@@ -44,5 +44,6 @@ public abstract class BaseTimerCollectableController : BaseCollectableController
 			c.Collected += HandleCollected;
 			return c.gameObject;
 		});
+		ready ();
 	}
 }

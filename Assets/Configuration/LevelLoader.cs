@@ -6,43 +6,63 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 
-public class LevelLoader : MonoBehaviour {
-	
-	private T Load<T>(string path) where T : Level {
 
-		Stream stream = null;
-		LevelsManifest levelsManifest = null;
+
+public class LevelLoader : MonoBehaviour {
+
+
+	public delegate void LoadLoadedHandler<T>(T data);
+
+
+	private IEnumerator LoadLevelAsync<T>(string path, LoadLoadedHandler<T> loaded) where T : Level {
+		//Debug.Log ("start Load" + Time.time);
+		ResourceRequest resourceRequest  = Resources.LoadAsync<TextAsset>(path);
+	
+		while (!resourceRequest.isDone) {
+			//throw events here
+		//	Debug.Log ("returning" + Time.time);
+
+			yield return null;
+		}
+
+		//Debug.Log ("end Load" + Time.time);
+
 		StringReader strReader = null;
 		XmlTextReader xmlFromText = null;
-		T level = null;
-		try {
-			
-			XmlSerializer serializer = new XmlSerializer (typeof(T));
-			
-			TextAsset textAsset = Resources.Load(path) as TextAsset;
-			
-			strReader = new StringReader(textAsset.text);
-			xmlFromText = new XmlTextReader(strReader);
+		XmlSerializer serializer = null;
+		//T level = null;
 
-			level = serializer.Deserialize (xmlFromText) as T;
-			
-		} catch(Exception e) {
-			Debug.LogError(e);		
-		}
-		finally {
+		try {
+			//Debug.Log ("start serialisation" + Time.time);
+		 	strReader = new StringReader(((TextAsset)resourceRequest.asset).text);
+		 	xmlFromText = new XmlTextReader(strReader);
+			serializer = new XmlSerializer (typeof(T));
+			T level = serializer.Deserialize (xmlFromText) as T;
+			//Debug.Log ("end serialisation" + Time.time);
+			loaded (level);
+			//Debug.Log ("end build" + Time.time);
+
+		} finally {
 			strReader.Close();
 			xmlFromText.Close();
 		}
-		
-		return level;
+
+
+
+	}
+	
+	private void Load<T>(string path, LoadLoadedHandler<T> callback) where T : Level {
+
+		StartCoroutine (LoadLevelAsync<T> (path, callback));
+
 	}
 
-	public LevelMap LoadLevelMap() {
-		return this.Load<LevelMap> ("levelMap");
+	public void  LoadLevelMap(LoadLoadedHandler<LevelMap> callback) {
+		this.Load<LevelMap> ("levelMap", callback);
 	}
 
 
-	public Level LoadLevel (string levelId) {
-		return this.Load<Level> (levelId.ToString ());
+	public void LoadLevel (string levelId, LoadLoadedHandler<Level> callback) {
+		this.Load<Level> (levelId.ToString (), callback);
 	}
 }

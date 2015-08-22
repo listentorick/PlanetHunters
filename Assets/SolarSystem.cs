@@ -184,7 +184,8 @@ public class SolarSystem : MonoBehaviour, IStop, IReset {
 
 	public Vector2 CalculateForceAtPoint(Vector2 position) {
 		Vector2 force = Vector2.zero;
-		for(var j = 0; j < bodies.Count; j++){
+		int numBodies = bodies.Count;
+		for(var j = 0; j < numBodies; j++){
 			force +=  this.CalculateForce(position,1f,bodies[j].position, bodies[j].mass);
 		}
 		if(force.magnitude>SolarSystem.MAX_FORCE){

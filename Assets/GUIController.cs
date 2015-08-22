@@ -99,9 +99,10 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		ResetControls ();
 	}
 
-	public void Build() 
+	public void Build(Ready ready) 
 	{
 		numShips.text = gameController.GetNumberOfShips ().ToString ();
+		ready ();
 	}
 
 }

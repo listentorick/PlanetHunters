@@ -145,43 +145,33 @@ public class Ship : Body {
 
 
 
-	public delegate void ShipCollidedHandler(Ship ship, GameObject other);
+	public delegate void ShipCollidedHandler(Ship ship, Body other);
 	public event ShipCollidedHandler ShipCollided;
 
 	public delegate void HullFailureHandler(Ship ship);
 	public event HullFailureHandler HullFailure;
 
 	bool isExploding = false;
+
 	public void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "selection") { //this collision is coming from the child
 			return;
 		}
-		Ship ship = other.gameObject.GetComponent<Ship>();
-		if (ship != null) {
-			//if((this.position - ship.position).magnitude>10000) return; //we're using 1 larger collider 
+
+		Body body = other.gameObject.GetComponent<Body>();
+
+		if (body != null) {
 
 			//isExploding = true;
-			audioSource.Stop();
+			audioSource.Stop ();
 			//audioSource.volume = 1f;
 			//audioSource.clip = explosionSound;
 			thrustersActive = false;
 			//audioSource.PlayOneShot (explosionSound, 1f);
 			//raise ship collision event
-			ShipCollided(this,ship.gameObject);
+			ShipCollided (this, body);
 		}
 
-		Planet p = other.gameObject.GetComponent<Planet> ();
-
-		if (p!=null && p.IsLightSource==true) {
-			//isExploding = true;
-			audioSource.Stop();
-			//audioSource.volume = 1f;
-			//audioSource.clip = explosionSound;
-			thrustersActive = false;
-			//audioSource.PlayOneShot (explosionSound, 1f);
-			//raise ship collision event
-			ShipCollided(this,p.gameObject);
-		}
 	}
 
 	public void Start(){

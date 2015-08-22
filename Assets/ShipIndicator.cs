@@ -9,8 +9,10 @@ public class ShipIndicator : MonoBehaviour {
 	Vector3 topRight;
 
 	public SpriteRenderer spriteRenderer;
-	public Sprite horizontalIndicator;
-	public Sprite verticalIndicator;
+	public Sprite topIndicator;
+	public Sprite leftIndicator;
+	public Sprite bottomIndicator;
+	public Sprite rightIndicator;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +25,10 @@ public class ShipIndicator : MonoBehaviour {
 		//float height = (bottomRight - topright).magnitude;
 
 	}
+
+	//Vector2 GetOffset(Sprite sprite){
+	
+	//}
 	
 	// Update is called once per frame
 	void Update () {
@@ -36,24 +42,25 @@ public class ShipIndicator : MonoBehaviour {
 			//where is the ship?
 		if (ship.gameObject.transform.position.y > topRight.y) {
 
-			spriteRenderer.sprite = horizontalIndicator;
+			spriteRenderer.sprite = topIndicator;
+	
 			//position this thing on the top
-			this.transform.position = new Vector3 (ship.gameObject.transform.position.x, topRight.y, this.transform.position.z);
+			this.transform.position = new Vector3 (ship.gameObject.transform.position.x, topRight.y - spriteRenderer.sprite.bounds.extents.y, this.transform.position.z);
 			
 		} else if (ship.gameObject.transform.position.y < bottomRight.y) {
-			spriteRenderer.sprite = horizontalIndicator;
+			spriteRenderer.sprite = bottomIndicator;
 			//position this thing on the top
-			this.transform.position = new Vector3 (ship.gameObject.transform.position.x, bottomRight.y, this.transform.position.z);
+			this.transform.position = new Vector3 (ship.gameObject.transform.position.x, bottomRight.y + spriteRenderer.sprite.bounds.extents.y, this.transform.position.z);
 			
 		} else if (ship.gameObject.transform.position.x < bottomLeft.x) {
-			spriteRenderer.sprite = verticalIndicator;
+			spriteRenderer.sprite = leftIndicator;
 			//position this thing on the top
-			this.transform.position = new Vector3 (bottomLeft.x, ship.gameObject.transform.position.y, this.transform.position.z);
+			this.transform.position = new Vector3 (bottomLeft.x + spriteRenderer.sprite.bounds.extents.x, ship.gameObject.transform.position.y, this.transform.position.z);
 			
 		} else if (ship.gameObject.transform.position.x > bottomRight.x) {
-			spriteRenderer.sprite = verticalIndicator;
+			spriteRenderer.sprite = rightIndicator;
 			//position this thing on the top
-			this.transform.position = new Vector3 (bottomRight.x, ship.gameObject.transform.position.y, this.transform.position.z);
+			this.transform.position = new Vector3 (bottomRight.x- spriteRenderer.sprite.bounds.extents.x, ship.gameObject.transform.position.y, this.transform.position.z);
 			
 		} else {
 			this.transform.position = new Vector3(100,100,this.transform.position.z);

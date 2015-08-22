@@ -43,9 +43,9 @@ public class CollectablesController : MonoBehaviour, IReset, IBuild {
 		}
 	}
 
-	public void Build() {
+	public void Build(Ready ready) {
 		foreach (BaseCollectableController b in controllers) {
-			b.Build();
+			b.Build(ready);
 		}
 	}
 

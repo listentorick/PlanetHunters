@@ -22,7 +22,7 @@ public abstract class BaseCollectableController : MonoBehaviour, IReset, IBuild 
 		
 	}
 
-	public virtual void Build(){
+	public virtual void Build(Ready ready){
 		
 		
 	}

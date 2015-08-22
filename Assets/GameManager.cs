@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour {
 	public LevelLoader levelLoader;
 	private LevelMapItemConfiguration currentLevel;
 	public PlayerDataController playerDataController;
+	public TitleScreenUIController titleScreenController;
+	public LoadingScreenUIController loadingScreenUIController;
 
 
 
@@ -16,13 +18,13 @@ public class GameManager : MonoBehaviour {
 		levelMapController.LevelSelected+= HandleLevelSelected;
 		gameController.Win+= HandleWin;
 		playerDataController.Load ();
-		LoadLevelMap ();
+		//LoadLevelMap ();
 	}
 
 	public void Next()
 	{
 		gameController.Reset ();
-		LoadLevelMap ();
+		//LoadLevelMap ();
 	}
 
 	void HandleWin ()
@@ -38,21 +40,34 @@ public class GameManager : MonoBehaviour {
 	void HandleLevelSelected (LevelMapItemConfiguration levelDefinition)
 	{
 		currentLevel = levelDefinition;
-		levelMapController.Reset ();
+
 		LoadLevel (levelDefinition.Name);
 	}
 
-	public void LoadLevelMap() {
-		LevelMap level = levelLoader.LoadLevelMap();
-		level.Accept (levelMapController);
-		levelMapController.Build ();
+	public void LoadLevelMap(LevelLoader.LoadLoadedHandler<LevelMap> handler) {
+
+
+		levelLoader.LoadLevelMap (delegate(LevelMap l) {
+			l.Accept (levelMapController);
+			levelMapController.Build (delegate() {
+				handler(l);
+			});
+
+		});
 	}
 
-
 	public void LoadLevel(string levelName) {
-		Level level = levelLoader.LoadLevel (levelName);
-		level.Accept (gameController);
-		gameController.BuildLevel ();
+		loadingScreenUIController.Show (delegate() {
+			levelMapController.Reset ();
+			levelLoader.LoadLevel (levelName, delegate (Level l) {
+				l.Accept (gameController);
+				gameController.Build (delegate() {
+					loadingScreenUIController.Hide (delegate() {
+
+					});
+				});
+			});
+		});
 	}
 
 	public void ResetLevel() {

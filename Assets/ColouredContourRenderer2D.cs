@@ -4,8 +4,6 @@ using System.Collections;
 public class ColouredContourRenderer2D : ContourRenderer {
 
 	public GravityFieldHelper fieldHelper;
-	public Terrain terrain;
-
 
 	void ResizeSpriteToScreen(GameObject theSprite, Camera theCamera, int fitToScreenWidth, int fitToScreenHeight)
 	{        
@@ -39,34 +37,71 @@ public class ColouredContourRenderer2D : ContourRenderer {
 	public void Start() {
 
 	}
+
+	public void Log(string message){
+		System.DateTime now = System.DateTime.Now;
+		Debug.Log( string.Format("[{0}] {1}", now.Ticks/100000, message) );
+	}
 	
 	// Use this for initialization
-	public override void Build () {
-		
-		Vector3[,] points = fieldHelper.CalculatePoints (Screen.width,Screen.height);
-		float[,] heightMap = new float[points.GetLength(0), points.GetLength(1)];
-		for (int x = 0; x < points.GetLength(0) ; x++) {
-			for (int y = 0; y < points.GetLength(1); y++) {
-				if(points[x,y].z <10000) {
-					heightMap[x,y] = points[x,y].z/10000;
-				} else {
-					heightMap[x,y] = 1;
+	public override void Build (Ready ready) {
+		//return;
+
+		fieldHelper.CalculatePoints (Screen.width/4,Screen.height/4, delegate 
+			(Vector3[,] points){
+
+			//Log ("Calulate points");
+			//Vector3[,] points = fieldHelper.CalculatePoints (Screen.width/2,Screen.height/2); //slow ish
+			
+			//Log ("End Calculate points");
+			
+			int numX = points.GetLength (0);
+			int numY = points.GetLength (1);
+			float[,] heightMap = new float[numX, numY];
+			for (int x = 0; x < numX ; x++) {
+				for (int y = 0; y < numY; y++) {
+					if(points[x,y].z <10000) {
+						heightMap[x,y] = points[x,y].z/10000;
+					} else {
+						heightMap[x,y] = 1;
+					}
 				}
 			}
-		}
+			//return;
+			
+			
+			Log ("end building heightmap" );
+			
+			Texture2D texture = HeightMapToPNG (heightMap, 1);
+			
+			Log ("end building heightmappng");
+			//return;
+			
+			
+			SpriteRenderer r = this.GetComponent<SpriteRenderer>();
+			
+			r.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+			
+			ResizeSpriteToScreen (this.gameObject, Camera.main, 1, 0);
+			Log ("end resize to screen");
+			
+			
+			
+			Vector3 pivotOffset = transform.position - r.bounds.center;
+			
+			this.gameObject.transform.position = new Vector3 (this.gameObject.transform.position.x + pivotOffset.x, this.gameObject.transform.position.y + pivotOffset.y,5f);
+			
+			Log ("end ");
+			ready();
+			
+			}
+	); //slow ish
 
-		Texture2D texture = HeightMapToPNG (heightMap, 1);
 
-		SpriteRenderer r = this.GetComponent<SpriteRenderer>();
-	
-		r.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-		ResizeSpriteToScreen (this.gameObject, Camera.main, 1, 0);
 
-		Vector3 pivotOffset = transform.position - r.bounds.center;
 
-		this.gameObject.transform.position = new Vector3 (this.gameObject.transform.position.x + pivotOffset.x, this.gameObject.transform.position.y + pivotOffset.y,5f);
-		
+
 	}
 	
 	private Color GetColor(float value) {

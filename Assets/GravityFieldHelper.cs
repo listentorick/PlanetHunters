@@ -4,10 +4,15 @@ using System.Collections;
 public class GravityFieldHelper: MonoBehaviour  {
 
 	public SolarSystem sol;
+	public delegate void Ready(Vector3[,] data);
 
-	public Vector3[,] CalculatePoints(int xdensity, int ydensity) {
-		
-		
+
+	public void CalculatePoints(int xdensity, int ydensity, Ready ready) {
+		StartCoroutine (CalculatePointsAsync (xdensity, ydensity, ready));
+	}
+	
+	private IEnumerator CalculatePointsAsync(int xdensity, int ydensity, Ready ready) {
+
 		var cam = Camera.main;
 		Vector3 p1 = cam.ViewportToWorldPoint(new Vector3(0,0,cam.nearClipPlane));  
 		Vector3 p2 = cam.ViewportToWorldPoint(new Vector3(1,0,cam.nearClipPlane));
@@ -31,28 +36,19 @@ public class GravityFieldHelper: MonoBehaviour  {
 				xpos = (float)x*xdelta - width/2;
 				ypos = (float)y*ydelta - height/2;
 				
-				Vector2 solPos = new Vector2(xpos * 100000f,ypos * 100000f);
-				//if(!sol.IsInAnySOI(solPos)){
+				Vector2 solPos = new Vector2(xpos * GameController.SCALE,ypos * GameController.SCALE);
+
 				currentForce = sol.CalculateForceAtPoint(solPos).magnitude;
 
-
-
 				points[x,y] = new Vector3(xpos,ypos,currentForce);
-				
-				//if(currentForce<minForce) {
-				//	minForce = currentForce;
-				//}
-				//if(currentForce>maxForce){
-				///	maxForce = currentForce;
-			//	}
-				//} else {
-				//	points[x,y] = new Vector3(xpos,ypos,lastForce);
-				//}
-				
+
+
 			}
+			//Debug.Log(x );
+			yield return null;
 		}
-		
-		return points;
+		ready (points);
+		//return points;
 		
 	}
 }

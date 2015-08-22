@@ -135,14 +135,14 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		levels.Clear ();
 	}
 
-	public void Build(){
+	public void Build(Ready r){
 		cometTimer.TimerEvent+= HandleTimerEvent;
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
 		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
 		
 		solarSystem.SetWorldBounds (worldBounds);
-		contourRenderer.Build ();
+
 
 	
 		cometPool.PopulatePool (delegate() {
@@ -155,7 +155,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		//this should be all
 
 		//if(playerDataController.IsLevelUnlocked()
-
+		contourRenderer.Build (r);
 	}
  	
 	public void Visit (LevelMapItemConfiguration visitable){
