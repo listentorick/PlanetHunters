@@ -8,6 +8,11 @@ public class LoadingScreenUIController : MonoBehaviour {
 	public Button loading;
 	public Image background;
 
+	private bool isFadingOut;
+	private bool isFadingIn;
+	private float startTime = 0.0f;
+	private float fadeTime = 0.5f;
+
 	// Use this for initialization
 	void Start () {
 		this.gameObject.SetActive (false);
@@ -15,19 +20,14 @@ public class LoadingScreenUIController : MonoBehaviour {
 	
 
 	public void Hide(Ready r) {
-		StartCoroutine (FadeOut(r));
+		this.gameObject.SetActive (true);
+		isFadingOut = true;
+		isFadingIn = false;
+		startTime = 0f;
+		showReady = r;
 	}
 
-	private IEnumerator FadeOut(Ready r){
 
-		background.CrossFadeAlpha( 0f, 1f, false );
-		loading.GetComponentInChildren<Text> ().CrossFadeAlpha(0f,1f,false);
-
-		yield return new WaitForSeconds(2);
-
-		r ();
-		
-	}
 
 	private Ready showReady;
 
@@ -37,62 +37,47 @@ public class LoadingScreenUIController : MonoBehaviour {
 		//background.gameObject.SetActive(false);
 		//background.canvasRenderer.SetAlpha( 0.0f );
 		isFadingIn = true;
+		isFadingOut = false;
 		showReady = r;
+		startTime = 0f;
+
+		Color newColor = new Color(background.color.r,background.color.b,background.color.g,0f);
+		background.color = newColor;
 	}
 
-	private bool isFadingIn;
-	private float startTime = 0.0f;
-	private float fadeTime = 1.0f;
+
 
 	void Update()
 	{
-		if(isFadingIn)
+		if(isFadingIn || isFadingOut)
 		{
+			float newAlpha = 0;
 			float timeRatio = startTime/fadeTime;
-			float newAlpha =  Mathf.Lerp(0,1,timeRatio);
+			if(isFadingIn) {
+				 newAlpha =  Mathf.Lerp(0,1,timeRatio);
+			} else {
+				 newAlpha =  Mathf.Lerp(1,0,timeRatio);
+			}
+			startTime += Time.deltaTime;
+			//float newAlpha =  Mathf.Lerp(0,1,timeRatio);
 			Color newColor = new Color(background.color.r,background.color.b,background.color.g,newAlpha);
 			background.color = newColor;
+			loading.GetComponentInChildren<Text> ().color = newColor;
 			
-			startTime += Time.deltaTime;
+
 			
 			if(startTime > fadeTime)
 			{
+				if(isFadingOut)this.gameObject.SetActive (false);
 				isFadingIn = false;
+				isFadingOut = false;
+				startTime = 0f;
+
 				showReady();
 			}
 		}
 	}
 
 
-	//private IEnumerator FadeIN(Ready r){
 
-
-		//yield return new WaitForSeconds(2);
-		
-	//	r ();
-
-
-		//Color c;
-	//	c = background.color;
-	//	c.a = 0.5f;
-	//	background.color = c;
-
-		//loading.gameObject.SetActive (false);
-		//background.canvasRenderer.SetAlpha( 0.0f );
-	//	image.CrossFadeAlpha( 1.0f, duration, false );
-
-	//	c = loading.GetComponentInChildren<Text> ().color;
-	//	c.a = 0.5f;
-	//	loading.GetComponentInChildren<Text> ().color = c;
-
-		//background.gameObject.SetActive(false);
-		
-//		loading.GetComponentInChildren<Text> ().CrossFadeAlpha(1f,1f,false);
-///		background.CrossFadeAlpha(1f,100f,false);
-//		
-//		yield return new WaitForSeconds(2);
-//
-	//	r ();
-
-	//}
 }

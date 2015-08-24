@@ -3,7 +3,7 @@ using System.Collections;
 
 //this is really a resource container.
 
-public class Resource : MonoBehaviour, IStop {
+public class Resource : MonoBehaviour, IStartStop {
 
 	public Cargo resourceType;
 	public int max;
@@ -34,9 +34,13 @@ public class Resource : MonoBehaviour, IStop {
 		ResourceLevelChanged(this, current/max, stock);
 	}
 
-	private bool stop;
-	public void Stop() {
+	private bool stop = true;
+	public void StopPlay() {
 		stop = true;
+	}
+
+	public void StartPlay() {
+		stop = false;
 	}
 
 	public void Reset(){

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisitor, IBuild {
+public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisitor, IBuild, IStartStop {
 
 	public SolarSystem solarSystem;
 	public const float SCALE = 1000000;
@@ -13,24 +13,29 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public Sprite sunSprite;
 	public ContourRenderer contourRenderer;
 	private List<GameObject> createdObjects = new List<GameObject>();
-	public Timer cometTimer;
-	public Body cometPrefab;
-	public ShipSpawner cometSpawner;
-	public Pool cometPool;
+
 	public Line linePrefab;
 	public PlayerDataController playerDataController;
+	private List<IStartStop> stoppables = new List<IStartStop>();
+	public CometController cometController;
 
-	void Start() {
 
-	}
-
-	void HandleTimerEvent ()
+	private bool stop = true;
+	public void StartPlay()
 	{
-		GameObject g = cometPool.GetPooledObject ();
-		if (g!=null) {
-			cometSpawner.Spawn (g.GetComponent<Comet> ());
-		}
+		stop = false;
+		cometController.StartPlay ();
+		solarSystem.StartPlay ();
 	}
+
+	public void StopPlay()
+	{
+		stop = true;
+		cometController.StopPlay ();
+		solarSystem.StopPlay ();
+	}
+
+
 
 	public void Visit (Level visitable){
 		
@@ -123,39 +128,39 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	}
 
 	public void Reset(){
-
+		solarSystem.Reset ();
+		stoppables.Clear ();
 		solarSystem.Clear ();
-		cometPool.Reset ();
+
 		contourRenderer.Reset ();
+		cometController.Reset ();
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
 		}
-		cometTimer.TimerEvent-= HandleTimerEvent;
+
 		createdObjects.Clear ();
 		levels.Clear ();
 	}
 
 	public void Build(Ready r){
-		cometTimer.TimerEvent+= HandleTimerEvent;
+		var count = 0;
+		Ready done = delegate() {
+			count++;
+			if(count==2){
+				r();
+			}
+		};
+
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
 		Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
 		
 		solarSystem.SetWorldBounds (worldBounds);
 
-
+		cometController.Build (done);
 	
-		cometPool.PopulatePool (delegate() {
-			Body comet = (Body)Instantiate (cometPrefab);
-			createdObjects.Add(comet.gameObject);
-			return comet.gameObject;
-		});
 
-		//lets now look at the player data to see which levels we can unlock
-		//this should be all
-
-		//if(playerDataController.IsLevelUnlocked()
-		contourRenderer.Build (r);
+		contourRenderer.Build (done);
 	}
  	
 	public void Visit (LevelMapItemConfiguration visitable){

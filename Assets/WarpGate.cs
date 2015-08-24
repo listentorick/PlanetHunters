@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WarpGate : Body, IStop {
+public class WarpGate : Body, IStartStop {
 
 
 	public delegate void ShipEnteredWarpGateHandler(Ship ship, WarpGate warpGate);
@@ -12,12 +12,18 @@ public class WarpGate : Body, IStop {
 	//public float finish = 360f;
 	private Vector3 initialScale;
 	private Rotates rotatesComponent;
-	private bool stop = false;
+	private bool stop = true;
 
-	public void Stop(){
-		rotatesComponent.Stop ();
+	public void StopPlay(){
+		rotatesComponent.StopPlay ();
 		stop = true;
 	}
+
+	public void StartPlay(){
+		rotatesComponent.StartPlay ();
+		stop = false;
+	}
+
 	public void Reset(){
 		rotatesComponent.Reset ();
 		stop = false;
@@ -40,10 +46,11 @@ public class WarpGate : Body, IStop {
 
 	// Update is called once per frame
 	void Update () {
+
+		base.Update ();
 		if (stop) {
 			return;
 		}
-		base.Update ();
 		if (animate) {
 			time+=Time.deltaTime * 3f;
 			//his.transform.localScale = new Vector3 (1f,1f,);

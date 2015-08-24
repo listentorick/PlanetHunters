@@ -23,8 +23,15 @@ public class GameManager : MonoBehaviour {
 
 	public void Next()
 	{
-		gameController.Reset ();
-		//LoadLevelMap ();
+		loadingScreenUIController.Show (delegate() {
+			gameController.Reset ();
+			LoadLevelMap (delegate(LevelMap data) {
+				levelMapController.StartPlay();
+				loadingScreenUIController.Hide (delegate() {
+
+				});
+			});
+		});
 	}
 
 	void HandleWin ()
@@ -50,7 +57,9 @@ public class GameManager : MonoBehaviour {
 		levelLoader.LoadLevelMap (delegate(LevelMap l) {
 			l.Accept (levelMapController);
 			levelMapController.Build (delegate() {
-				handler(l);
+				levelMapController.StartPlay();
+				handler(l); //
+
 			});
 
 		});
@@ -62,6 +71,8 @@ public class GameManager : MonoBehaviour {
 			levelLoader.LoadLevel (levelName, delegate (Level l) {
 				l.Accept (gameController);
 				gameController.Build (delegate() {
+					//gameController.StopPlay();
+					gameController.StartPlay();
 					loadingScreenUIController.Hide (delegate() {
 
 					});

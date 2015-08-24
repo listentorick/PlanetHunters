@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Rotates : MonoBehaviour, IStop {
+public class Rotates : MonoBehaviour, IStartStop {
 
 	public float start = 0f;
 	public float finish = 360f;
@@ -11,15 +11,20 @@ public class Rotates : MonoBehaviour, IStop {
 	
 	}
 
-	private bool stop = false;
-	public void Stop()
+	private bool stop = true;
+	public void StopPlay()
 	{
 		stop = true;
 	}
 
-	public void Reset()
+	public void StartPlay()
 	{
 		stop = false;
+	}
+
+	public void Reset()
+	{
+		stop = true;
 	}
 
 	private float lerpTime = 0f;

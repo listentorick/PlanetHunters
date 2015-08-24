@@ -18,20 +18,24 @@ public struct Link{
 
 
 
-public class SolarSystem : MonoBehaviour, IStop, IReset {
+public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 	public static float MAX_RENTRY_SPEED = 250000; 
 	public static float MAX_FORCE = 1000000; 
 
 
 	//adding wrapping by specifying world bounds
-	private bool stop = false;
-	public void Stop(){
+	private bool stop = true;
+	public void StopPlay(){
 		stop = true;
 	}
 
-	public void Reset(){
+	public void StartPlay(){
 		stop = false;
+	}
+
+	public void Reset(){
+		stop = true;
 	}
 
 	private Vector2 worldBounds;

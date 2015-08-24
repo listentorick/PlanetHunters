@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameController : MonoBehaviour, IGameController, IWinCondition, IStop {
+public class GameController : MonoBehaviour, IGameController, IWinCondition, IStartStop {
 
 	//public delegate void WinConditionHandler();
 	public event WinConditionHandler Win;
@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 
-	private List<IStop> stoppables = new List<IStop>();
+	private List<IStartStop> stoppables = new List<IStartStop>();
 
 	//private int shipPoolSize = 5;
 	public int maxNumShips = 1;
@@ -79,8 +79,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			GameOver();
 		}
 
-		foreach (IStop s in stoppables) {
-			s.Stop();
+		foreach (IStartStop s in stoppables) {
+			s.StopPlay();
 		}
 	}
 
@@ -324,20 +324,30 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	private bool stop = false;
 
-	public void Stop(){
+	public void StopPlay(){
 		stop = true;
-		foreach(IStop s in stoppables)
+		foreach(IStartStop s in stoppables)
 		{
-			s.Stop();
+			s.StopPlay();
 		}
 	}
+
+	
+	public void StartPlay(){
+		stop = false;
+		foreach(IStartStop s in stoppables)
+		{
+			s.StartPlay();
+		}
+	}
+
 
 	void HandleWin ()
 	{
 		//playerDataController.
 		//playerDataController.LevelCompleted(new LevelData
 		Win ();
-		Stop ();
+		StopPlay ();
 
 	}
 
