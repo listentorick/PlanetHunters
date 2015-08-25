@@ -24,6 +24,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public const float SCALE = 100000;
 	public CometController cometController;
 
+	public StarsController starController;
+	public BackgroundController backgroundController;
+
 
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 
@@ -168,6 +171,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	}
 
 	public void Reset(){
+		starController.Reset ();
 		solarSystem.Reset ();
 		stoppables.Clear ();
 		winConditions.Clear ();
@@ -257,7 +261,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		int count=0;
 		Ready Done = delegate() {
 			count++;
-			if(count==6){
+			if(count==8){
 				//start sound and show gui
 				guiController.gameObject.SetActive (true);
 				ready();
@@ -319,6 +323,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		traderShipTimer.Play ();
 
 		cometController.Build (Done);
+		starController.Build (Done);
+		backgroundController.Build (Done);
 
 	}
 

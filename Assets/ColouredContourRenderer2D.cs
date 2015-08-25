@@ -5,33 +5,7 @@ public class ColouredContourRenderer2D : ContourRenderer {
 
 	public GravityFieldHelper fieldHelper;
 
-	void ResizeSpriteToScreen(GameObject theSprite, Camera theCamera, int fitToScreenWidth, int fitToScreenHeight)
-	{        
-		SpriteRenderer sr = theSprite.GetComponent<SpriteRenderer>();
-		
-		theSprite.transform.localScale = new Vector3(1,1,1);
-		
-		float width = sr.sprite.bounds.size.x;
-		float height = sr.sprite.bounds.size.y;
-		
-		float worldScreenHeight = (float)(theCamera.orthographicSize * 2.0);
-		float worldScreenWidth = (float)(worldScreenHeight / Screen.height * Screen.width);
 
-		float scaleX = worldScreenWidth / width;
-		float scaleY = worldScreenHeight / height;
-
-
-		float scaleToUse = 1;
-		if (scaleX > scaleY) {
-			scaleToUse = scaleX;
-		} else {
-			scaleToUse = scaleY;
-		}
-
-		Vector2 scale = new Vector2(scaleToUse, scaleToUse);
-		theSprite.transform.localScale = scale;
-	
-	}
 
 
 	public void Start() {
@@ -81,8 +55,8 @@ public class ColouredContourRenderer2D : ContourRenderer {
 			SpriteRenderer r = this.GetComponent<SpriteRenderer>();
 			
 			r.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-			
-			ResizeSpriteToScreen (this.gameObject, Camera.main, 1, 0);
+
+			Helpers.ResizeSpriteToScreen (this.gameObject, Camera.main, 1, 0);
 			Log ("end resize to screen");
 			
 			

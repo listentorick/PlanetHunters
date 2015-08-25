@@ -13,6 +13,8 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public Sprite sunSprite;
 	public ContourRenderer contourRenderer;
 	private List<GameObject> createdObjects = new List<GameObject>();
+	public StarsController starController;
+	public BackgroundController backgroundController;
 
 	public Line linePrefab;
 	public PlayerDataController playerDataController;
@@ -131,6 +133,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		solarSystem.Reset ();
 		stoppables.Clear ();
 		solarSystem.Clear ();
+		starController.Reset ();
 
 		contourRenderer.Reset ();
 		cometController.Reset ();
@@ -146,7 +149,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		var count = 0;
 		Ready done = delegate() {
 			count++;
-			if(count==2){
+			if(count==4){
 				r();
 			}
 		};
@@ -159,8 +162,9 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 
 		cometController.Build (done);
 	
-
+		starController.Build (done);
 		contourRenderer.Build (done);
+		backgroundController.Build (done);
 	}
  	
 	public void Visit (LevelMapItemConfiguration visitable){

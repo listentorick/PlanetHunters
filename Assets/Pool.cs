@@ -28,6 +28,13 @@ public class Pool : MonoBehaviour, IReset {
 	
 	}
 
+	public void ReturnAll(){
+		foreach (GameObject g in pool) {
+			g.SetActive(false);	
+		}
+	
+	}
+
 	public GameObject GetPooledObject(){
 		for (int i=0; i<poolSize; i++) {
 			if(!pool[i].activeInHierarchy){
