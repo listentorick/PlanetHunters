@@ -11,22 +11,27 @@ public class StarsController : MonoBehaviour, IReset, IBuild, IStartStop {
 
 
 	public void Start(){
-		float worldScreenHeight = (float)(Camera.main.orthographicSize * 2.0);
-		float worldScreenWidth = (float)(worldScreenHeight / Screen.height * Screen.width);
-		
-		pool.PopulatePool (delegate() {
 			
-			float x = Random.Range(-worldScreenWidth/2f,worldScreenWidth/2f);
-			float y = Random.Range(-worldScreenHeight/2f,worldScreenHeight/2f);
-			Vector2 pos = new Vector2(x,y);
-			GameObject star = (GameObject)Instantiate (starPrefab,pos,Quaternion.identity);
-			float scale = Random.Range(0.1f,1f);
-			star.transform.localScale = new Vector3(scale,scale,scale);
-			star.transform.Rotate (Vector3.forward * Random.Range(0f,90f));
+		pool.PopulatePool (delegate() {
+			GameObject star = (GameObject)Instantiate (starPrefab);
 			return star;
 		});
 		
 
+	}
+
+	private void PositionStar(GameObject star){
+
+		float worldScreenHeight = (float)(Camera.main.orthographicSize * 2.0);
+		float worldScreenWidth = (float)(worldScreenHeight / Screen.height * Screen.width);
+
+		float x = Random.Range(-worldScreenWidth/2f,worldScreenWidth/2f);
+		float y = Random.Range(-worldScreenHeight/2f,worldScreenHeight/2f);
+		Vector2 pos = new Vector2(x,y);
+		star.transform.position = pos;
+		float scale = Random.Range(0.1f,1f);
+		star.transform.localScale = new Vector3(scale,scale,scale);
+		star.transform.Rotate (Vector3.forward * Random.Range(0f,90f));
 	}
 
 	public void Build(Ready ready) {
@@ -35,6 +40,7 @@ public class StarsController : MonoBehaviour, IReset, IBuild, IStartStop {
 			GameObject star = pool.GetPooledObject ();
 			if(star){
 				star.SetActive (true);
+				PositionStar(star);
 			}
 		}
 		ready ();

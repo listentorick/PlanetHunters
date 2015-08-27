@@ -49,16 +49,43 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	void HandleProfit (float profit)
 	{
-		money.text = economy.playersMoney.ToString();
+		targetScore+= (int)profit;
+		//score = Mathf.FloorToInt (economy.playersMoney);
+		StartCoroutine (Counter(Mathf.FloorToInt(profit)));
+	}
+
+	private int targetScore;
+	private int scoreToRender;
+
+	private void SetText(Text text, int value)
+	{
+		text.text = value.ToString().Replace("0","o");
+	}
+
+
+	IEnumerator Counter(int count)
+	{
+
+		for(int i = 0; i < count; i+=10)
+		{
+			scoreToRender+=i;
+			if(scoreToRender>= targetScore){
+				scoreToRender = targetScore;
+			}
+
+			SetText(money,scoreToRender);
+			yield return null;
+		}
 	}
 
 	private void ResetControls(){
 		replay.gameObject.SetActive (false);
 		next.gameObject.SetActive (false);
 		gameOver.SetActive (false);
-
-		money.text = "0";
-		numShips.text = "0";
+		SetText (money,0);
+		SetText (numShips, 0);
+	//	money.text = "0";
+		//numShips.text = "0";
 		popularity.value = popularityController.popularity;
 		win.SetActive (false);
 	}

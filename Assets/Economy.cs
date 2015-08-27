@@ -11,35 +11,7 @@ public class Economy : MonoBehaviour {
 	
 		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
 	}
-
-	//public float GetPrice(Resource r) {
-		//what percentage of the items do we have in stock
-	//	return GetBasePrice(r.resourceType) * (r.max - r.current); //10f is the base price
-//	}
-
-	//public float CalculateMaxCost(Resource r) {
-		//what percentage of the items do we have in stock
-	//	return GetBasePrice(r.resourceType) * r.max;	
-	//}
-
-	//public float GetBasePrice(Cargo r) {
-//		return 10f;
-//	}
-
-//	public float GetMaxPrice(Cargo r) {
-//		return 10000f;
-//	}
-
-
-	//if there is 1 resource the max price is r.max
-	//if there are 10 resources the price would be 100 this is the basePrice
-
-	//gradient x = 10-1 y= r.basePrice - r.maxPrice(value at 10 available)
-
-	//public float GetBasePrice(Cargo type) {
-	//	return 10f;
-//	}
-
+	
 	public float GetMaxPrice(Resource r) {
 		
 		return r.maxPrice;
@@ -89,13 +61,13 @@ public class Economy : MonoBehaviour {
 
 		Resource[] resources = ((Planet)p).GetResources ();
 
-		if (s is TraderShip) {
+		if (s is Ship) {
 
 			for (int i=0; i<resources.Length; i++) {
-				if (resources [i].resourceType == ((TraderShip)s).cargoType) {
+				if (resources [i].resourceType == ((Ship)s).cargoType) {
 					float price = GetPrice (resources [i]);
 					int space = resources [i].max - resources [i].current;
-					int available = ((TraderShip)s).cargo;
+					int available = ((Ship)s).cargo;
 					if (available > space) {
 						available = space;
 					}
@@ -104,13 +76,14 @@ public class Economy : MonoBehaviour {
 					playersMoney += earnings;
 					Profit (earnings);
 					resources [i].AddStock (available);
-					((TraderShip)s).cargo -= available;
+					((Ship)s).cargo -= available;
 
 				}
 		
 			}
-
 		}
+
+		
 
 	}
 	

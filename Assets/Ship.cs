@@ -8,6 +8,10 @@ public enum Cargo {
 
 public class Ship : Body {
 
+	public int cargo;
+	public int maxCargo;
+	public Cargo cargoType;
+
 	public ParticleSystem smokePrefab;
 	public ParticleSystem thrusterPrefab;
 

@@ -13,25 +13,19 @@ public class Planet : Body {
 	private Resource[] resourceComponents;
 	private ResourceChart[] resourceCharts;
 
-	public int population = 0;
+	//public int population = 0;
 
 	public Resource[] GetResources(){
 		return resourceComponents;
 	}
 
-	public void AddPopulation(int delta) {
-		this.population += delta;
+	
+	private void AddPopulation(int delta) {
 		Resource pop = GetPopulationResource ();
 		if(pop!=null) {
 			pop.AddStock(delta);
 		}
-		SetPopulation (this.population);
-		//if (delta < 0) {
-			//need to highlight the chart
-		//	GetResourceChart (Cargo.People).Highlight(true);
-		//} //else {
-			//GetResourceChart (Cargo.People).Highlight(false);
-		//}
+
 	}
 
 	private Resource GetPopulationResource(){
@@ -62,16 +56,16 @@ public class Planet : Body {
 		return null;
 	}
 
-	private void SetPopulation(int population) {
+	//private void SetPopulation(int population) {
 	
 		//for each resource update the rate of consumption
-		foreach (Resource r in resourceComponents) {
-			//takes 1 second 1 unit
-			if(r.resourceType != Cargo.People){
-				r.timeToConsumeOneUnit = 10f / population; 
-			} 
-		}
-	}
+	//	foreach (Resource r in resourceComponents) {
+	//		//takes 1 second 1 unit
+	//		if(r.resourceType != Cargo.People){
+	//			r.timeToConsumeOneUnit = 10f / population; 
+	//		} 
+	//	}
+	//}
 
 	public void SetIsLightSource(bool isLightSource) {
 		//if (!castsShadows) {
@@ -162,13 +156,22 @@ public class Planet : Body {
 		if (ResourceLevelChanged != null) {
 			ResourceLevelChanged(resource,value,delta);
 		}
+
+		if (resource.resourceType == Cargo.People) {
+			//this.population += (int)delta;
+
+			//for each resource update the rate of consumption
+			foreach (Resource r in resourceComponents) {
+				//takes 1 second 1 unit
+				if(r.resourceType != Cargo.People){
+					r.timeToConsumeOneUnit = 10f / resource.current; 
+				} 
+			}
+		
+		}
 	}
 
-	//void HandleResourceLevelChanged (Cargo type, float value)
-//	{
 
-
-//	}
 
 	void Update () {
 		base.Update ();

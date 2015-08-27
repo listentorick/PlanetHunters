@@ -5,7 +5,8 @@ using System.Xml;
 using System.Xml.Serialization;
 
 public class LevelMap: Level{
-	
+
+
 
 	[XmlArray("Levels")]
 	[XmlArrayItem("Level",typeof(LevelMapItemConfiguration))]

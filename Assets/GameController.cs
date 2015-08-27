@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GameController : MonoBehaviour, IGameController, IWinCondition, IStartStop {
 
 	//public delegate void WinConditionHandler();
+	public CameraFit cameraFitter;
 	public event WinConditionHandler Win;
 
 	public Blades bladePrefab;
@@ -95,7 +96,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public event PopularityChangedHandler PopularityChanged;
 
 	public void Visit (Level visitable){
-	
+		cameraFitter.UnitsForWidth = visitable.Scale;
+		cameraFitter.ComputeResolution ();
 	}
 
 	public void Visit (BaseConfiguration visitable){
@@ -323,8 +325,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		traderShipTimer.Play ();
 
 		cometController.Build (Done);
-		starController.Build (Done);
+
 		backgroundController.Build (Done);
+		starController.Build (Done);
 
 	}
 
@@ -420,6 +423,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		if(colonyShipPool.Count>0) { // ships in the pool
 			ColonyShip pooledShip = colonyShipPool[0];
 			pooledShip.fuel = 1f;
+			pooledShip.cargoType = Cargo.People;
+			pooledShip.cargo = 10;
 			colonyShipPool.RemoveAt(0);
 			colonyShipSpawner.Spawn(pooledShip);
 		}
@@ -443,8 +448,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		}
 
 		if (p is Planet && s is ColonyShip) {
-			int pop = ((ColonyShip)s).population;
-			((Planet)p).AddPopulation(pop);
+			//int pop = ((ColonyShip)s).population;
+			//((Planet)p).AddPopulation(pop);
 
 			//Remove ship from solar system and 
 			solarSystem.RemoveBody (s);

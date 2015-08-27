@@ -124,7 +124,7 @@ public class CameraFit : MonoBehaviour
 		}
 	}
 	
-	private void ComputeResolution()
+	public void ComputeResolution()
 	{
 		float deviceWidth;
 		float deviceHeight;

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class Level {
 
+	[XmlAttribute("scale")]
+	public float Scale;
+
 
 	[XmlArray("Bodies")]
 	[XmlArrayItem("Planet",typeof(PlanetConfiguration))]

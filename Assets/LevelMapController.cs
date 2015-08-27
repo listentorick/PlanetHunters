@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisitor, IBuild, IStartStop {
 
+	public CameraFit cameraFitter;
 	public SolarSystem solarSystem;
 	public const float SCALE = 1000000;
 	public Planet planetPrefab;
@@ -40,7 +41,8 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 
 
 	public void Visit (Level visitable){
-		
+		cameraFitter.UnitsForWidth = visitable.Scale;
+		cameraFitter.ComputeResolution ();
 	}
 	
 	public void Visit (BaseConfiguration visitable){
