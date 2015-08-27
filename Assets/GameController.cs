@@ -447,6 +447,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			return;
 		}
 
+		economy.HandleShipEnteredOrbit (s, p);
+
 		if (p is Planet && s is ColonyShip) {
 			//int pop = ((ColonyShip)s).population;
 			//((Planet)p).AddPopulation(pop);

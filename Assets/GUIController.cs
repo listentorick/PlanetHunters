@@ -66,7 +66,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	IEnumerator Counter(int count)
 	{
 
-		for(int i = 0; i < count; i+=10)
+		for(int i = 0; i < count/10; i+=10)
 		{
 			scoreToRender+=i;
 			if(scoreToRender>= targetScore){

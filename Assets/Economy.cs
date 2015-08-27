@@ -9,7 +9,7 @@ public class Economy : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
+		//solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
 	}
 	
 	public float GetMaxPrice(Resource r) {
@@ -55,7 +55,8 @@ public class Economy : MonoBehaviour {
 		playersMoney = 0;
 	}
 
-	void HandleShipEnteredOrbit (Body s, Body p)
+	//public void Handl
+	public void HandleShipEnteredOrbit (Body s, Body p)
 	{
 
 
