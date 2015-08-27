@@ -44,22 +44,28 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	void HandleShipCollided ()
 	{
-		numShips.text = gameController.GetNumberOfShips ().ToString ();
+		numShips.text = SetText(gameController.GetNumberOfShips ());
 	}
 
 	void HandleProfit (float profit)
 	{
-		targetScore+= (int)profit;
+		//targetScore+= (int)profit;
 		//score = Mathf.FloorToInt (economy.playersMoney);
 		StartCoroutine (Counter(Mathf.FloorToInt(profit)));
 	}
 
-	private int targetScore;
+	//private int targetScore;
 	private int scoreToRender;
 
-	private void SetText(Text text, int value)
+	private void SetMoney(Text text, int value)
 	{
-		text.text = value.ToString().Replace("0","o");
+		text.text = "$ " + SetText(value);
+	}
+
+
+	private string SetText(int value)
+	{
+		return value.ToString().Replace("0","o");
 	}
 
 
@@ -69,11 +75,11 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		for(int i = 0; i < count/10; i+=10)
 		{
 			scoreToRender+=i;
-			if(scoreToRender>= targetScore){
-				scoreToRender = targetScore;
+			if(scoreToRender>= (int)economy.playersMoney){
+				scoreToRender = (int)economy.playersMoney;
 			}
 
-			SetText(money,scoreToRender);
+			SetMoney(money,scoreToRender);
 			yield return null;
 		}
 	}
@@ -82,18 +88,12 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		replay.gameObject.SetActive (false);
 		next.gameObject.SetActive (false);
 		gameOver.SetActive (false);
-		SetText (money,0);
-		SetText (numShips, 0);
-	//	money.text = "0";
-		//numShips.text = "0";
+		SetMoney (money,0);
+		numShips.text = SetText(0);
 		popularity.value = popularityController.popularity;
 		win.SetActive (false);
 	}
-
-	//public void Reset() {
-
-//	}
-
+	
 	void HandleGameOver ()
 	{
 		this.GameOver ();
@@ -128,7 +128,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	public void Build(Ready ready) 
 	{
-		numShips.text = gameController.GetNumberOfShips ().ToString ();
+		numShips.text = SetText(gameController.GetNumberOfShips ());
 		ready ();
 	}
 

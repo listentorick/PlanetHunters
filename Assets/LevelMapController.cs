@@ -21,6 +21,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public PlayerDataController playerDataController;
 	private List<IStartStop> stoppables = new List<IStartStop>();
 	public CometController cometController;
+	public RepeatSpriteBoundary gridController;
 
 
 	private bool stop = true;
@@ -145,13 +146,14 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 
 		createdObjects.Clear ();
 		levels.Clear ();
+		gridController.Reset ();
 	}
 
 	public void Build(Ready r){
 		var count = 0;
 		Ready done = delegate() {
 			count++;
-			if(count==4){
+			if(count==5){
 				r();
 			}
 		};
@@ -167,6 +169,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		starController.Build (done);
 		contourRenderer.Build (done);
 		backgroundController.Build (done);
+		gridController.Build (done);
 	}
  	
 	public void Visit (LevelMapItemConfiguration visitable){

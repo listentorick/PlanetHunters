@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	//public delegate void WinConditionHandler();
 	public CameraFit cameraFitter;
 	public event WinConditionHandler Win;
-
+	public RepeatSpriteBoundary gridController;
 	public Blades bladePrefab;
 	public Explosion explosionPrefab;
 	public AudioSource audioSource;
@@ -196,6 +196,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		createdObjects.Clear();
 
 		cometController.Reset ();
+		gridController.Reset ();
 		//BuildLevel ();
 
 	}
@@ -263,7 +264,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		int count=0;
 		Ready Done = delegate() {
 			count++;
-			if(count==8){
+			if(count==9){
 				//start sound and show gui
 				guiController.gameObject.SetActive (true);
 				ready();
@@ -300,6 +301,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 
 		guiController.Build (Done);
+
+		gridController.Build (Done);
 
 
 		//lets add the win conditions. These may in the future be configured
