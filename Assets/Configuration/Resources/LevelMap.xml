@@ -33,8 +33,8 @@
 	<Levels>
 		<Level name="Sol" index="0" />
 		<Level name="alphacenturi" index="1" />
-		<Level name="Sol" index="2" />
-		<Level name="Sol" index="3" />
+		<Level name="Vega" index="2" />
+		<Level name="Rigel" index="3" />
 	</Levels>
 
 </LevelMap>

@@ -59,6 +59,32 @@ public class PlayerDataController : MonoBehaviour, IReset {
 			}
 		});
 	}
+
+	private void SortByWinDataScore(List<LevelData> levelData){
+		 levelData.Sort (delegate(LevelData x, LevelData y) {
+			
+			if(x.WinData==null && y.WinData!=null){
+				return 1;
+			}
+
+			if(x.WinData!=null && y.WinData==null){
+				return -1;
+			}
+
+			if(x.WinData==null && y.WinData==null){
+				return 0;
+			}
+
+			if(x.WinData.Score<y.WinData.Score){
+				return 1;
+			} else if(x.WinData.Score>y.WinData.Score){
+				return -1;
+			} else{
+				return 0;
+			}
+		});
+	}
+
 	private LevelData GetLastCompletedLevel(){
 		SortLevelData ();
 		LevelData last = null;
@@ -70,6 +96,32 @@ public class PlayerDataController : MonoBehaviour, IReset {
 		return last;
 	
 	}
+
+
+	public List<LevelData> FindAllLevelData(LevelMapItemConfiguration levelDefinition){
+
+
+
+		LevelData levelData = null;
+		List<LevelData> found = new List<LevelData> ();
+		foreach (LevelData l in playerData.LevelData) {
+			if(l.Name == levelDefinition.Name){
+				found.Add(l);
+			}
+		}
+
+		if (found.Count == 0) {
+			var l = new LevelData();
+			l.Name = levelDefinition.Name;
+			found.Add(l);
+		}
+
+		SortByWinDataScore (found);
+
+		return found;
+		//return found;
+	}
+
 
 	public bool IsLevellocked(LevelMapItemConfiguration levelDefinition){
 		LevelData ld = GetLastCompletedLevel ();
@@ -109,6 +161,7 @@ public class LevelData
 	public string Name { get; set; }
 	public int Index { get; set; }
 	public bool Complete { get; set; }
+	public WinData WinData {get;set;}
 }
 
 [Serializable]

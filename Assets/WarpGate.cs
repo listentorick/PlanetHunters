@@ -4,8 +4,8 @@ using System.Collections;
 public class WarpGate : Body, IStartStop {
 
 
-	public delegate void ShipEnteredWarpGateHandler(Ship ship, WarpGate warpGate);
-	public event ShipEnteredWarpGateHandler ShipEnteredWarpGate;
+	public delegate void BodyEnteredWarpGateHandler(Body ship, WarpGate warpGate);
+	public event BodyEnteredWarpGateHandler BodyEnteredWarpGate;
 	//public Cargo cargoType;
 	public Resource resource;
 	//public float start = 0f;
@@ -76,11 +76,11 @@ public class WarpGate : Body, IStartStop {
 	private bool animate = false;
 	public void OnTriggerEnter2D(Collider2D other) {
 
-		TraderShip ship = other.gameObject.GetComponent<TraderShip> ();
-		if (ship != null) {
+		Body body = other.gameObject.GetComponent<Body> ();
+		if (body != null) {
 			animate = true;
 			time = 0;
-			ShipEnteredWarpGate (ship, this);
+			BodyEnteredWarpGate (body, this);
 	
 		}
 	}

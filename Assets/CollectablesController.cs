@@ -5,48 +5,27 @@ using System.Collections;
 /// This collectables controller spawns the collectable.
 /// It does not control when things are spawned.
 /// </summary>
-public class CollectablesController : MonoBehaviour, IReset, IBuild {
+public class CollectablesController : BodyController, IReset, IBuild {
+
+	public Collectable collectablePrefab;
+	public CollectableType collectableType;
 	
-	public ShipSpawner spawner;
-	public SolarSystem solarSystem;
-
-	private BaseCollectableController[] controllers;
-	void Start () {
-		controllers = FindObjectsOfType<BaseCollectableController> ();
-		foreach (BaseCollectableController b in controllers) {
-			b.SpawnRequest += HandleSpawnRequest;
-		}
+	public override Body BuildBody(){
+		Collectable collectable = (Collectable)Instantiate (collectablePrefab);
+		collectable.Collected+= HandleCollected;
+		return collectable;
 	}
 
-	void HandleSpawnRequest (BaseCollectableController type, Collectable c)
+	public virtual void HandleCollected (Collectable collectable, Ship ship)
 	{
-		Spawn(c);
-	}
-
-
-	void Spawn(Collectable c){
-		c.Collected+= HandleCollected;
-		//The ship spawner is really a body spawner
-		spawner.Spawn (c);
+		//
 	}
 	
-	void HandleCollected (Collectable collectable, Ship ship)
+	public override Body ConfigureBody (Body b)
 	{
-		solarSystem.RemoveBody (collectable);
-
-
+		((Collectable)b).type = collectableType;
+		return b;
 	}
 
-	public void Reset(){
-		foreach (BaseCollectableController b in controllers) {
-			b.Reset();
-		}
-	}
-
-	public void Build(Ready ready) {
-		foreach (BaseCollectableController b in controllers) {
-			b.Build(ready);
-		}
-	}
-
+	
 }

@@ -13,6 +13,8 @@ public class LoadingScreenUIController : MonoBehaviour {
 	private float startTime = 0.0f;
 	private float fadeTime = 0.5f;
 
+	private Ready showReady;
+
 	// Use this for initialization
 	void Start () {
 		this.gameObject.SetActive (false);
@@ -26,11 +28,7 @@ public class LoadingScreenUIController : MonoBehaviour {
 		startTime = 0f;
 		showReady = r;
 	}
-
-
-
-	private Ready showReady;
-
+	
 	public void Show(Ready r) {
 		this.gameObject.SetActive (true);
 		//loading.gameObject.SetActive (true);

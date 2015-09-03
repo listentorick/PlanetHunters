@@ -158,16 +158,60 @@ public class TractorBeam : MonoBehaviour {
 		return p;
 	}
 
-	// Update is called once per frame
-	void Update () {
-		Body closestBody = GetClosestBody ();
-		if (closestBody != null && connection == false) {
-			connection = true;
-			connectedBody  = closestBody;
-
-			tractorBeamRenderer.target = connectedBody.GetRendererTransform ().gameObject.GetComponent<PolygonCollider2D> ();
-			solarSystem.AddConnection(parent, connectedBody,distance,1f);
+	public Body GetBody(GameObject g){
+	
+		Body target = g.GetComponent<Body>();
+		if (target == null) {
+			target = g.GetComponentInParent<Body>();
 
 		}
+
+		return target;
+	
+	}
+
+	public void TryTractor(GameObject g) 
+	{
+		Body target = GetBody (g);
+		bool isDetaching = false;
+		if (connectedBody != null) {
+			if(connectedBody==target) {
+				isDetaching = true;
+			}
+			connectedBody = null;
+			connection = false;
+			tractorBeamRenderer.target = null;
+			solarSystem.RemoveConnectionsForBody (parent);
+		} 
+
+		if (isDetaching) {
+			//The user has clicked an already connected object
+			//They want to detach!
+			return;
+		}
+
+		if (target != null) {
+			float seperation = (target.position - parent.position).magnitude;
+			if (seperation < distance) {
+				connectedBody = target;
+				connection = true;
+				tractorBeamRenderer.target = connectedBody.gameObject.GetComponent<PolygonCollider2D> ();
+				solarSystem.AddConnection (parent, connectedBody, distance, 1f);
+
+			}
+		}
+	}
+
+	// Update is called once per frame
+	void Update () {
+	//	Body closestBody = GetClosestBody ();
+	//	if (closestBody != null && connection == false) {
+	//		connection = true;
+	//		connectedBody  = closestBody;
+
+	//		tractorBeamRenderer.target = connectedBody.GetRendererTransform ().gameObject.GetComponent<PolygonCollider2D> ();
+	//		solarSystem.AddConnection(parent, connectedBody,distance,1f);
+
+	//	}
 	}
 }

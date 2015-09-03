@@ -31,7 +31,14 @@ public class Resource : MonoBehaviour, IStartStop {
 
 	public void AddStock(int stock) {
 		current += stock;
+		if (current < 0) {
+			current = 0;
+		}
 		ResourceLevelChanged(this, current/max, stock);
+	}
+
+	public void ClearStock(){
+		this.AddStock (-current);
 	}
 
 	private bool stop = true;

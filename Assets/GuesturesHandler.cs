@@ -1,10 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GuesturesHandler : MonoBehaviour {
 
 	private Ship selectedBody;
 	private Camera camera;
+	public SolarSystem solarSystem;
+
+
+	public event SelectHandler SelectionChanged;
+
 
 	public void Start(){
 		camera = (Camera) GameObject.FindObjectOfType(typeof(Camera));
@@ -17,37 +23,60 @@ public class GuesturesHandler : MonoBehaviour {
 		return selection.GetComponentInParent<Ship> ();
 	}
 
+	private Vector2 WorldPos(Vector2 screenPos){
+
+		float worldScreenHeight = (float)(camera.orthographicSize * 2.0);
+		float worldScreenWidth = (float)(worldScreenHeight / Screen.height * Screen.width);
+
+		float newX = ((worldScreenWidth / Screen.width) * screenPos.x) - (0.5f * worldScreenWidth);
+		float newY = ((worldScreenHeight / Screen.height) * screenPos.y) -  (0.5f * worldScreenHeight);
+
+		return new Vector2 (newX,newY);
+
+	}
+
 	void OnTap( TapGesture gesture ) 
 	{
-		if (gesture.Selection) {
 
-			Ship s = GetShipFromSelection(gesture.Selection);
-			Selectable sel = gesture.Selection.GetComponent<Selectable>();
+		List<Body> bodiesToSort = new List<Body> ();
+		bodiesToSort.AddRange (solarSystem.bodies);
 
-			if(s is TraderShip ){
-
-				if(selectedBody!=null ) {
-					selectedBody.IsSelected = false;
-				}
-
-				selectedBody = s;
-				selectedBody.IsSelected = true;
-			} else if(sel)
-			{
-				sel.OnSelect();
+		bodiesToSort.Sort (delegate(Body x, Body y) {
+			float diffx = (new Vector2(x.gameObject.transform.position.x,x.gameObject.transform.position.y) - WorldPos(gesture.Position)).magnitude;
+			float diffy = (new Vector2(y.gameObject.transform.position.x,y.gameObject.transform.position.y) - WorldPos(gesture.Position)).magnitude;
+			if(diffx<diffy){
+				return -1;
 			}
 
+			if(diffx>diffy){
+				return 1;
+			}
+			return 0;
+		});
 
-			Debug.Log ("Tapped object: " + gesture.Selection.name);
-		} else {
-			Debug.Log ("No object was tapped at " + gesture.Position + " " + gesture.ElapsedTime);
+		float diff = (new Vector2(bodiesToSort [0].gameObject.transform.position.x,bodiesToSort [0].gameObject.transform.position.y) - WorldPos (gesture.Position)).magnitude;
+
+		if(diff<1){
+
+			Selectable sel = bodiesToSort [0].gameObject.GetComponent<Selectable>();
+			sel.OnSelect();
+
+			if(SelectionChanged!=null) SelectionChanged( bodiesToSort [0].gameObject);
+
+
+			if(bodiesToSort [0].gameObject.GetComponent<TraderShip>()){
+				selectedBody = bodiesToSort [0].gameObject.GetComponent<TraderShip>();
+				selectedBody.IsSelected = true;
+			}
+
+			return;
 		}
+	
 	}
 	void OnFingerUp( FingerUpEvent e ) 
 	{
 		if (selectedBody != null) {
 			selectedBody.Thrust(new Vector2(0,0));
-			//selectedBody.additionalForce = new Vector2(0,0);
 		}
 	}
 

@@ -34,13 +34,14 @@ public class GameManager : MonoBehaviour {
 		});
 	}
 
-	void HandleWin ()
+	void HandleWin (WinData winData)
 	{
 		//add scores etc here
 		LevelData levelData = new LevelData ();
-		levelData.Name = currentLevel.Name;
-		levelData.Index = currentLevel.Index;
 		levelData.Complete = true;
+		levelData.Index = currentLevel.Index;
+		levelData.Name = currentLevel.Name;
+		levelData.WinData = winData;
 		playerDataController.LevelCompleted (levelData);
 	}
 

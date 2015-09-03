@@ -32,6 +32,14 @@ public class Planet : Body {
 		return GetResource (Cargo.People);
 	}
 
+	public void ClearResources(){
+		foreach (Resource r in resourceComponents) {
+			//takes 1 second 1 unit
+			r.ClearStock();
+			
+		}
+	}
+
 	public Resource GetResource(Cargo type){
 		if (resourceComponents == null)
 			return null;
@@ -55,18 +63,7 @@ public class Planet : Body {
 		}
 		return null;
 	}
-
-	//private void SetPopulation(int population) {
 	
-		//for each resource update the rate of consumption
-	//	foreach (Resource r in resourceComponents) {
-	//		//takes 1 second 1 unit
-	//		if(r.resourceType != Cargo.People){
-	//			r.timeToConsumeOneUnit = 10f / population; 
-	//		} 
-	//	}
-	//}
-
 	public void SetIsLightSource(bool isLightSource) {
 		//if (!castsShadows) {
 		if (isLightSource) {
@@ -77,7 +74,7 @@ public class Planet : Body {
 		} else {
 
 		}
-		//}
+
 	}
 
 	public bool IsLightSource {

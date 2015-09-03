@@ -4,4 +4,4 @@ using System.Collections;
 public interface IWinCondition  {
 	event WinConditionHandler Win;
 }
-public delegate void WinConditionHandler();
+public delegate void WinConditionHandler(WinData winData);

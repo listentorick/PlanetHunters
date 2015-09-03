@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ShipSpawner : MonoBehaviour {
 	
-	public SolarSystem solarSystem;
+	//public SolarSystem solarSystem;
 	private float elaspedTime = 0;
 	private float nextTime = 0;
 
@@ -24,7 +24,7 @@ public class ShipSpawner : MonoBehaviour {
 		return dimensions;
 	}
 
-	void PickPositionAndDirection( ref Vector2 position, ref Vector2 velocity) {
+	void PickPositionAndDirection(ref Vector2 position, ref Vector2 velocity) {
 		Vector2 dimensions = CalculateScreenSizeInWorldCoords();
 		
 		int side = Random.Range(0,4);
@@ -74,22 +74,23 @@ public class ShipSpawner : MonoBehaviour {
 		return !hasCollision;
 	}
 
-	public void Spawn(Body ship) {
-		Vector2 position = new Vector2 ();
-		Vector2 velocity = new Vector2 ();
+	public void Spawn(ref Vector2 position, ref Vector2 velocity) {
+	//public void Spawn(Body ship) {
+		//position = new Vector2 ();
+		//velocity = new Vector2 ();
 		PickPositionAndDirection (ref position, ref velocity);
 		for(var i=0; i<10;i++) {
 			if(!HasClearPath(position,velocity)) {
-				PickPositionAndDirection (ref position, ref velocity);
+				PickPositionAndDirection ( ref position, ref velocity);
 			}else {
-				float scale = 100000f;
-				//ship.velocity = velocity;
-				ship.AlignToVector(velocity);
-				ship.position = position * scale;
-				ship.lastPosition = ship.position - (velocity * Time.fixedDeltaTime);
-				ship.gameObject.transform.position = position; //new Vector3(-100,-100,0); //set start position to ensure z value is correct
-				solarSystem.AddBody(ship);
-				ship.gameObject.SetActive(true);
+				//float scale = 100000f;
+
+				//ship.AlignToVector(velocity);
+				//ship.position = position * scale;
+				//ship.lastPosition = ship.position - (velocity * Time.fixedDeltaTime);
+				//ship.gameObject.transform.position = position; //new Vector3(-100,-100,0); //set start position to ensure z value is correct
+				//solarSystem.AddBody(ship);
+				//ship.gameObject.SetActive(true);
 				break;
 				
 			}

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour, IGameController, IWinCondition, IStartStop {
 
-	//public delegate void WinConditionHandler();
+	public GuesturesHandler gestureHandler;
+
 	public CameraFit cameraFitter;
 	public event WinConditionHandler Win;
 	public RepeatSpriteBoundary gridController;
@@ -16,14 +17,16 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public AudioClip warpSound;
 	public AudioClip failSound;
 
+
 	public PopularityController popularityController;
 	public ShipIndicator shipIndicatorPrefab;
 	private IList<Ship> ships = new List<Ship> (); //this is all the ships
 	private IList<TraderShip> traderShipPool = new List<TraderShip> ();
-	private IList<ColonyShip> colonyShipPool = new List<ColonyShip> ();
+//	private IList<ColonyShip> colonyShipPool = new List<ColonyShip> ();
 	public Material lightMaterial;
 	public const float SCALE = 100000;
 	public CometController cometController;
+	public ColonyShipController colonyShipController;
 
 	public StarsController starController;
 	public BackgroundController backgroundController;
@@ -32,14 +35,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 
 	private List<IStartStop> stoppables = new List<IStartStop>();
-
-	//private int shipPoolSize = 5;
+	
 	public int maxNumShips = 1;
 
 	public TraderShip traderShipPrefab;
-	public ColonyShip colonyShipPrefab;
 
-	public Timer colonyShipTimer;
 	public Timer traderShipTimer;
 
 	public SolarSystem solarSystem;
@@ -60,12 +60,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public ContourRenderer contourRenderer;
 
 	public ShipSpawner tradeShipSpawner;
-	public ShipSpawner colonyShipSpawner;
-	public ShipSpawner collectableSpawner;  //will spawn any object which derives from body
-	//public Collectable[] collectables;
+	
+	//public CollectablesController collectablesController;
 
-	//public float popularity = 1f;
-	public CollectablesController collectablesController;
 
 	public GUIController guiController;
 
@@ -135,21 +132,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		planet.soi = visitable.SOI;
 		planet.canMove = false;
 
-		//AddResource (planet.gameObject, Cargo.Food, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100, 100,1f);
-		//AddResource (planet.gameObject, Cargo.People, 10, 10,0, 100,1f); //price is meaningless
-	
-	
-
-		//Calculate world bones
-	//	Vector2 topRight = new Vector2 (1, 1);
-	//	Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
-	//	Vector2 worldBounds = new Vector2 (edgeVector.x * GameController.SCALE, edgeVector.y * GameController.SCALE);
-
-	//	solarSystem.SetWorldBounds (worldBounds);
-
-
 		solarSystem.AddBody (planet);
-		
 		createdObjects.Add (planet.gameObject);
 	
 	}
@@ -173,6 +156,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	}
 
 	public void Reset(){
+		cometController.BodyBuilt -= HandleCometBodyBuilt;
+		colonyShipController.BodyBuilt -= HandleColonyShipBodyBuilt;
+
+		gestureHandler.SelectionChanged -= HandleSelectionChanged;
 		starController.Reset ();
 		solarSystem.Reset ();
 		stoppables.Clear ();
@@ -184,11 +171,14 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		elaspedTime = 0f;
 		nextTime = 0f;
 		traderShipPool.Clear ();
-		colonyShipPool.Clear ();
+		//colonyShipPool.Clear ();
 		ships.Clear ();
 		economy.Reset ();
 		contourRenderer.Reset ();
-		collectablesController.Reset ();
+		for (int i=0; i<collectables.Length; i++) {
+			collectables[i].Reset();
+		}
+		//collectablesController.Reset ();
 		popularityController.Reset ();
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
@@ -196,6 +186,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		createdObjects.Clear();
 
 		cometController.Reset ();
+		colonyShipController.Reset ();
 		gridController.Reset ();
 		//BuildLevel ();
 
@@ -221,9 +212,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 		return r;
 	}
-
-
-
+	
 
 	//when a ship enters a warp gate we add the cargo to this.
 	//We then randomly pop off this queue when we spawn 
@@ -242,7 +231,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	private void CreateWarpGate(Cargo type, Vector3 position){
 		WarpGate warpGate = (WarpGate)Instantiate (warpGatePrefab,position, Quaternion.identity);
-		warpGate.ShipEnteredWarpGate+= HandleShipEnteredWarpGate;
+		warpGate.BodyEnteredWarpGate+= HandleBodyEnteredWarpGate;
 		//warpGate.cargoType = type;
 
 		warpGate.resource = AddResource (warpGate.gameObject, type, FOOD_BASE_PRICE, FOOD_MAX_PRICE,100000, 100000,1f);
@@ -261,10 +250,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	public void Build(Ready ready) {
 
+		gestureHandler.SelectionChanged+= HandleSelectionChanged;
+
 		int count=0;
 		Ready Done = delegate() {
 			count++;
-			if(count==9){
+			Debug.Log("CUnt" + count);
+			if(count==8 + collectables.Length){
 				//start sound and show gui
 				guiController.gameObject.SetActive (true);
 				ready();
@@ -272,7 +264,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		};
 
 		stoppables.Add (solarSystem);
-
+		stoppables.Add(cometController);
+		stoppables.Add (colonyShipController);
 
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
@@ -281,23 +274,37 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		solarSystem.SetWorldBounds (worldBounds);
 
 		//position 3 planets ramdomly
-		collectablesController.Build (Done);
+		//collectablesController.Build (Done);
 
-		colonyShipSpawner.Spawned+= HandleShipSpawned;
+		for (int i=0; i<collectables.Length; i++) {
+			collectables[i].Build(Done);
+		}
+
 		tradeShipSpawner.Spawned+= HandleTradeShipSpawned;
 
 		traderShipPool = PopulatePool<TraderShip> (traderShipPrefab, 1);
 
-		colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 10);
+		//colonyShipPool = PopulatePool<ColonyShip> (colonyShipPrefab, 10);
 
 		contourRenderer.Build (Done);
 
+		//Trader ship shouldnt be spawned
 		TraderShip s = traderShipPool[0];
 		traderShipPool.RemoveAt (0);
-		tradeShipSpawner.Spawn (s);
+		Vector2 position = new Vector2 ();
+		Vector2 velocity = new Vector2 ();
+		tradeShipSpawner.Spawn (ref position,ref velocity);
+		s.position = position * GameController.SCALE;
+		s.lastPosition = s.position - (velocity * Time.fixedDeltaTime);
+		s.gameObject.transform.position = new Vector2 (-100, -100);
+		solarSystem.AddBody(s);
+		s.gameObject.SetActive(true);
+
 		s.cargoType = Cargo.Food;
 		s.cargo = 100;
 		ships.Add (s);
+
+		playersActiveShip = s;
 
 
 		guiController.Build (Done);
@@ -308,9 +315,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		//lets add the win conditions. These may in the future be configured
 		PlanetsPopulatedWinCondition winCondition = new PlanetsPopulatedWinCondition ();
 		winCondition.solarSystem = solarSystem;
+		winCondition.economy = economy;
 		winCondition.Build (Done);
 		winCondition.Win += HandleWin;
 		winConditions.Add (winCondition);
+
 
 		audioSource.volume = 1f;
 		audioSource.clip = backgroundSound;
@@ -324,15 +333,43 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			}
 		}
 
-		colonyShipTimer.Play ();
-		traderShipTimer.Play ();
+		//colonyShipTimer.Play ();
+	//	traderShipTimer.Play ();
 
+		cometController.BodyBuilt+= HandleCometBodyBuilt;
 		cometController.Build (Done);
 
 		backgroundController.Build (Done);
 		starController.Build (Done);
 
+		colonyShipController.BodyBuilt+= HandleColonyShipBodyBuilt;
+		colonyShipController.Build (Done);
+
 	}
+
+	void HandleColonyShipBodyBuilt(Body b){
+		((ColonyShip)b).ShipCollided+= HandleShipCollided;
+		((ColonyShip)b).HullFailure+= HandleHullFailure;
+
+		ShipIndicator shipIndicator = Instantiate(shipIndicatorPrefab);
+		shipIndicator.ship = (Ship)b;
+		createdObjects.Add (shipIndicator.gameObject);
+		shipIndicators.Add(shipIndicator);
+	}
+
+	void HandleCometBodyBuilt (Body body)
+	{
+	}
+
+	void HandleSelectionChanged (GameObject g)
+	{
+		if (playersActiveShip != null && g!=playersActiveShip.gameObject) {
+			playersActiveShip.GetComponent<TractorBeam>().TryTractor(g);
+			
+		}
+	}
+
+	public TraderShip playersActiveShip;
 
 	private bool stop = false;
 
@@ -354,11 +391,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	}
 
 
-	void HandleWin ()
+	void HandleWin (WinData winData)
 	{
-		//playerDataController.
-		//playerDataController.LevelCompleted(new LevelData
-		Win ();
+		Win (winData);
 		StopPlay ();
 
 	}
@@ -371,17 +406,17 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	}
 
-	void HandleShipSpawned (Body ship)
-	{
-
-	}
+	private CollectablesController[] collectables;
 
 	// Use this for initialization
 	void Start () {
 		//BuildLevel ();
 
+
+		collectables = FindObjectsOfType<CollectablesController> ();
+
 		solarSystem.ShipEnteredOrbit+= HandleShipEnteredOrbit;
-		colonyShipTimer.TimerEvent += ColonyShipTimerEvent;
+		//colonyShipTimer.TimerEvent += ColonyShipTimerEvent;
 		traderShipTimer.TimerEvent += TraderShipTimer;
 		popularityController.PopularityChanged += HandlePopularityChanged;
 		economy.Profit+= HandleProfit;
@@ -408,6 +443,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		}
 	}
 
+
 	void TraderShipTimer ()
 	{
 		if (stop)
@@ -417,32 +453,22 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			TraderShip pooledShip = traderShipPool[0];
 			traderShipPool.RemoveAt(0);
 			pooledShip.fuel = 1f;
-			tradeShipSpawner.Spawn(pooledShip);
+			//tradeShipSpawner.Spawn(pooledShip);
 		}
 
 	}
-
-	void TrySpawnColonyShip(){
-		if(colonyShipPool.Count>0) { // ships in the pool
-			ColonyShip pooledShip = colonyShipPool[0];
-			pooledShip.fuel = 1f;
-			pooledShip.cargoType = Cargo.People;
-			pooledShip.cargo = 10;
-			colonyShipPool.RemoveAt(0);
-			colonyShipSpawner.Spawn(pooledShip);
-		}
-	}
-
-	void ColonyShipTimerEvent ()
-	{
-		if (stop)
-			return;
-		TrySpawnColonyShip ();
-	}
+	
 
 	void HandleShipEnteredOrbit (Body s, Body p)
 	{
-		//solarSystem.RemoveConnectionsForBody (s);
+
+		if (s is Comet) {
+		
+			DestroyBody(s);
+
+			((Planet)p).ClearResources();
+
+		}
 
 		if (s is Ship && s.velocity.magnitude > SolarSystem.MAX_RENTRY_SPEED) {
 			//travelling too fast
@@ -453,15 +479,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		economy.HandleShipEnteredOrbit (s, p);
 
 		if (p is Planet && s is ColonyShip) {
-			//int pop = ((ColonyShip)s).population;
-			//((Planet)p).AddPopulation(pop);
-
+	
 			//Remove ship from solar system and 
-			solarSystem.RemoveBody (s);
-			s.gameObject.transform.position = new Vector2(100f,100f);
-			s.gameObject.SetActive (false);
-			colonyShipPool.Add(((ColonyShip)s));
-
+			//solarSystem.RemoveBody (s);
+			//s.gameObject.transform.position = new Vector2(100f,100f);
+			//s.gameObject.SetActive (false);
+			colonyShipController.ReturnToPool(s);
+	
 			//play an applause sound??
 
 			Vector3 position = p.gameObject.transform.position;
@@ -471,9 +495,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			audioSource.PlayOneShot (profitSound);
 
 			//immediately spawn another colony ship
-			TrySpawnColonyShip();
-			colonyShipTimer.Reset();
 
+			colonyShipController.SpawnNow();
 
 		}
 	}
@@ -509,15 +532,15 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		
 	}
 
-	void HandleShipEnteredWarpGate (Ship ship, WarpGate warpGate)
+	void HandleBodyEnteredWarpGate (Body body, WarpGate warpGate)
 	{
 
 
-		if (ship is TraderShip) {
-			TraderShip trader = (TraderShip)ship;
+		if (body is TraderShip) {
+			TraderShip trader = (TraderShip)body;
 			traderShipPool.Add (trader);
 			solarSystem.RemoveBody (trader);
-			trader.transform.position = new Vector2(100f,100f);
+			trader.transform.position = new Vector2 (100f, 100f);
 			trader.gameObject.SetActive (false);
 
 			if (trader.cargoType == warpGate.resource.resourceType) {
@@ -528,12 +551,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 			shipStateQueue.Add (new ShipState (trader.cargoType, trader.cargo));
 
-			audioSource.PlayOneShot(warpSound,1f);
+			audioSource.PlayOneShot (warpSound, 1f);
+		} else  {
+			solarSystem.RemoveBody (body);
+			body.gameObject.SetActive(false);
+			audioSource.PlayOneShot (warpSound, 1f);
 		}
 
-
-
-		//Hidden (ship.gameObject, true);
 	}
 
 
@@ -572,6 +596,16 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		CheckShipStatus ();
 	}
 
+	private BodyController GetController(Body body){
+		if (body is Comet) {
+			return cometController;
+		} else if (body is ColonyShip) {
+			return colonyShipController;
+		} else {
+			return null;
+		}
+	}
+
 	private void DestroyBody(Body body) {
 
 		if (body is Ship) {
@@ -590,11 +624,9 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			ships.Remove ((Ship)body);
 		}
 
-		solarSystem.RemoveConnectionsForBody (body);
-
-
-
-		solarSystem.RemoveBody (body);
+		BodyController bc = GetController (body);
+		if(bc)
+			bc.ReturnToPool (body);
 
 		//should come from a pool
 		Explosion e = (Explosion)Instantiate (explosionPrefab);
@@ -631,18 +663,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			return;
 		}
 
-
-
-	//	return;
 		DestroyBody (ship);
-
-		//audioSource.Stop();
-		//audioSource.volume = 1f;
-		//audioSource.clip = explosionSound;
-		//audioSource.PlayOneShot(explosionSound);
-
-
-		//Ship otherShip = other.GetComponent<Ship> ();
 
 		if (other != null) {
 			DestroyBody (other);
@@ -657,7 +678,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		ShipCollided ();
 
 		CheckShipStatus ();
-		
 
 	}
 

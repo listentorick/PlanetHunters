@@ -30,7 +30,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 
 
-	void HandleWin ()
+	void HandleWin (WinData winData)
 	{
 		win.gameObject.SetActive (true);
 		next.gameObject.SetActive (true);

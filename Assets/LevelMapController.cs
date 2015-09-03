@@ -23,6 +23,8 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public CometController cometController;
 	public RepeatSpriteBoundary gridController;
 
+	public PlayerDataGUIController playerDataGUIControllerPrefab;
+
 
 	private bool stop = true;
 	public void StartPlay()
@@ -80,10 +82,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		planet.soi = visitable.SOI;
 		planet.canMove = false;
 
-		//Calculate world bones
-	
-		
-		
+
 		solarSystem.AddBody (planet);
 		
 		createdObjects.Add (planet.gameObject);
@@ -129,6 +128,8 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		s.Select += HandleSelect;
 		
 		levels.Add (sun);
+
+	
 		
 	}
 
@@ -170,8 +171,13 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		contourRenderer.Build (done);
 		backgroundController.Build (done);
 		gridController.Build (done);
+
+	//	foreach(IBuild
+	
 	}
  	
+	private List<PlayerDataGUIController> playerDataGUIs = new List<PlayerDataGUIController> ();
+
 	public void Visit (LevelMapItemConfiguration visitable){
 		Planet sun = levels[visitable.Index];
 
@@ -179,11 +185,24 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		playerDataController.AddLevelDefinition (visitable);
 	
 		if (playerDataController.IsLevellocked (visitable)) {
-			sun.gameObject.AddComponent<Lock>();
-		}
+			sun.gameObject.AddComponent<Lock> ();
+		} 
+				var playerDataGUIController = (PlayerDataGUIController)Instantiate (playerDataGUIControllerPrefab);
+				playerDataGUIController.gameObject.transform.parent = sun.gameObject.transform;
+				playerDataGUIController.gameObject.transform.localPosition = new Vector3(0.9f,0,0);
+
+			playerDataGUIController.SetPlayerData(playerDataController.FindAllLevelData(visitable));
+
 
 		LevelDataRenderer r = sun.gameObject.AddComponent<LevelDataRenderer>();
 		r.LevelDefinition = visitable;
+
+	
+		//playerDataController.
+		//Calculate world bones
+
+
+
 		//next add the data to the sun so when events fire we can ask questions of it
 	}
 

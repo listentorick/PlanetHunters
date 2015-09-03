@@ -11,7 +11,9 @@ public class Selectable : MonoBehaviour {
 		}
 	}
 	
-	public delegate void SelectHandler(GameObject g);
+
 	public event SelectHandler Select;
 
 }
+
+public delegate void SelectHandler(GameObject g);

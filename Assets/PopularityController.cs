@@ -22,7 +22,7 @@ public class PopularityController : MonoBehaviour, IReset {
 		if (popularity > 1f) {
 			popularity = 1f;
 		}
-		this.PopularityChanged (this.popularity);
+		if(this.PopularityChanged!=null) this.PopularityChanged (this.popularity);
 
 	}
 

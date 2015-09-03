@@ -6,6 +6,7 @@ public class PlanetsPopulatedWinCondition: IWinCondition, IBuild {
 
 	//public delegate void WinConditionHandler();
 	public event WinConditionHandler Win;
+	public Economy economy;
 	
 	public SolarSystem solarSystem;
 	private IList<Planet> planets = new List<Planet>();
@@ -37,7 +38,9 @@ public class PlanetsPopulatedWinCondition: IWinCondition, IBuild {
 			}
 		}
 
-		Win ();
+		WinData winData = new WinData ();
+		winData.Score = (int)economy.playersMoney;
+		Win (winData);
 	}
 
 
