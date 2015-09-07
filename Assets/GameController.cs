@@ -263,6 +263,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			}
 		};
 
+	
+
 		stoppables.Add (solarSystem);
 		stoppables.Add(cometController);
 		stoppables.Add (colonyShipController);
@@ -277,6 +279,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		//collectablesController.Build (Done);
 
 		for (int i=0; i<collectables.Length; i++) {
+			stoppables.Add(collectables[i]);
 			collectables[i].Build(Done);
 		}
 
@@ -639,7 +642,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		e.canAlign = true;
 		solarSystem.AddBody (e);
 		e.AlignToVector (body.velocity);
-		Destroy (body.gameObject);
+
+		//Destroy (body.gameObject);
 		//create
 		createdObjects.Add (e.gameObject);
 

@@ -9,6 +9,8 @@ public class CollectablesController : BodyController, IReset, IBuild {
 
 	public Collectable collectablePrefab;
 	public CollectableType collectableType;
+	public BaseCollectedHandler collectedHandler;
+
 	
 	public override Body BuildBody(){
 		Collectable collectable = (Collectable)Instantiate (collectablePrefab);
@@ -18,7 +20,8 @@ public class CollectablesController : BodyController, IReset, IBuild {
 
 	public virtual void HandleCollected (Collectable collectable, Ship ship)
 	{
-		//
+		collectedHandler.Collect (collectable, ship);
+		this.ReturnToPool (collectable);
 	}
 	
 	public override Body ConfigureBody (Body b)
