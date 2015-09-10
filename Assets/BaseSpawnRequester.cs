@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseSpawnRequester : MonoBehaviour, IBuild, IReset {
+public class BaseSpawnRequester : MonoBehaviour, IBuild, IReset, IStartStop {
 
 	public delegate void SpawnRequestHandler(Vector2 position, Vector2 velocity);
 	public event SpawnRequestHandler SpawnRequest;
@@ -18,5 +18,17 @@ public class BaseSpawnRequester : MonoBehaviour, IBuild, IReset {
 
 	public virtual void Reset()
 	{
+	}
+
+	protected bool stopped = true;
+
+	public void StopPlay()
+	{
+		stopped = true;
+	}
+	
+	public void StartPlay()
+	{
+		stopped = false;
 	}
 }

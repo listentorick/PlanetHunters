@@ -97,6 +97,14 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		cameraFitter.ComputeResolution ();
 	}
 
+	public void Visit (SpawnConfiguration visitable){
+
+		if (visitable.SpawnType == SpawnType.ColonyShip) {
+			((ConfigurableSpawnRequester)colonyShipController.spawnRequester).Add(visitable);
+		}
+		
+	}
+
 	public void Visit (BaseConfiguration visitable){
 		
 	}

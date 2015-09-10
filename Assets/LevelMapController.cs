@@ -62,7 +62,11 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		//}
 
 	}
-	
+
+	public void Visit (SpawnConfiguration visitable){
+		
+	}
+
 	public void Visit (PlanetConfiguration visitable){
 		
 		Planet planet = Instantiate (planetPrefab);

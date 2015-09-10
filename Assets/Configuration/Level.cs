@@ -16,12 +16,20 @@ public class Level {
 
 	public List<BaseConfiguration> Planets = new List<BaseConfiguration>();
 
+	[XmlArray("Events")]
+	[XmlArrayItem("Spawn",typeof(SpawnConfiguration))]
+	public List<SpawnConfiguration> Events = new List<SpawnConfiguration> ();
+
 	public void Accept(ILevelConfigurationVisitor visitor) {
 
 		visitor.Visit(this);
 		
 		foreach(BaseConfiguration player in Planets) {
 			player.Accept(visitor);
+		}
+
+		foreach(SpawnConfiguration spawn in Events) {
+			spawn.Accept(visitor);
 		}
 
 	}

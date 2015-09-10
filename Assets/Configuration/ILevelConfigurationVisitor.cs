@@ -14,5 +14,6 @@ using System.Collections.Generic;
 	void Visit (ConstellationLineConfiguration visitable);
 	void Visit (LevelMapItemConfiguration visitable);
 	void Visit (PlanetResourceConfiguration visitable);
+	void Visit (SpawnConfiguration visitable);
 
 }

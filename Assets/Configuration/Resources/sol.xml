@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Level scale="20">
 
+	<Events>
+		<Spawn type="ColonyShip" when="10">
+			<Position x="0" y="0"></Position>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+		<Spawn type="ColonyShip" when="30">
+			<Position x="-600000" y="-100000"></Position>
+			<Velocity x="-600000" y="-100000"></Velocity>
+		</Spawn> 
+	</Events>
+	
 	<Bodies>
 
+		
 
 		<Planet Mass="1e+25" SOI="150000" Type="Red">
 			<Position x="-600000" y="-100000"></Position>

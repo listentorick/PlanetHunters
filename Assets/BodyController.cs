@@ -65,6 +65,7 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 	
 	public void StartPlay(){
 		stop = false;
+		spawnRequester.StartPlay ();
 		foreach (IStartStop s in stoppables) {
 			s.StartPlay();
 		}
@@ -73,6 +74,7 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 	public void StopPlay()
 	{
 		stop = true;
+		spawnRequester.StopPlay ();
 		foreach (IStartStop s in stoppables) {
 			s.StopPlay();
 		}
