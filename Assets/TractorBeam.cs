@@ -204,14 +204,14 @@ public class TractorBeam : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	//	Body closestBody = GetClosestBody ();
-	//	if (closestBody != null && connection == false) {
-	//		connection = true;
-	//		connectedBody  = closestBody;
+		//Body closestBody = GetClosestBody ();
+		//if (closestBody != null && connection == false) {
+		//	connection = true;
+		//	connectedBody  = closestBody;
 
-	//		tractorBeamRenderer.target = connectedBody.GetRendererTransform ().gameObject.GetComponent<PolygonCollider2D> ();
-	//		solarSystem.AddConnection(parent, connectedBody,distance,1f);
+		//	tractorBeamRenderer.target = connectedBody.GetRendererTransform ().gameObject.GetComponent<PolygonCollider2D> ();
+		//	solarSystem.AddConnection(parent, connectedBody,distance,1f);
 
-	//	}
+		//}
 	}
 }

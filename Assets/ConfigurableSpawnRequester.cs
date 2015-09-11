@@ -35,6 +35,7 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 	
 	public override void Reset()
 	{
+		timePassed = 0f;
 		toSpawn.Clear ();
 	}
 

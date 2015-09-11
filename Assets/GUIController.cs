@@ -23,7 +23,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		gameController.GameOver+= HandleGameOver;
 		gameController.Win += HandleWin;
 		economy.Profit += HandleProfit;
-		gameController.ShipCollided += HandleShipCollided;
+		gameController.ShipDestroyed += HandleShipCollided;
 		popularityController.PopularityChanged += HandlePopularityChanged;
 		HandleShipCollided ();
 	}

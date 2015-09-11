@@ -70,6 +70,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public PlayerDataController playerDataController;
 
 	public List<IWinCondition> winConditions = new List<IWinCondition>();
+	public List<IFailCondition> failConditions = new List<IFailCondition>();
 
 	public delegate void GameOverHandler();
 	public event GameOverHandler GameOver;
@@ -87,14 +88,22 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	
 	public delegate void ShipCollidedHandler();
-	public event ShipCollidedHandler ShipCollided;
+	public event ShipCollidedHandler ShipDestroyed;
 	
 	public delegate void PopularityChangedHandler(float popularity);
 	public event PopularityChangedHandler PopularityChanged;
 
+	private Vector2 startPosition = new Vector2();
 	public void Visit (Level visitable){
 		cameraFitter.UnitsForWidth = visitable.Scale;
 		cameraFitter.ComputeResolution ();
+
+
+		if (visitable.position != null) {
+			startPosition = new Vector2(visitable.position.X,visitable.position.Y);
+		}
+
+
 	}
 
 	public void Visit (SpawnConfiguration visitable){
@@ -102,28 +111,28 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		float worldScreenHeight = (float)(Camera.main.orthographicSize * 2.0);
 		float worldScreenWidth = (float)(worldScreenHeight / Screen.height * Screen.width);
 		
-		
+		float margin = 5f;
 		//mutate the config
 		switch(visitable.Position.from){
 			case From.Top:
 				
 				visitable.Position.X = visitable.Position.X /GameController.SCALE;
-				visitable.Position.Y =  (worldScreenHeight/2f);
+				visitable.Position.Y =  (worldScreenHeight/2f) + margin;
 				break;
 				
 			case From.Bottom:
 				visitable.Position.X = visitable.Position.X /GameController.SCALE;
-				visitable.Position.Y =  -(worldScreenHeight/2f);
+				visitable.Position.Y =  -(worldScreenHeight/2f) - margin;
 				break;
 				
 			case From.Left:
 				visitable.Position.Y = visitable.Position.Y /GameController.SCALE;
-				visitable.Position.X =  -(worldScreenWidth/2f);
+				visitable.Position.X =  -(worldScreenWidth/2f) - margin;
 				break;
 				
 			case From.Right:
 				visitable.Position.Y = visitable.Position.Y /GameController.SCALE;
-				visitable.Position.X =  (worldScreenWidth/2f);
+				visitable.Position.X =  (worldScreenWidth/2f) + margin;
 				break;
 				
 		}
@@ -204,6 +213,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		solarSystem.Reset ();
 		stoppables.Clear ();
 		winConditions.Clear ();
+		failConditions.Clear ();
 		guiController.Reset ();
 		guiController.gameObject.SetActive (false);
 		solarSystem.Clear ();
@@ -295,8 +305,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		int count=0;
 		Ready Done = delegate() {
 			count++;
-			Debug.Log("CUnt" + count);
-			if(count==8 + collectables.Length){
+			if(count==10 + collectables.Length){
 				//start sound and show gui
 				guiController.gameObject.SetActive (true);
 				ready();
@@ -336,10 +345,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		traderShipPool.RemoveAt (0);
 		Vector2 position = new Vector2 ();
 		Vector2 velocity = new Vector2 ();
-		tradeShipSpawner.Spawn (ref position,ref velocity);
-		s.position = position * GameController.SCALE;
+		//tradeShipSpawner.Spawn (ref position,ref velocity);
+		s.position = startPosition;
 		s.lastPosition = s.position - (velocity * Time.fixedDeltaTime);
-		s.gameObject.transform.position = new Vector2 (-100, -100);
+		s.gameObject.transform.position = startPosition/GameController.SCALE;
 		solarSystem.AddBody(s);
 		s.gameObject.SetActive(true);
 
@@ -363,6 +372,20 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		winCondition.Win += HandleWin;
 		winConditions.Add (winCondition);
 
+		PlanetDeadFailCondition planetDeadFailCondition = new PlanetDeadFailCondition ();
+		planetDeadFailCondition.solarSystem = solarSystem;
+		winCondition.economy = economy;
+		planetDeadFailCondition.Build (Done);
+		planetDeadFailCondition.Fail += HandleFail;
+		failConditions.Add (planetDeadFailCondition);
+
+
+		AllShipsDestroyedFailCondition allShipsFailCondition = new AllShipsDestroyedFailCondition ();
+		allShipsFailCondition.gameController = this;
+		allShipsFailCondition.Build (Done);
+		allShipsFailCondition.Fail += HandleFail;
+		failConditions.Add (allShipsFailCondition);
+
 
 		audioSource.volume = 1f;
 		audioSource.clip = backgroundSound;
@@ -377,7 +400,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		}
 
 		//colonyShipTimer.Play ();
-	//	traderShipTimer.Play ();
+		traderShipTimer.Play ();
 
 		cometController.BodyBuilt+= HandleCometBodyBuilt;
 		cometController.Build (Done);
@@ -441,6 +464,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	}
 
+	void HandleFail(){
+		this.OnGameOver();
+	}
+
 	void HandleTradeShipSpawned (Body ship)
 	{
 
@@ -497,6 +524,14 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			traderShipPool.RemoveAt(0);
 			pooledShip.fuel = 1f;
 			//tradeShipSpawner.Spawn(pooledShip);
+			Vector2 position = new Vector2 ();
+			Vector2 velocity = new Vector2 ();
+			tradeShipSpawner.Spawn (ref position,ref velocity);
+			pooledShip.position = startPosition;
+			pooledShip.lastPosition = pooledShip.position - (velocity * Time.fixedDeltaTime);
+			solarSystem.AddBody(pooledShip);
+			pooledShip.gameObject.SetActive (true);
+
 		}
 
 	}
@@ -628,7 +663,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			shipIndicators.Add(shipIndicator);
 			createdObjects.Add(shipIndicator.gameObject);
 
-			//newShip.gameObject.SetActive(false);
 		}
 		return shipPool;
 	}
@@ -636,7 +670,6 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	void HandleHullFailure (Ship ship)
 	{
 		DestroyBody (ship);
-		CheckShipStatus ();
 	}
 
 	private BodyController GetController(Body body){
@@ -651,6 +684,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	private void DestroyBody(Body body) {
 
+
 		if (body is Ship) {
 			ShipIndicator toDestroy = null;
 			foreach (ShipIndicator s in shipIndicators) {
@@ -664,7 +698,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 				Destroy(toDestroy.gameObject);
 			}
 
-			ships.Remove ((Ship)body);
+
 		}
 
 		BodyController bc = GetController (body);
@@ -688,6 +722,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		createdObjects.Add (e.gameObject);
 
 		StartCoroutine(DestroyExplosion (e));
+
+		if(body is TraderShip) {
+			ships.Remove ((Ship)body);
+			ShipDestroyed ();
+		}
 	
 	}
 
@@ -718,14 +757,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		if (other is ColonyShip || ship is ColonyShip) {
 			popularityController.IncrementPopularityBy(-0.1f);
 		}
-
-		ShipCollided ();
-
-		CheckShipStatus ();
-
+	
 	}
 
-
+	/*
 	public Vector2 CalculateScreenSizeInWorldCoords ()  {
 		var cam = Camera.main;
 		Vector3 p1 = cam.ViewportToWorldPoint(new Vector3(0,0,cam.nearClipPlane));  
@@ -742,18 +777,5 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		return dimensions;
 	}
 
-
-
-	private void CheckShipStatus() {
-		if (ships.Count == 0) {
-			OnGameOver ();
-		}
-	}
-
-	// Update is called once per frame
-	void Update () {
-
-
-
-	}
+*/
 }

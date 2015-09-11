@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 public class Level {
 
+
+	[XmlElement("Position",typeof(PositionConfiguration))]
+	public PositionConfiguration position;
+
+
 	[XmlAttribute("scale")]
 	public float Scale;
 
@@ -23,7 +28,8 @@ public class Level {
 	public void Accept(ILevelConfigurationVisitor visitor) {
 
 		visitor.Visit(this);
-		
+
+
 		foreach(BaseConfiguration player in Planets) {
 			player.Accept(visitor);
 		}
