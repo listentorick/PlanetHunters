@@ -6,9 +6,21 @@
 			<Position x="0" y="0"></Position>
 			<Velocity x="0" y="0"></Velocity>
 		</Spawn> 
-		<Spawn type="ColonyShip" when="30">
-			<Position x="-600000" y="-100000"></Position>
-			<Velocity x="-600000" y="-100000"></Velocity>
+		
+		<!--- should this position be in terms of the scale (i.e 0, 20 etc)-->
+		<Spawn type="ColonyShip" when="5">
+			<Position from="Top" x="-600000"/>
+			<Velocity x="0" y="-100000"></Velocity>
+		</Spawn> 
+		
+		<Spawn type="ColonyShip" when="15">
+			<Position from="Left" Y="-100000"/>
+			<Velocity x="100000" y="0"></Velocity>
+		</Spawn> 
+		
+		<Spawn type="ColonyShip" when="25">
+			<Position from="Right" Y="-100000"/>
+			<Velocity x="-100000" y="0"></Velocity>
 		</Spawn> 
 	</Events>
 	

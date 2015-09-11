@@ -3,6 +3,14 @@ using System.Collections;
 using System.Xml;
 using System.Xml.Serialization;
 
+public enum From {
+	None,
+	Left,
+	Right,
+	Top,
+	Bottom
+}
+
 public class PositionConfiguration {
 
 	[XmlAttribute("x")]
@@ -13,4 +21,7 @@ public class PositionConfiguration {
 	
 	[XmlAttribute("z")]
 	public float Z;
+
+	[XmlAttribute("from")]
+	public From from;
 }

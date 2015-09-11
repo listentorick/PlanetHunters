@@ -41,7 +41,7 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 		GameObject g = pool.GetPooledObject ();
 		if (g!=null) {
 			Body c = ConfigureBody(g.GetComponent<Body> ());
-			c.position = pos;
+			//c.position = pos;
 
 			c.AlignToVector(vel);
 			c.position = GameController.SCALE * pos;

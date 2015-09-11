@@ -100,6 +100,37 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public void Visit (SpawnConfiguration visitable){
 
 		if (visitable.SpawnType == SpawnType.ColonyShip) {
+
+			float worldScreenHeight = (float)(Camera.main.orthographicSize * 2.0);
+			float worldScreenWidth = (float)(worldScreenHeight / Screen.height * Screen.width);
+
+
+			//mutate the config
+			switch(visitable.Position.from){
+				case From.Top:
+
+				visitable.Position.X = visitable.Position.X /GameController.SCALE;
+				visitable.Position.Y =  (worldScreenHeight/2f);
+				break;
+
+				case From.Bottom:
+				visitable.Position.X = visitable.Position.X /GameController.SCALE;
+				visitable.Position.Y =  -(worldScreenHeight/2f);
+				break;
+
+				case From.Left:
+				visitable.Position.Y = visitable.Position.Y /GameController.SCALE;
+				visitable.Position.X =  -(worldScreenWidth/2f);
+				break;
+
+				case From.Right:
+				visitable.Position.Y = visitable.Position.Y /GameController.SCALE;
+				visitable.Position.X =  (worldScreenWidth/2f);
+				break;
+
+			}
+
+
 			((ConfigurableSpawnRequester)colonyShipController.spawnRequester).Add(visitable);
 		}
 		
