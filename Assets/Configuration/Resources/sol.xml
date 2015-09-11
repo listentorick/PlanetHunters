@@ -18,6 +18,11 @@
 			<Velocity x="100000" y="0"></Velocity>
 		</Spawn> 
 		
+		<Spawn type="Comet" when="20"> <!--- will hit planet (via sun) -->
+			<Position from="Top" Y="-600000"/>
+			<Velocity x="0" y="-100000"></Velocity>
+		</Spawn>
+		
 		<Spawn type="ColonyShip" when="25">
 			<Position from="Right" Y="-100000"/>
 			<Velocity x="-100000" y="0"></Velocity>

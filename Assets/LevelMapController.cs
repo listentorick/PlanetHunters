@@ -20,7 +20,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public Line linePrefab;
 	public PlayerDataController playerDataController;
 	private List<IStartStop> stoppables = new List<IStartStop>();
-	public CometController cometController;
+	//public CometController cometController;
 	public RepeatSpriteBoundary gridController;
 
 	public PlayerDataGUIController playerDataGUIControllerPrefab;
@@ -30,14 +30,14 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 	public void StartPlay()
 	{
 		stop = false;
-		cometController.StartPlay ();
+		//cometController.StartPlay ();
 		solarSystem.StartPlay ();
 	}
 
 	public void StopPlay()
 	{
 		stop = true;
-		cometController.StopPlay ();
+		//cometController.StopPlay ();
 		solarSystem.StopPlay ();
 	}
 
@@ -144,7 +144,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		starController.Reset ();
 
 		contourRenderer.Reset ();
-		cometController.Reset ();
+		//cometController.Reset ();
 		foreach (GameObject g in createdObjects) {
 			Destroy(g);
 		}
@@ -158,7 +158,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		var count = 0;
 		Ready done = delegate() {
 			count++;
-			if(count==5){
+			if(count==4){
 				r();
 			}
 		};
@@ -169,7 +169,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 		
 		solarSystem.SetWorldBounds (worldBounds);
 
-		cometController.Build (done);
+		//cometController.Build (done);
 	
 		starController.Build (done);
 		contourRenderer.Build (done);
