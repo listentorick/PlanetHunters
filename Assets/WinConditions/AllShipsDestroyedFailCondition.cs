@@ -16,6 +16,10 @@ public class AllShipsDestroyedFailCondition : IFailCondition, IBuild {
 		
 	}
 
+	public void Reset(){
+		gameController.ShipDestroyed -= HandleShipCollided;
+	}
+
 	void HandleShipCollided ()
 	{
 		if (gameController.GetNumberOfShips () <= 0) {

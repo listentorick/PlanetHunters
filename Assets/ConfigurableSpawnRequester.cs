@@ -61,5 +61,9 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 	
 	}
 
+	public override bool IsComplete(){
+		return toSpawn.Count==0;
+	}
+
 
 }

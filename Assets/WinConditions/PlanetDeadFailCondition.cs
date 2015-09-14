@@ -25,6 +25,16 @@ public class PlanetDeadFailCondition : IFailCondition, IBuild {
 		r ();
 		
 	}
+
+	public void Reset () {
+
+		foreach (Body b in solarSystem.bodies) {
+			if(b is Planet){
+				planets.Add((Planet)b);
+				((Planet)b).ResourceLevelChanged-= HandleResourceLevelChanged;
+			}
+		}
+	}
 	
 	void HandleResourceLevelChanged (Resource resource, float value, float delta)
 	{

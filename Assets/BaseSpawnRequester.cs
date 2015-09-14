@@ -31,4 +31,8 @@ public class BaseSpawnRequester : MonoBehaviour, IBuild, IReset, IStartStop {
 	{
 		stopped = false;
 	}
+
+	public virtual bool IsComplete(){
+		return false;
+	}
 }

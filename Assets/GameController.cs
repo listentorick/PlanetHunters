@@ -305,7 +305,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		int count=0;
 		Ready Done = delegate() {
 			count++;
-			if(count==10 + collectables.Length){
+			if(count==11 + collectables.Length){
 				//start sound and show gui
 				guiController.gameObject.SetActive (true);
 				ready();
@@ -374,10 +374,17 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 		PlanetDeadFailCondition planetDeadFailCondition = new PlanetDeadFailCondition ();
 		planetDeadFailCondition.solarSystem = solarSystem;
-		winCondition.economy = economy;
 		planetDeadFailCondition.Build (Done);
 		planetDeadFailCondition.Fail += HandleFail;
 		failConditions.Add (planetDeadFailCondition);
+
+		AllColonyShipsAccountedForFailCondition allColonyShipsAccountedForFailCondition = new AllColonyShipsAccountedForFailCondition ();
+		allColonyShipsAccountedForFailCondition.solarSystem = solarSystem;
+		allColonyShipsAccountedForFailCondition.colonyShipController = colonyShipController;
+		allColonyShipsAccountedForFailCondition.Build (Done);
+		allColonyShipsAccountedForFailCondition.Fail += HandleFail;
+		failConditions.Add (allColonyShipsAccountedForFailCondition);
+
 
 
 		AllShipsDestroyedFailCondition allShipsFailCondition = new AllShipsDestroyedFailCondition ();
