@@ -41,6 +41,21 @@ public class TractorBeam : MonoBehaviour {
 		return null;
 	}
 
+	public void HighlightBodies() {
+		foreach (Body b in solarSystem.bodies) { 
+			
+			if( b!=parent){
+				float seperation = (b.position - parent.position).magnitude;
+				if(seperation < distance){
+					b.IsSelected = true;
+				} else {
+					b.IsSelected = false;
+				}
+			}
+		}
+
+	}
+
 	bool IsMovingTowards(Body b) {
 	
 		Vector2 vectorFromParentToB = (b.position - parent.position).normalized;
@@ -50,7 +65,7 @@ public class TractorBeam : MonoBehaviour {
 
 	public bool connection = false;
 
-
+	/*
 	private void RenderBeam() {
 	
 		if (connectedBody == null)
@@ -156,7 +171,7 @@ public class TractorBeam : MonoBehaviour {
 			
 		}
 		return p;
-	}
+	}*/
 
 	public Body GetBody(GameObject g){
 	
@@ -196,7 +211,7 @@ public class TractorBeam : MonoBehaviour {
 				connectedBody = target;
 				connection = true;
 				tractorBeamRenderer.target = connectedBody.gameObject.GetComponent<PolygonCollider2D> ();
-				solarSystem.AddConnection (parent, connectedBody, distance, 1f);
+				solarSystem.AddConnection (parent, connectedBody, seperation, 1f);
 
 			}
 		}
@@ -204,6 +219,8 @@ public class TractorBeam : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		HighlightBodies ();
 		//Body closestBody = GetClosestBody ();
 		//if (closestBody != null && connection == false) {
 		//	connection = true;

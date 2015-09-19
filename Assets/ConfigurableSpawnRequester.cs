@@ -14,6 +14,8 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 	}
 
 
+
+
 	
 	public override void Build(Ready r)
 	{
@@ -59,6 +61,10 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 
 		}
 	
+	}
+
+	public int RemainingItemsToSpawn(){
+		return toSpawn.Count;
 	}
 
 	public override bool IsComplete(){

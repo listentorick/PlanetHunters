@@ -9,7 +9,7 @@ public class TractorBeamRenderer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		initialLength = sprite.bounds.size.x;
+		initialLength = sprite.bounds.size.y;
 		sprite.enabled = false;
 	}
 	
@@ -32,7 +32,7 @@ public class TractorBeamRenderer : MonoBehaviour {
 		
 			sprite.transform.rotation = new Quaternion (0, 0, rotation.z, rotation.w);
 
-			float multiplier = initialLength / diff.magnitude;
+			float multiplier = diff.magnitude / initialLength ;
 			sprite.transform.localScale = new Vector3 (1, multiplier, multiplier);
 
 

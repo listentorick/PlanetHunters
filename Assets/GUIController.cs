@@ -13,9 +13,12 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	public Economy economy;
 	public Text money;
 	public Text numShips;
+	public Text numColonyShips;
 	public Slider popularity;
 	public PopularityController popularityController;
 	public GameObject win;
+	public ColonyShipController colonyShipController;
+	public ConfigurableSpawnRequester colonyShipSpawnRequester;
 
 	// Use this for initialization
 	void Start () {
@@ -25,7 +28,14 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		economy.Profit += HandleProfit;
 		gameController.ShipDestroyed += HandleShipCollided;
 		popularityController.PopularityChanged += HandlePopularityChanged;
+		colonyShipSpawnRequester = (ConfigurableSpawnRequester)colonyShipController.spawnRequester;
+		colonyShipController.spawnRequester.SpawnRequest+= HandleSpawnRequest;
 		HandleShipCollided ();
+	}
+
+	void HandleSpawnRequest (Vector2 position, Vector2 velocity)
+	{
+		numColonyShips.text = SetText(colonyShipSpawnRequester.RemainingItemsToSpawn());
 	}
 
 
