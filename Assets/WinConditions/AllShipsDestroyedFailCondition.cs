@@ -23,8 +23,9 @@ public class AllShipsDestroyedFailCondition : IFailCondition, IBuild {
 	void HandleShipCollided ()
 	{
 		if (gameController.GetNumberOfShips () <= 0) {
-			Fail();
+			Fail("Your ships was destroyed!");
 		}
 	}
+
 
 }

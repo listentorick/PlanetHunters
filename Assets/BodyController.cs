@@ -49,6 +49,7 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 			c.gameObject.transform.position = pos;
 			sol.AddBody(c);
 			c.gameObject.SetActive(true);
+			c.AlignToVector(vel);
 
 		}
 	}

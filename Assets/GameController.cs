@@ -72,13 +72,13 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	public List<IWinCondition> winConditions = new List<IWinCondition>();
 	public List<IFailCondition> failConditions = new List<IFailCondition>();
 
-	public delegate void GameOverHandler();
+	public delegate void GameOverHandler(string message);
 	public event GameOverHandler GameOver;
 
-	public void OnGameOver () {
+	public void OnGameOver (string message) {
 
 		if (GameOver != null) {
-			GameOver();
+			GameOver(message);
 		}
 
 		foreach (IStartStop s in stoppables) {
@@ -380,6 +380,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 		AllColonyShipsAccountedForFailCondition allColonyShipsAccountedForFailCondition = new AllColonyShipsAccountedForFailCondition ();
 		allColonyShipsAccountedForFailCondition.solarSystem = solarSystem;
+		allColonyShipsAccountedForFailCondition.gameController = this;
 		allColonyShipsAccountedForFailCondition.colonyShipController = colonyShipController;
 		allColonyShipsAccountedForFailCondition.Build (Done);
 		allColonyShipsAccountedForFailCondition.Fail += HandleFail;
@@ -471,8 +472,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	}
 
-	void HandleFail(){
-		this.OnGameOver();
+	void HandleFail(string message){
+		this.OnGameOver(message);
 	}
 
 	void HandleTradeShipSpawned (Body ship)
@@ -516,7 +517,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	void HandlePopularityChanged (float popularity)
 	{
 		if (popularity < 0) {
-			this.OnGameOver();
+			this.OnGameOver("popularity is zero" );
 		}
 	}
 
@@ -749,7 +750,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	
 	void HandleShipCollided (Ship ship, Body other)
 	{
-		if (other is Planet || other is Collectable || other is WarpGate) {
+		if (other is Planet || other is Collectable || other is WarpGate || other is Explosion) {
 			return;
 		}
 

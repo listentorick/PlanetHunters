@@ -30,6 +30,9 @@ public class Resource : MonoBehaviour, IStartStop {
 	}
 
 	public void AddStock(int stock) {
+		if (stop) {
+			return;
+		}
 		current += stock;
 		if (current < 0) {
 			current = 0;

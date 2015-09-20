@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	public GameObject gameOver;
+	public GameObject gameOverReason;
 	public GameController gameController;
 	public GameManager gameManager;
 	public Button replay;
@@ -15,6 +16,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	public Text numShips;
 	public Text numColonyShips;
 	public Slider popularity;
+	public Slider incoming;
 	public PopularityController popularityController;
 	public GameObject win;
 	public ColonyShipController colonyShipController;
@@ -35,6 +37,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	void HandleSpawnRequest (Vector2 position, Vector2 velocity)
 	{
+	//	incoming.value = colonyShipSpawnRequester.RemainingItemsToSpawn ();
 		numColonyShips.text = SetText(colonyShipSpawnRequester.RemainingItemsToSpawn());
 	}
 
@@ -54,6 +57,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 
 	void HandleShipCollided ()
 	{
+
 		numShips.text = SetText(gameController.GetNumberOfShips ());
 	}
 
@@ -98,15 +102,17 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 		replay.gameObject.SetActive (false);
 		next.gameObject.SetActive (false);
 		gameOver.SetActive (false);
+		gameOverReason.SetActive (false);
 		SetMoney (money,0);
 		numShips.text = SetText(0);
 		popularity.value = popularityController.popularity;
+		incoming.value = 0;
 		win.SetActive (false);
 	}
 	
-	void HandleGameOver ()
+	void HandleGameOver (string message)
 	{
-		this.GameOver ();
+		this.GameOver (message);
 	}
 	
 	// Update is called once per frame
@@ -114,10 +120,12 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	
 	}
 
-	private void GameOver(){
+	private void GameOver(string message){
 		replay.gameObject.SetActive (true);
+		gameOverReason.SetActive (true);
 		gameOver.SetActive (true);
 		next.gameObject.SetActive (true);
+		gameOverReason.GetComponent<Text> ().text = message;
 	}
 
 	public void Next() 

@@ -86,6 +86,8 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 	public void RemoveBody(Body body) {
 		Debug.Log ("removing a body");
+	
+		this.RemoveConnectionsForBody (body);
 		//do this at the end of the update cycle?
 		bodies.Remove (body);
 	}

@@ -45,7 +45,7 @@ public class PlanetDeadFailCondition : IFailCondition, IBuild {
 		foreach (Planet p in planets) {
 			Resource r = p.GetResource(Cargo.People);
 			if(r!=null && r.current<=0){
-				Fail();
+				Fail("You just killed one of our planets!");
 			}
 		}
 		

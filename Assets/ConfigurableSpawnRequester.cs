@@ -14,9 +14,6 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 	}
 
 
-
-
-	
 	public override void Build(Ready r)
 	{
 		//sort them. most recent first
@@ -39,16 +36,17 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 	{
 		timePassed = 0f;
 		toSpawn.Clear ();
+		finished = false;
 	}
 
 	// Use this for initialization
 	void Start () {
 	
 	}
-	
+	private bool finished = false;
 	// Update is called once per frame
 	void Update () {
-		if (stopped == false) {
+		if (stopped == false && finished == false) {
 			timePassed += Time.deltaTime;
 
 			if(toSpawn.Count>0) {
@@ -57,6 +55,10 @@ public class ConfigurableSpawnRequester : BaseSpawnRequester,IStartStop {
 					toSpawn.Remove(s);
 					OnSpawnRequest(new Vector2(s.Position.X,s.Position.Y),new Vector2(s.Velocity.X,s.Velocity.Y));
 				}
+			} else {
+				finished = true;
+				OnSpawningComplete();
+
 			}
 
 		}

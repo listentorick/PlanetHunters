@@ -4,4 +4,4 @@ using System.Collections;
 public interface IFailCondition: IBuild, IReset  {
 	event FailConditionHandler Fail;
 }
-public delegate void FailConditionHandler();
+public delegate void FailConditionHandler(string message);

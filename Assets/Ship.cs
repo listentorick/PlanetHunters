@@ -60,6 +60,8 @@ public class Ship : Body {
 	
 	private float timeInHighGravity = 0f;
 
+	private bool hullFailureHandled = false;
+
 	public void Update() {
 	
 		if (isExploding == false && thrustersActive == false && audioSource != null) {
@@ -111,7 +113,8 @@ public class Ship : Body {
 				hull -= 0.1f;
 			}
 
-			if (hull <= 0) {
+			if (hull <= 0 && hullFailureHandled ==false) {
+				hullFailureHandled = true;
 				HullFailure (this);
 			}
 		}

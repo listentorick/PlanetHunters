@@ -5,7 +5,7 @@
 	<Events>
 		
 		<!--- should this position be in terms of the scale (i.e 0, 20 etc)-->
-		<Spawn type="ColonyShip" when="5">
+		<Spawn type="ColonyShip" when="0">
 			<Position from="Top" x="-600000"/>
 			<Velocity x="0" y="-50000"></Velocity>
 		</Spawn> 
@@ -31,16 +31,18 @@
 			<Velocity x="0" y="200000"></Velocity>
 		</Spawn> 
 		
-		<Spawn type="ColonyShip" when="130">
+		<Spawn type="Comet" when="100"> 
 			<Position from="Bottom" x="-600000"/>
-			<Velocity x="0" y="100000"></Velocity>
+			<Velocity x="0" y="10000"></Velocity>
+		</Spawn>
+		
+		<Spawn type="ColonyShip" when="110">
+			<Position from="Top" x="-600000"/>
+			<Velocity x="0" y="-100000"></Velocity>
 		</Spawn> 
 		
 		
-		<Spawn type="Comet" when="150"> 
-			<Position from="Bottom" x="-600000"/>
-			<Velocity x="0" y="100000"></Velocity>
-		</Spawn>
+		
 		
 		
 		
