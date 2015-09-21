@@ -3,8 +3,7 @@
 
 	<Position x="0" y="-400000"></Position>
 	<Events>
-		
-		<!--- should this position be in terms of the scale (i.e 0, 20 etc)-->
+	
 		<Spawn type="ColonyShip" when="0">
 			<Position from="Top" x="-600000"/>
 			<Velocity x="0" y="-50000"></Velocity>
@@ -21,7 +20,7 @@
 			<Velocity x="-50000" y="0"></Velocity>
 		</Spawn> 
 		
-		<Spawn type="Comet" when="65"> <!--- will hit planet (via sun) . Player should throw into worm hole-->
+		<Spawn type="Comet" when="65"> 
 			<Position from="Top" x="0"/>
 			<Velocity x="0" y="-100000"></Velocity>
 		</Spawn>
@@ -30,16 +29,27 @@
 			<Position from="Bottom" x="-600000"/>
 			<Velocity x="0" y="200000"></Velocity>
 		</Spawn> 
-		
-		<Spawn type="Comet" when="100"> 
-			<Position from="Bottom" x="-600000"/>
-			<Velocity x="0" y="10000"></Velocity>
+	
+		<Spawn type="Comet" when="103.5"> 
+			<Position from="Top" x="-600000"/>
+			<Velocity x="0" y="100000"></Velocity>
 		</Spawn>
 		
-		<Spawn type="ColonyShip" when="110">
-			<Position from="Top" x="-600000"/>
+				
+		<Spawn type="ColonyShip" when="90">
+			<Position from="Right" y="-510000"/>
+			<Velocity x="-100000" y="0"></Velocity>
+		</Spawn> 
+		
+		<Spawn type="ColonyShip" when="100">
+			<Position from="Top" x="500000"/>
 			<Velocity x="0" y="-100000"></Velocity>
 		</Spawn> 
+		
+		
+		
+		
+		
 		
 		
 		
