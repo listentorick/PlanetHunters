@@ -20,7 +20,7 @@ public struct Link{
 
 public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
-	public static float MAX_RENTRY_SPEED = 250000; 
+	public static float MAX_RENTRY_SPEED = 2500000; 
 	public static float MAX_FORCE = 1000000; 
 
 
@@ -28,10 +28,16 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 	private bool stop = true;
 	public void StopPlay(){
 		stop = true;
+		foreach (Body b in bodies) {
+			b.StopPlay();
+		}
 	}
 
 	public void StartPlay(){
 		stop = false;
+		foreach (Body b in bodies) {
+			b.StartPlay();
+		}
 	}
 
 	public void Reset(){
@@ -338,6 +344,10 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 				//Lets check this new position against the world bounds...
 
+				
+			//	if(float.IsNaN(nextX) || float.IsNaN(nextY)){
+			//		return;
+		//		}
 
 				bodies[i].position = new Vector2(nextX,nextY);
 				Wrap (bodies[i]);
@@ -346,6 +356,8 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 		}
 	}
+
+
 
 	private List<Body> wrappingBodiesX = new List<Body>();
 	private List<Body> wrappingBodiesY = new List<Body>();
@@ -381,7 +393,7 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 		if (!IsWrappingX (b)){
 
-			if((b.position.x> (worldBounds.x/2f) && velocity.x>0)  || (b.position.x < (-worldBounds.x/2f) && velocity.x <0)) {
+			if((b.position.x> (worldBounds.x) && velocity.x>0)  || (b.position.x < (-worldBounds.x) && velocity.x <0)) {
 				wrappingBodiesX.Add(b);
 				b.position.x = -b.position.x;
 				b.lastPosition.x = b.position.x - velocity.x;
@@ -391,7 +403,7 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 		if (!IsWrappingY (b)){
 			
-			if((b.position.y> (worldBounds.y/2f) && velocity.y>0)  || (b.position.y < (-worldBounds.y/2f) && velocity.y <0)) {
+			if((b.position.y> (worldBounds.y) && velocity.y>0)  || (b.position.y < (-worldBounds.y) && velocity.y <0)) {
 				wrappingBodiesY.Add(b);
 				b.position.y = -b.position.y;
 				b.lastPosition.y = b.position.y - velocity.y;

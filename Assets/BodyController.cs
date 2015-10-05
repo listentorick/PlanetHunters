@@ -5,7 +5,9 @@ using System.Collections.Generic;
 
 public delegate void BodyBuiltHandler(Body body);
 
-public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop {
+public class BodyController : MonoBehaviour, IReset, IBuild, IStartStop {
+
+	public Body prefab;
 
 	public BaseSpawnRequester spawnRequester;
 	public SolarSystem sol;
@@ -17,20 +19,32 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 	public event BodyBuiltHandler BodyBuilt;  
 	
 	public void Build(Ready ready) {
-		spawnRequester.SpawnRequest += HandleSpawnRequest; 
-		spawnRequester.Build (delegate {
 
-		});
+		if (spawnRequester != null) {
+			spawnRequester.SpawnRequest += HandleSpawnRequest; 
+			spawnRequester.Build (delegate {
+
+			});
+		}
 
 		pool.PopulatePool (delegate() {
 			Body b = BuildBody();
 			if(BodyBuilt!=null)BodyBuilt(b);
 			b.gameObject.transform.position = new Vector2(-100,-100);
+		
+			stoppables.Add(b);
+
 			return b.gameObject;
+
 		});
 		
 		ready ();
 		
+	}
+
+	public void Spawn(Vector2 pos, Vector2 vel) 
+	{
+		HandleSpawnRequest (pos, vel);
 	}
 
 	void HandleSpawnRequest (Vector2 pos, Vector2 vel)
@@ -50,23 +64,34 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 			sol.AddBody(c);
 			c.gameObject.SetActive(true);
 			c.AlignToVector(vel);
+			c.StartPlay(); //start it.
 
 		}
 	}
 
-	public abstract Body BuildBody ();
+	public virtual Body BuildBody () {
+		Body body = (Body)Instantiate (prefab);
+		return body;
+	}
+	
+
+	//public virtual Body ConfigureBody(Body b){
+//		return b;
+//	}
 	
 	public void Reset(){
 		stoppables.Clear ();
-		spawnRequester.SpawnRequest -= HandleSpawnRequest; 
-		spawnRequester.Reset ();
+		if (spawnRequester != null) {
+			spawnRequester.SpawnRequest -= HandleSpawnRequest; 
+			spawnRequester.Reset ();
+		}
 		pool.Reset ();
 		stop = true;
 	}
 	
 	public void StartPlay(){
 		stop = false;
-		spawnRequester.StartPlay ();
+		if(spawnRequester!=null) spawnRequester.StartPlay ();
 		foreach (IStartStop s in stoppables) {
 			s.StartPlay();
 		}
@@ -75,13 +100,17 @@ public abstract class BodyController : MonoBehaviour, IReset, IBuild, IStartStop
 	public void StopPlay()
 	{
 		stop = true;
-		spawnRequester.StopPlay ();
+		if(spawnRequester!=null) spawnRequester.StopPlay ();
 		foreach (IStartStop s in stoppables) {
 			s.StopPlay();
 		}
 	}
 
-	public abstract Body ConfigureBody (Body b);
+	//public abstract Body ConfigureBody (Body b);
+
+	public virtual Body ConfigureBody(Body b){
+		return b;
+	}
 
 	public void SpawnNow(){
 	

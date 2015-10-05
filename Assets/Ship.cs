@@ -136,7 +136,7 @@ public class Ship : Body {
 			smoke.Play ();
 		
 		} else {
-			smoke.Stop();
+			if(smoke!=null)smoke.Stop();
 		}
 
 		base.Update ();

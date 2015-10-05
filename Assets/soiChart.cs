@@ -35,7 +35,7 @@ public class soiChart : MonoBehaviour {
 		meshBuilder = new MeshBuilder();
 		meshHelper = new MeshHelper ();
 
-		meshHelper.BuildDisc (meshBuilder, 0.8f, planet.soi / 100000f, 32, 0, 360);
+		meshHelper.BuildDisc (meshBuilder, 0.8f, planet.soi / GameController.SCALE, 32, 0, 360);
 		
 		meshFilter.mesh = meshBuilder.CreateMesh();
 		meshRenderer.sortingOrder = 0;

@@ -19,7 +19,7 @@ public class GUIController : MonoBehaviour, IReset, IBuild {
 	public Slider incoming;
 	public PopularityController popularityController;
 	public GameObject win;
-	public ColonyShipController colonyShipController;
+	public ShipController colonyShipController;
 	public ConfigurableSpawnRequester colonyShipSpawnRequester;
 
 	// Use this for initialization

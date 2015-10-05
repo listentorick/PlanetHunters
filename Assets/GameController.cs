@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,14 +24,16 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private IList<TraderShip> traderShipPool = new List<TraderShip> ();
 //	private IList<ColonyShip> colonyShipPool = new List<ColonyShip> ();
 	public Material lightMaterial;
-	public const float SCALE = 100000;
-	public CometController cometController;
-	public ColonyShipController colonyShipController;
-
+	public const float SCALE = 1000000;
+	public BodyController cometController;
+	public BodyController asteriodController;
+	public ShipController colonyShipController;
+	public ShipController cargoShipController;
+	public ShipController turretController;
 	public StarsController starController;
 	public BackgroundController backgroundController;
 
-
+	public BulletController bulletController;
 	private IList<ShipIndicator> shipIndicators = new List<ShipIndicator> ();
 
 	private List<IStartStop> stoppables = new List<IStartStop>();
@@ -134,14 +136,24 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 				visitable.Position.Y = visitable.Position.Y /GameController.SCALE;
 				visitable.Position.X =  (worldScreenWidth/2f) + margin;
 				break;
+			default:
+				visitable.Position.Y = visitable.Position.Y /GameController.SCALE;
+				visitable.Position.X = visitable.Position.X /GameController.SCALE;
+			break;
 				
 		}
 
 
 		if (visitable.SpawnType == SpawnType.ColonyShip) {
-			((ConfigurableSpawnRequester)colonyShipController.spawnRequester).Add(visitable);
+			((ConfigurableSpawnRequester)colonyShipController.spawnRequester).Add (visitable);
 		} else if (visitable.SpawnType == SpawnType.Comet) {
-			((ConfigurableSpawnRequester)cometController.spawnRequester).Add(visitable);
+			((ConfigurableSpawnRequester)cometController.spawnRequester).Add (visitable);
+		} else if (visitable.SpawnType == SpawnType.CargoShip) {
+			((ConfigurableSpawnRequester)cargoShipController.spawnRequester).Add (visitable);
+		} else if (visitable.SpawnType == SpawnType.Turret) {
+			((ConfigurableSpawnRequester)turretController.spawnRequester).Add (visitable);
+		} else if (visitable.SpawnType == SpawnType.Asteriod) {
+			((ConfigurableSpawnRequester)asteriodController.spawnRequester).Add (visitable);
 		}
 		
 	}
@@ -195,7 +207,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		Planet sun = Instantiate (planetPrefab);
 		sun.SetSprite (sunSprite);
 		sun.position = new Vector2 (visitable.Position.X, visitable.Position.Y);
-		sun.mass = 3e+25f;
+		sun.mass = 6e+27f;
 		sun.canMove = false;
 		sun.SetIsLightSource (true);
 		sun.imageScale = 1f;
@@ -205,8 +217,12 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	}
 
 	public void Reset(){
+
 		cometController.BodyBuilt -= HandleCometBodyBuilt;
 		colonyShipController.BodyBuilt -= HandleColonyShipBodyBuilt;
+		cargoShipController.BodyBuilt -= HandleColonyShipBodyBuilt;
+		turretController.BodyBuilt -= HandleColonyShipBodyBuilt;
+		asteriodController.BodyBuilt -= HandleCometBodyBuilt;
 
 		gestureHandler.SelectionChanged -= HandleSelectionChanged;
 		starController.Reset ();
@@ -235,8 +251,12 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		}
 		createdObjects.Clear();
 
+		bulletController.Reset ();
 		cometController.Reset ();
+		asteriodController.Reset ();
 		colonyShipController.Reset ();
+		cargoShipController.Reset ();
+		turretController.Reset ();
 		gridController.Reset ();
 		//BuildLevel ();
 
@@ -305,7 +325,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		int count=0;
 		Ready Done = delegate() {
 			count++;
-			if(count==11 + collectables.Length){
+			if(count==15 + collectables.Length){
 				//start sound and show gui
 				guiController.gameObject.SetActive (true);
 				ready();
@@ -315,8 +335,12 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	
 
 		stoppables.Add (solarSystem);
+		stoppables.Add (asteriodController);
 		stoppables.Add(cometController);
 		stoppables.Add (colonyShipController);
+		stoppables.Add (cargoShipController);
+		stoppables.Add (turretController);
+		stoppables.Add (bulletController);
 
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
@@ -410,6 +434,11 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		//colonyShipTimer.Play ();
 		traderShipTimer.Play ();
 
+		bulletController.Build (Done);
+
+		asteriodController.BodyBuilt += HandleCometBodyBuilt;
+		asteriodController.Build (Done);
+
 		cometController.BodyBuilt+= HandleCometBodyBuilt;
 		cometController.Build (Done);
 
@@ -419,11 +448,17 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		colonyShipController.BodyBuilt+= HandleColonyShipBodyBuilt;
 		colonyShipController.Build (Done);
 
+		cargoShipController.BodyBuilt += HandleColonyShipBodyBuilt;
+		cargoShipController.Build (Done);
+
+		turretController.BodyBuilt += HandleColonyShipBodyBuilt;
+		turretController.Build (Done);
+
 	}
 
 	void HandleColonyShipBodyBuilt(Body b){
-		((ColonyShip)b).ShipCollided+= HandleShipCollided;
-		((ColonyShip)b).HullFailure+= HandleHullFailure;
+		((Ship)b).ShipCollided+= HandleShipCollided;
+		((Ship)b).HullFailure+= HandleHullFailure;
 
 		ShipIndicator shipIndicator = Instantiate(shipIndicatorPrefab);
 		shipIndicator.ship = (Ship)b;
@@ -585,6 +620,28 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			colonyShipController.SpawnNow();
 
 		}
+
+		if (p is Planet && s is CargoShip) {
+			
+			//Remove ship from solar system and 
+			//solarSystem.RemoveBody (s);
+			//s.gameObject.transform.position = new Vector2(100f,100f);
+			//s.gameObject.SetActive (false);
+			cargoShipController.ReturnToPool(s);
+			
+			//play an applause sound??
+			
+			Vector3 position = p.gameObject.transform.position;
+			Blades b = (Blades)Instantiate (bladePrefab, position, Quaternion.identity);
+			b.color = Helpers.GetCargoColor(Cargo.Food);
+			createdObjects.Add(b.gameObject);
+			audioSource.PlayOneShot (profitSound);
+			
+			//immediately spawn another colony ship
+			
+			cargoShipController.SpawnNow();
+			
+		}
 	}
 
 
@@ -685,6 +742,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			return cometController;
 		} else if (body is ColonyShip) {
 			return colonyShipController;
+		} else if (body is Asteriod) {
+			return asteriodController;
 		} else {
 			return null;
 		}
@@ -750,9 +809,15 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	
 	void HandleShipCollided (Ship ship, Body other)
 	{
-		if (other is Planet || other is Collectable || other is WarpGate || other is Explosion) {
+		if (ship is Turret && other is Bullet) {
 			return;
 		}
+
+		if (other is Planet || other is Collectable || other is WarpGate || other is Explosion ) {
+			return;
+		}
+
+
 
 		DestroyBody (ship);
 

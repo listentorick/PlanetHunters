@@ -1,69 +1,85 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Level scale="25">
+<Level scale="30">
 
-	<Position x="0" y="-400000"></Position>
+	<Position x="0" y="-4000000"></Position>
 	<Events>
 	
+		<Spawn type="Asteriod" when="0">
+			<Position y="0" x="-12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+	
+		<Spawn type="Turret" when="0">
+			<Position y="0" x="12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+
+<!---
+		<Spawn type="CargoShip" when="0">
+			<Position y="5669840" x="12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+		
+		<Spawn type="CargoShip" when="0">
+			<Position y="1669840" x="12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> -->
+		
+		<Spawn type="CargoShip" when="0">
+			<Position y="-5669840" x="-12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+		
+		
+	
 		<Spawn type="ColonyShip" when="0">
-			<Position from="Top" x="-600000"/>
-			<Velocity x="0" y="-50000"></Velocity>
+			<Position from="Top" x="-6000000"/>
+			<Velocity x="0" y="-500000"></Velocity>
 		</Spawn> 
 		
 		<Spawn type="ColonyShip" when="15">
-			<Position from="Left" y="-400000"/>
-			<Velocity x="50000" y="0"></Velocity>
+			<Position from="Left" y="-4000000"/>
+			<Velocity x="500000" y="0"></Velocity>
 		</Spawn> 
 		
 		
 		<Spawn type="ColonyShip" when="40">
-			<Position from="Right" y="-100000"/>
-			<Velocity x="-50000" y="0"></Velocity>
+			<Position from="Right" y="-1000000"/>
+			<Velocity x="-500000" y="0"></Velocity>
 		</Spawn> 
 		
 		<Spawn type="Comet" when="65"> 
 			<Position from="Top" x="0"/>
-			<Velocity x="0" y="-100000"></Velocity>
+			<Velocity x="0" y="-1000000"></Velocity>
 		</Spawn>
 		
 		<Spawn type="ColonyShip" when="90">
-			<Position from="Bottom" x="-600000"/>
-			<Velocity x="0" y="200000"></Velocity>
+			<Position from="Bottom" x="-6000000"/>
+			<Velocity x="0" y="2000000"></Velocity>
 		</Spawn> 
 	
 		<Spawn type="Comet" when="103.5"> 
-			<Position from="Top" x="-600000"/>
-			<Velocity x="0" y="100000"></Velocity>
+			<Position from="Top" x="-6000000"/>
+			<Velocity x="0" y="1000000"></Velocity>
 		</Spawn>
 		
 				
 		<Spawn type="ColonyShip" when="90">
-			<Position from="Right" y="-510000"/>
-			<Velocity x="-100000" y="0"></Velocity>
+			<Position from="Right" y="-5100000"/>
+			<Velocity x="-1000000" y="0"></Velocity>
 		</Spawn> 
 		
 		<Spawn type="ColonyShip" when="100">
-			<Position from="Top" x="500000"/>
-			<Velocity x="0" y="-100000"></Velocity>
+			<Position from="Top" x="5000000"/>
+			<Velocity x="0" y="-1000000"></Velocity>
 		</Spawn> 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 	</Events>
 	
 	<Bodies>
 
-		
-
-		<Planet Mass="1e+25" SOI="150000" Type="Red">
-			<Position x="-600000" y="-100000"></Position>
+		<Planet Mass="1e+25" SOI="1500000" Type="Red">
+			<Position x="-6000000" y="-1000000"></Position>
 			<Resources>
 				<Resource Max="50" Current="50" Type="Food"> </Resource>
 				<Resource Max="50" Current="0" Type="People"> </Resource>
@@ -75,7 +91,7 @@
 		</Sun>
 		
 		<WormHole>
-			<Position x="500000" y="-30000"></Position>
+			<Position x="5000000" y="-300000"></Position>
 		</WormHole>
 	</Bodies>
 

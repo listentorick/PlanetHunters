@@ -10,12 +10,12 @@
 	
 		
 		<Sun>
-			<Position x="-900000" y="-100000"></Position>
+			<Position x="-9000000" y="-1000000"></Position>
 		</Sun>
 		
 		
 		<Sun>
-			<Position x="-500000" y="-10000"></Position>
+			<Position x="-5000000" y="-100000"></Position>
 		</Sun>
 	
 		<Sun>
@@ -26,7 +26,7 @@
 		
 	
 		<Sun>
-			<Position x="500000" y="300000"></Position>
+			<Position x="5000000" y="3000000"></Position>
 		</Sun>
 		
 	</Bodies>

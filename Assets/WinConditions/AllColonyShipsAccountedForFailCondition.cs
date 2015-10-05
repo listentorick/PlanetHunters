@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class AllColonyShipsAccountedForFailCondition : IFailCondition {
 
 	public GameController gameController;
-	public ColonyShipController colonyShipController;
+	public ShipController colonyShipController;
 
 	public event FailConditionHandler Fail;
 	private IList<Planet> planets = new List<Planet>();

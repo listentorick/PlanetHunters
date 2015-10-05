@@ -85,6 +85,7 @@ public class ColouredContourRenderer2D : ContourRenderer {
 		if (value < 0.2f) {
 
 			alpha = 0f;
+
 			
 		} else if (value < 0.4f) {
 			alpha = 0.4f;

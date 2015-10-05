@@ -33,7 +33,7 @@ public class ShipSpawner : MonoBehaviour {
 		float delta = 2f;
 		
 		Vector2 accn = new Vector2();
-		float velocityMagnitude = 50000f;
+		float velocityMagnitude = 500000f;
 		if(side==0) {
 			//going from top
 			

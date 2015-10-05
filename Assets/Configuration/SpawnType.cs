@@ -4,5 +4,8 @@ using System.Collections;
 public enum SpawnType{
 
 	ColonyShip,
-	Comet
+	Comet,
+	CargoShip,
+	Turret,
+	Asteriod
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Body : MonoBehaviour {
+public class Body : MonoBehaviour, IStartStop {
 
 	//public ParticleSystem thruster;
 
@@ -74,6 +74,21 @@ public class Body : MonoBehaviour {
 		
 	}
 
+	public void SmoothLookAt(Vector3 target, float speed)
+	{
+		Vector3 dir = target - transform.position;
+		float angle = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
+		Quaternion targetRotation = Quaternion.LookRotation(dir);
+
+		if (rendererTransform == null) {
+			rendererTransform = this.gameObject.transform.GetChild (0);
+		}
+
+
+		rendererTransform.rotation = Quaternion.Slerp(rendererTransform.rotation, Quaternion.Euler(0,0,angle+90f), Time.deltaTime * speed);
+	}
+
+
 	public  bool IsRendererVisible() {
 		if (rendererTransform == null)
 			return false;
@@ -83,10 +98,35 @@ public class Body : MonoBehaviour {
 
 	public void Update () {
 
+		if (stop) {
+			return;
+		}
 
-		this.transform.position = new Vector3(position.x/GameController.SCALE, position.y/GameController.SCALE, this.transform.position.z);
+		//if (position.x == float.NaN || position.y == float.NaN) {
+			
+		//	return;
+
+		//} else {
+			this.transform.position = new Vector3 (position.x / GameController.SCALE, position.y / GameController.SCALE, this.transform.position.z);
+		//}
+
+	}
+
+
+	private bool stop = true;
+
+	public virtual void StopPlay()
+	{
+		stop = true;
+	}
 	
+	public virtual void StartPlay()
+	{
+		stop = false;
+	}
 
+	public virtual void Reset()
+	{
 	}
 
 
