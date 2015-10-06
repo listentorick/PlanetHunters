@@ -11,4 +11,10 @@ public class Explosion : Body  {
 		audioSource.PlayOneShot (explosionSound, 1f);
 	}
 
+	//public override void StopPlay()
+	//{
+	//	stop = false;  //dont stop we want
+	//}
+
+
 }

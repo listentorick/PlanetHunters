@@ -20,7 +20,7 @@ public struct Link{
 
 public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
-	public static float MAX_RENTRY_SPEED = 2500000; 
+	public static float MAX_RENTRY_SPEED = 25000000000000; //made purposefully very big so this never happens
 	public static float MAX_FORCE = 1000000; 
 
 

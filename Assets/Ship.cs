@@ -170,7 +170,7 @@ public class Ship : Body {
 		if (body != null) {
 
 			//isExploding = true;
-			audioSource.Stop ();
+			if(audioSource) audioSource.Stop ();
 			//audioSource.volume = 1f;
 			//audioSource.clip = explosionSound;
 			thrustersActive = false;

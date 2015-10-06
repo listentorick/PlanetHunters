@@ -583,7 +583,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	void HandleShipEnteredOrbit (Body s, Body p)
 	{
 
-		if (s is Comet) {
+		if (s is Comet || s is Asteriod) {
 		
 			DestroyBody(s);
 
@@ -680,6 +680,15 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 
 		if (body is TraderShip) {
+
+			//warp gate is no longer source of food
+			ships.Remove ((Ship)body);
+			audioSource.PlayOneShot (warpSound, 1f);
+
+
+			//DestroyBody(body);
+
+			/*
 			TraderShip trader = (TraderShip)body;
 			traderShipPool.Add (trader);
 			solarSystem.RemoveBody (trader);
@@ -695,6 +704,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			shipStateQueue.Add (new ShipState (trader.cargoType, trader.cargo));
 
 			audioSource.PlayOneShot (warpSound, 1f);
+			*/
 		} else  {
 			solarSystem.RemoveBody (body);
 			body.gameObject.SetActive(false);
@@ -740,7 +750,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private BodyController GetController(Body body){
 		if (body is Comet) {
 			return cometController;
-		} else if (body is ColonyShip) {
+		} else if (body is Asteriod) {
+			return asteriodController;
+		}
+		else if (body is ColonyShip) {
 			return colonyShipController;
 		} else if (body is Asteriod) {
 			return asteriodController;
