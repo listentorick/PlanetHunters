@@ -341,6 +341,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		stoppables.Add (cargoShipController);
 		stoppables.Add (turretController);
 		stoppables.Add (bulletController);
+		stoppables.Add (starController);
 
 		Vector2 topRight = new Vector2 (1, 1);
 		Vector2 edgeVector = Camera.main.ViewportToWorldPoint (topRight);
@@ -435,6 +436,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		traderShipTimer.Play ();
 
 		bulletController.Build (Done);
+		//bulletController.BodyBuilt += HandleBulletBodyBuilt;
 
 		asteriodController.BodyBuilt += HandleCometBodyBuilt;
 		asteriodController.Build (Done);
@@ -464,6 +466,10 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		shipIndicator.ship = (Ship)b;
 		createdObjects.Add (shipIndicator.gameObject);
 		shipIndicators.Add(shipIndicator);
+	}
+
+	void HandleBulletBodyBuilt(Body body){
+	//((Ship)b).ShipCollided+= HandleShipCollided;
 	}
 
 	void HandleCometBodyBuilt (Body body)
@@ -750,14 +756,18 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	private BodyController GetController(Body body){
 		if (body is Comet) {
 			return cometController;
+		} if (body is CargoShip) {
+			return cargoShipController;
+		}if (body is Bullet) {
+			return bulletController;
 		} else if (body is Asteriod) {
 			return asteriodController;
 		}
 		else if (body is ColonyShip) {
 			return colonyShipController;
-		} else if (body is Asteriod) {
-			return asteriodController;
-		} else {
+		} else if (body is Turret) {
+			return turretController;
+		}else {
 			return null;
 		}
 	}
@@ -786,6 +796,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 			bc.ReturnToPool (body);
 
 		//should come from a pool
+		Debug.Log ("created explosion");
 		Explosion e = (Explosion)Instantiate (explosionPrefab);
 		e.transform.position = body.transform.position;
 		e.position = body.position;
@@ -797,13 +808,12 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		solarSystem.AddBody (e);
 		e.AlignToVector (body.velocity);
 
-		//Destroy (body.gameObject);
-		//create
 		createdObjects.Add (e.gameObject);
 
 		StartCoroutine(DestroyExplosion (e));
 
 		if(body is TraderShip) {
+			solarSystem.RemoveBody(body);
 			ships.Remove ((Ship)body);
 			ShipDestroyed ();
 		}
@@ -813,6 +823,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	IEnumerator DestroyExplosion(Explosion e) {
 		yield return new WaitForSeconds(3);
 		if (!e.gameObject.IsDestroyed ()) {
+			Debug.Log("destroyed explosion");
 			solarSystem.RemoveBody (e);
 			createdObjects.Remove (e.gameObject);
 			Destroy (e.gameObject);
@@ -822,6 +833,12 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 	
 	void HandleShipCollided (Ship ship, Body other)
 	{
+
+		if (ship is Bullet || other is Bullet) {
+			
+			Debug.Log("bullet in collision");
+		}
+
 		if (ship is Turret && other is Bullet) {
 			return;
 		}

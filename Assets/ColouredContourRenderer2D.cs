@@ -4,7 +4,7 @@ using System.Collections;
 public class ColouredContourRenderer2D : ContourRenderer {
 
 	public GravityFieldHelper fieldHelper;
-
+	public float scale = 10000;
 
 
 
@@ -16,7 +16,10 @@ public class ColouredContourRenderer2D : ContourRenderer {
 		System.DateTime now = System.DateTime.Now;
 		Debug.Log( string.Format("[{0}] {1}", now.Ticks/100000, message) );
 	}
-	
+
+	public float max = 0;
+	public float min = float.MaxValue;
+	public float range = 0;
 	// Use this for initialization
 	public override void Build (Ready ready) {
 		//return;
@@ -34,15 +37,26 @@ public class ColouredContourRenderer2D : ContourRenderer {
 			float[,] heightMap = new float[numX, numY];
 			for (int x = 0; x < numX ; x++) {
 				for (int y = 0; y < numY; y++) {
-					if(points[x,y].z <10000) {
-						heightMap[x,y] = points[x,y].z/10000;
+
+					//if(points[x,y].z>max){
+					//	max  = points[x,y].z;
+					//}
+
+					//if(points[x,y].z<min){
+				//		min  = points[x,y].z;
+			//		}
+
+					if(points[x,y].z <scale) {
+						heightMap[x,y] = points[x,y].z/scale;
 					} else {
 						heightMap[x,y] = 1;
 					}
 				}
 			}
 			//return;
-			
+
+
+		 	//range = scale-min;
 			
 			Log ("end building heightmap" );
 			
@@ -77,10 +91,12 @@ public class ColouredContourRenderer2D : ContourRenderer {
 
 
 	}
+
 	
 	private Color GetColor(float value) {
 
 		float alpha = 0;
+		//value = value / range;
 
 		if (value < 0.2f) {
 
@@ -115,6 +131,8 @@ public class ColouredContourRenderer2D : ContourRenderer {
 	}
 	
 	private Texture2D HeightMapToPNG(float[,] points, int delta) {
+
+
 
 		var duplicateHeightMap = new Texture2D(points.GetLength(0), points.GetLength(1), TextureFormat.ARGB32, false);
 

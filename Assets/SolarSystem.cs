@@ -61,6 +61,7 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 	private float G = 6.67f * UnityEngine.Mathf.Pow(10,-11);
 
 	public void AddBody(Body body){
+		Debug.Log ("adding a body");
 		bodies.Add (body);
 		//forces.Add (new List<Vector2>());
 	}
@@ -109,6 +110,9 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 		var delY = body2.position.y - body1.position.y;    //y2 - y1;
 		var distSq = delX*delX + delY*delY;
 		var dist = UnityEngine.Mathf.Sqrt(distSq);
+		if (dist == 0) {
+			return Vector2.zero; //just ignore forces when zero seperation
+		}
 		float product = GM1M2/(distSq*dist);  
 		var force = new Vector2 (product*delX,product*delY);
 
@@ -125,11 +129,26 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 
 			for(var j = i+1; j < bodies.Count; j++){
 
-				//scale force
-				Vector2 force =  this.CalculateForce(bodies[i],bodies[j]);
-				if(force.magnitude>MAX_FORCE){
-					force = force * (MAX_FORCE/force.magnitude);
+				Vector2 force = Vector2.zero;
+
+				if(!bodies[i].canMove && !bodies[j].canMove)
+				{
+
+				} else {
+
+				
+					force =  this.CalculateForce(bodies[i],bodies[j]);
+					//scale force
+					if(force.magnitude>MAX_FORCE){
+						force = force * (MAX_FORCE/force.magnitude);
+					}
+
+					if(float.IsNaN(force.x) || float.IsNaN(force.y)){
+						throw new UnityException("NOT A N");
+					}
 				}
+
+
 
 				forces[i,j] = force;
 				forces[j,i] = new Vector2(-force.x, -force.y);
@@ -245,6 +264,7 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 	
 	}
 
+	private List <Body> bodiesEnteredOrbit = new List<Body>();
 
 	private void UpdateForces (float dt) { //delta is the num of milliseconds which have passed between updates
 		
@@ -254,6 +274,7 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 		Vector2 vel;
 
 		foreach (Body body in bodies) {
+		
 			if(body.canMove){
 				Body SOIParent= GetParentBody(body);
 				if(SOIParent!=null){
@@ -273,11 +294,11 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 						body.lastPosition = body.position - vvector * dt;
 
 
-						if(ShipEnteredOrbit != null)
-						{
-							// All listeners will be invoked
-							ShipEnteredOrbit(body,SOIParent);
-						}
+						//we store a reference to this here since throughing 
+						//an entered orbit event here could result in
+						//the bodies collection being modified.
+						bodiesEnteredOrbit.Add(body);
+
 						
 						
 					} else {
@@ -298,6 +319,18 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 				SolveLinks ();
 			}
 		}
+
+		foreach(Body b in bodiesEnteredOrbit){
+		
+			if(ShipEnteredOrbit != null)
+			{
+				ShipEnteredOrbit(b,b.parentBody);
+			}
+		}
+
+		bodiesEnteredOrbit.Clear ();
+
+		//Debug.Log ("end enumeration");
 		
 		UpdateForcesAndAccels();
 		
@@ -308,10 +341,27 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 			bodies [n].acceleration.y = 0;
 			var massN = bodies [n].mass;
 
+			if(massN == 0){
+				throw new UnityException("Body with mass of zero found");
+			}
+
 			for (var m = 0; m < bodies.Count; m++) {
 
+				//if((float.MaxValue-(forces [n,m].x / massN)) < bodies [n].acceleration.x){
+			//		throw new UnityException("acceration bigger than float.max");
+			//	}
+
+			//	if((float.MaxValue-(forces [n,m].y / massN)) < bodies [n].acceleration.y){
+			//		throw new UnityException("acceration bigger than float.max");
+			//	}
+				float cachedX = bodies [n].acceleration.x;
+				float cachedY = bodies [n].acceleration.y;
 				bodies [n].acceleration.x += forces [n,m].x / massN;
-				bodies [n].acceleration.y += forces [n,m].y / massN;    
+				bodies [n].acceleration.y += forces [n,m].y / massN; 
+
+				if(float.IsNaN(bodies [n].acceleration.x) || float.IsNaN(bodies [n].acceleration.y)){
+					throw new UnityException("NOT A N");
+				}
 					
 
 				//move this out?
@@ -331,6 +381,12 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 			if(bodies[i].canMove) {
 
 				vel = bodies[i].position - bodies[i].lastPosition;
+
+				if(float.IsNaN(vel.x) || float.IsNaN(vel.y) || float.IsNaN(bodies [i].acceleration.x) || float.IsNaN(bodies [i].acceleration.y)){
+					throw new UnityException("WTF");
+				}
+
+
 				bodies[i].velocity = vel/dt;
 				float timeStepSq = dt * dt;
 				

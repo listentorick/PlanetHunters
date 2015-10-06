@@ -123,10 +123,11 @@ public class BodyController : MonoBehaviour, IReset, IBuild, IStartStop {
 	}
 
 	public void ReturnToPool(Body b) {
+		b.gameObject.SetActive (false);
 		b.gameObject.transform.position = new Vector2(100f,100f);
 		sol.RemoveConnectionsForBody (b);
 		sol.RemoveBody (b);
-		b.gameObject.SetActive (false);
+
 	}
 
 	// Update is called once per frame

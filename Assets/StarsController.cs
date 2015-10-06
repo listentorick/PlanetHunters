@@ -38,6 +38,7 @@ public class StarsController : MonoBehaviour, IReset, IBuild, IStartStop {
 		for (var i=0; i<pool.poolSize; i++) {
 			//while(pool.
 			GameObject star = pool.GetPooledObject ();
+			stoppables.Add(star.GetComponent<Rotates>());
 			if(star){
 				star.SetActive (true);
 				PositionStar(star);

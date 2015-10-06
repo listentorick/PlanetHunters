@@ -8,6 +8,13 @@
 			<Position y="0" x="-12000000"/>
 			<Velocity x="0" y="0"></Velocity>
 		</Spawn> 
+		
+		<Spawn type="Asteriod" when="0">
+			<Position y="-4000000" x="-12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+		
+		
 	
 		<Spawn type="Turret" when="0">
 			<Position y="0" x="12000000"/>
@@ -78,7 +85,7 @@
 	
 	<Bodies>
 
-		<Planet Mass="1e+25" SOI="1500000" Type="Red">
+		<Planet Mass="7e+26" SOI="1500000" Type="Red">
 			<Position x="-6000000" y="-1000000"></Position>
 			<Resources>
 				<Resource Max="50" Current="50" Type="Food"> </Resource>
