@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum PlanetType  {
+public class ShipEditor : GameObjectEditor {
 
-	GasGiant, Red, Blue, Sun
+
 }

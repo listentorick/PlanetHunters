@@ -8,7 +8,7 @@ public class SpawnConfiguration : BaseConfiguration {
 
 	
 	[XmlAttribute("when")]
-	public float When;
+	public int When;
 	
 	[XmlAttribute("type")]
 	public SpawnType SpawnType;

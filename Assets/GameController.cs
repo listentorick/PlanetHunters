@@ -101,8 +101,8 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 		cameraFitter.ComputeResolution ();
 
 
-		if (visitable.position != null) {
-			startPosition = new Vector2(visitable.position.X,visitable.position.Y);
+		if (visitable.Position != null) {
+			startPosition = new Vector2(visitable.Position.X,visitable.Position.Y);
 		}
 
 

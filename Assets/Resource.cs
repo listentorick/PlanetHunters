@@ -26,7 +26,9 @@ public class Resource : MonoBehaviour, IStartStop {
 
 	// Use this for initialization
 	void Start () {
-		if(ResourceLevelChanged!=null)ResourceLevelChanged(this, current/max,0);
+		if (ResourceLevelChanged != null) {
+			ResourceLevelChanged (this, current / max, 0);
+		}
 	}
 
 	public void AddStock(int stock) {

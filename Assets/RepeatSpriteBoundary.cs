@@ -92,7 +92,7 @@ using System.Collections.Generic;
 			Destroy (g);
 		}
 		sprites.Clear ();
-		sprite.enabled = true;
+		if(sprite!=null) sprite.enabled = true;
 		this.transform.localScale = new Vector3 (1, 1, 1);
 	}
 

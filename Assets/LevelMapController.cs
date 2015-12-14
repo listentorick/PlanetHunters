@@ -151,7 +151,7 @@ public class LevelMapController : MonoBehaviour, IReset,ILevelConfigurationVisit
 
 		createdObjects.Clear ();
 		levels.Clear ();
-		gridController.Reset ();
+		if(gridController!=null)gridController.Reset ();
 	}
 
 	public void Build(Ready r){

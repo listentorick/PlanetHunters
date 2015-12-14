@@ -82,6 +82,22 @@ public class GameManager : MonoBehaviour {
 		});
 	}
 
+	public void LoadLevelFromConfiguration(Level l) {
+		loadingScreenUIController.Show (delegate() {
+			levelMapController.Reset ();
+			//levelLoader.LoadLevel (levelName, delegate (Level l) {
+				l.Accept (gameController);
+				gameController.Build (delegate() {
+					//gameController.StopPlay();
+					gameController.StartPlay();
+					loadingScreenUIController.Hide (delegate() {
+						
+					});
+				});
+			//});
+		});
+	}
+
 	public void ResetLevel() {
 		gameController.Reset ();
 		LoadLevel (currentLevel.Name);

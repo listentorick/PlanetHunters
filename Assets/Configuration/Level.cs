@@ -3,11 +3,11 @@ using System.Xml.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Level {
+public class Level:BaseConfiguration {
 
 
-	[XmlElement("Position",typeof(PositionConfiguration))]
-	public PositionConfiguration position;
+	//[XmlElement("Position",typeof(PositionConfiguration))]
+	//public PositionConfiguration position;
 
 
 	[XmlAttribute("scale")]
@@ -25,7 +25,7 @@ public class Level {
 	[XmlArrayItem("Spawn",typeof(SpawnConfiguration))]
 	public List<SpawnConfiguration> Events = new List<SpawnConfiguration> ();
 
-	public void Accept(ILevelConfigurationVisitor visitor) {
+	public override void Accept(ILevelConfigurationVisitor visitor) {
 
 		visitor.Visit(this);
 

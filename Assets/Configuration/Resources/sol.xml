@@ -21,7 +21,7 @@
 			<Velocity x="0" y="0"></Velocity>
 		</Spawn> 
 
-<!---
+
 		<Spawn type="CargoShip" when="0">
 			<Position y="5669840" x="12000000"/>
 			<Velocity x="0" y="0"></Velocity>
@@ -30,7 +30,7 @@
 		<Spawn type="CargoShip" when="0">
 			<Position y="1669840" x="12000000"/>
 			<Velocity x="0" y="0"></Velocity>
-		</Spawn> -->
+		</Spawn> 
 		
 		<Spawn type="CargoShip" when="0">
 			<Position y="-5669840" x="-12000000"/>
@@ -65,7 +65,7 @@
 			<Velocity x="0" y="2000000"></Velocity>
 		</Spawn> 
 	
-		<Spawn type="Comet" when="103.5"> 
+		<Spawn type="Comet" when="104"> 
 			<Position from="Top" x="-6000000"/>
 			<Velocity x="0" y="1000000"></Velocity>
 		</Spawn>

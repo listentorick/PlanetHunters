@@ -8,9 +8,19 @@ public class TitleScreenUIController : MonoBehaviour {
 	public Image title;
 	public Button start;
 	public Image background;
+	public Canvas levelEditor;
+
+	public void EditLevels()
+	{
+		start.gameObject.SetActive (false);
+		title.gameObject.SetActive (false);
+		background.gameObject.SetActive(false);
+		//levelEditor.gameObject.SetActive (true);
+	}
 
 
 	public void StartGame(){
+
 
 		//title.CrossFadeAlpha (0, 5f,false);
 		start.GetComponentInChildren<Text> ().text = "Loading...";
