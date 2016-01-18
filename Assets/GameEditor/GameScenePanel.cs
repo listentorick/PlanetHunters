@@ -73,10 +73,15 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	}
 
 	public void Update(){
+		if (Input.GetKeyDown (KeyCode.F5))
+			Run ();
 		if (Input.GetKeyDown (KeyCode.F11))
 			ToggleInterface ();
 		if (Input.GetKeyDown (KeyCode.F10))
 			ToggleEditorVisibility ();
+		if (Input.GetKeyDown (KeyCode.F12)) {
+			Edit();
+		}
 	}
 
 	private Sprite GetSpawnSprite(SpawnType spawnType) {
@@ -387,6 +392,45 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	}
 
 	private bool editorActive = true;
+
+	public void Run()
+	{
+		editorActive = false;
+		Level level = new Level ();
+		level.Scale = currentLevel.Scale;
+		level.Planets = new List<BaseConfiguration> ();
+		level.Events = new List<SpawnConfiguration> ();
+		foreach (GameObjectEditor goe in editors) {
+			goe.Apply (level);
+		}
+		
+		interfaceVisible = true;
+		editorVisible = true;
+		ToggleInterface ();
+		ToggleEditorVisibility ();
+		
+		currentLevel = level;
+		
+		gameManager.LoadLevelFromConfiguration (level);
+	}
+
+	public void Save() {
+	
+	}
+
+	public void Edit() {
+		if (!editorActive) {
+			//the level is running. Kill it with fire
+			editorActive = true;
+			interfaceVisible = false;
+			editorVisible = false;
+			ToggleInterface ();
+			ToggleEditorVisibility ();
+			gameManager.Reset ();	
+		}
+	}
+
+	/*
 	public void Save(){
 
 
@@ -420,7 +464,7 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 			gameManager.LoadLevelFromConfiguration (level);
 		}
 	
-	}
+	}*/
 
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
