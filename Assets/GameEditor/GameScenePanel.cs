@@ -28,16 +28,55 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	public Dictionary<int,List<GameObjectEditor>> whenEditors = new Dictionary<int, List<GameObjectEditor>> (); 
 
 
+	public void ToggleEditorVisibility() {
+		editorVisible = !editorVisible;
+		if (!editorActive)
+			editorVisible = false;
+		foreach (GameObjectEditor goe in editors) {
+			goe.gameObject.SetActive (false);
+		}
+		if (editorVisible) {
+
+			foreach (GameObjectEditor goe in editors) {
+				goe.gameObject.SetActive (true);
+			}
+
+			//hide all whens
+			foreach(int when in whenEditors.Keys){
+				foreach (GameObjectEditor goe in this.whenEditors[when]) {
+					goe.gameObject.SetActive (false);
+				}
+			}
+			//show current when
+			if(this.whenEditors.ContainsKey(currentWhen)){
+				foreach (GameObjectEditor goe in this.whenEditors[currentWhen]) {
+					goe.gameObject.SetActive (true);
+				}
+			}
+		}
+
+	}
+
+	private bool editorVisible = true;
+	private bool interfaceVisible = true;
+
+	public void ToggleInterface(){
+		interfaceVisible = !interfaceVisible;
+		if (editorActive) {
+			toolPanelController.gameObject.SetActive (interfaceVisible);
+			timeLine.gameObject.SetActive (interfaceVisible);
+		} else {
+			toolPanelController.gameObject.SetActive (false);
+			timeLine.gameObject.SetActive (false);
+		}
+		levelSelector.gameObject.SetActive (interfaceVisible);
+	}
+
 	public void Update(){
 		if (Input.GetKeyDown (KeyCode.F11))
-			ShowHide ();
-	}
-	
-	//private bool showHide = true;
-	public void ShowHide(){
-		toolPanelController.gameObject.SetActive (!toolPanelController.gameObject.activeSelf);
-		timeLine.gameObject.SetActive (!timeLine.gameObject.activeSelf);
-		levelSelector.gameObject.SetActive (!levelSelector.gameObject.activeSelf);
+			ToggleInterface ();
+		if (Input.GetKeyDown (KeyCode.F10))
+			ToggleEditorVisibility ();
 	}
 
 	private Sprite GetSpawnSprite(SpawnType spawnType) {
@@ -346,19 +385,40 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 			}
 		}
 	}
-	
+
+	private bool editorActive = true;
 	public void Save(){
-		Level level = new Level ();
-		level.Scale = currentLevel.Scale;
-		level.Planets = new List<BaseConfiguration> ();
-		level.Events = new List<SpawnConfiguration> ();
-		foreach (GameObjectEditor goe in editors) {
-			goe.Apply(level);
+
+
+		if (!editorActive) {
+			//the level is running. Kill it with fire
+			editorActive = true;
+			interfaceVisible = false;
+			editorVisible = false;
+			ToggleInterface ();
+			ToggleEditorVisibility ();
+			gameManager.Reset ();
+
+		} else {
+
+			editorActive = false;
+			Level level = new Level ();
+			level.Scale = currentLevel.Scale;
+			level.Planets = new List<BaseConfiguration> ();
+			level.Events = new List<SpawnConfiguration> ();
+			foreach (GameObjectEditor goe in editors) {
+				goe.Apply (level);
+			}
+
+			interfaceVisible = true;
+			editorVisible = true;
+			ToggleInterface ();
+			ToggleEditorVisibility ();
+
+			currentLevel = level;
+
+			gameManager.LoadLevelFromConfiguration (level);
 		}
-
-
-		this.gameObject.SetActive (false);
-		gameManager.LoadLevelFromConfiguration (level);
 	
 	}
 

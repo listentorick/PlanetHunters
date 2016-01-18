@@ -102,6 +102,10 @@ public class GameManager : MonoBehaviour {
 		gameController.Reset ();
 		LoadLevel (currentLevel.Name);
 	}
+
+	public void Reset(){
+		gameController.Reset ();
+	}
 	
 	// Update is called once per frame
 	void Update () {

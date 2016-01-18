@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Level scale="30">
-
+<Level scale="40">
+	<Position x="0" y="-4000000"></Position>
+	<Events>
+	
+		<Spawn type="Asteriod" when="0">
+			<Position y="0" x="-12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+		
+		<Spawn type="Asteriod" when="0">
+			<Position y="-4000000" x="-12000000"/>
+			<Velocity x="0" y="0"></Velocity>
+		</Spawn> 
+		</Events>
 	<Bodies>
 
 
 		<Planet Mass="1e+25" SOI="150000" Type="Red">
-			<Position x="-600000" y="-0"></Position>
+			<Position x="-6000000" y="-0"></Position>
 			<Resources>
 				<Resource Max="50" Current="50" Type="Food"> </Resource>
 				<Resource Max="50" Current="0" Type="People"> </Resource>
@@ -14,7 +26,7 @@
 		
 		
 		<Planet Mass="1e+26" SOI="150000" Type="Blue">
-			<Position x="600000" y="-0"></Position>
+			<Position x="6000000" y="-0"></Position>
 			<Resources>
 				<Resource Max="50" Current="50" Type="Food"> </Resource>
 				<Resource Max="50" Current="0" Type="People"> </Resource>
