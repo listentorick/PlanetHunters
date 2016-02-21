@@ -24,7 +24,13 @@ public class ColouredContourRenderer2D : ContourRenderer {
 	public override void Build (Ready ready) {
 		//return;
 
-		fieldHelper.CalculatePoints (Screen.width/4,Screen.height/4, delegate 
+
+		//disable
+		//ready ();
+
+		//return;
+
+		fieldHelper.CalculatePoints (Screen.width/40,Screen.height/40, delegate 
 			(Vector3[,] points){
 
 			//Log ("Calulate points");

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" scale="30">
+  <Position x="-124998.094" y="-2000001" z="0" from="None" />
+  <Bodies>
+    <Sun>
+      <Position x="0" y="0" z="0" from="Top" />
+    </Sun>  
+  </Bodies>
+  <Events />
+</Level>

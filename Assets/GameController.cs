@@ -822,7 +822,7 @@ public class GameController : MonoBehaviour, IGameController, IWinCondition, ISt
 
 	IEnumerator DestroyExplosion(Explosion e) {
 		yield return new WaitForSeconds(3);
-		if (!e.gameObject.IsDestroyed ()) {
+		if (solarSystem.ContainsBody(e)) {
 			Debug.Log("destroyed explosion");
 			solarSystem.RemoveBody (e);
 			createdObjects.Remove (e.gameObject);

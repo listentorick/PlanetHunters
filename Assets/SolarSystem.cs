@@ -66,6 +66,11 @@ public class SolarSystem : MonoBehaviour, IStartStop, IReset {
 		//forces.Add (new List<Vector2>());
 	}
 
+	public bool ContainsBody(Body body)
+	{
+		return bodies.Contains (body);
+	}
+
 
 	private List<Link> links = new List<Link>();
 

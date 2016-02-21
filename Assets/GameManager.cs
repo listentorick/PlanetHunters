@@ -104,6 +104,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void Reset(){
+		gameController.StopPlay ();
 		gameController.Reset ();
 	}
 	

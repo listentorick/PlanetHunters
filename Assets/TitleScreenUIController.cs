@@ -12,10 +12,19 @@ public class TitleScreenUIController : MonoBehaviour {
 
 	public void EditLevels()
 	{
-		start.gameObject.SetActive (false);
-		title.gameObject.SetActive (false);
-		background.gameObject.SetActive(false);
-		//levelEditor.gameObject.SetActive (true);
+		start.gameObject.SetActive (levelEditor.gameObject.activeSelf);
+		title.gameObject.SetActive (levelEditor.gameObject.activeSelf);
+		background.gameObject.SetActive(levelEditor.gameObject.activeSelf);
+		levelEditor.gameObject.SetActive (!levelEditor.gameObject.activeSelf);
+	}
+
+	public void Update()
+	{
+		#if UNITY_EDITOR
+		if (Input.GetKeyDown (KeyCode.F1)){
+			EditLevels ();
+		}
+		#endif
 	}
 
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
@@ -26,7 +26,8 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	public Sprite wormHoleSprite;
 	public Timeline timeLine;
 	public Dictionary<int,List<GameObjectEditor>> whenEditors = new Dictionary<int, List<GameObjectEditor>> (); 
-
+	public SaveDialog saveDialog;
+	public RectTransform gameArea;
 
 	public void ToggleEditorVisibility() {
 		editorVisible = !editorVisible;
@@ -60,27 +61,51 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	private bool editorVisible = true;
 	private bool interfaceVisible = true;
 
+	public void ResetInterface() {
+		interfaceVisible = false;
+		ToggleInterface ();
+	}
+
 	public void ToggleInterface(){
 		interfaceVisible = !interfaceVisible;
 		if (editorActive) {
 			toolPanelController.gameObject.SetActive (interfaceVisible);
 			timeLine.gameObject.SetActive (interfaceVisible);
+			saveDialog.gameObject.SetActive(false);
+			levelSelector.gameObject.SetActive (false);
+			gameArea.gameObject.SetActive(interfaceVisible);
+
+
 		} else {
 			toolPanelController.gameObject.SetActive (false);
 			timeLine.gameObject.SetActive (false);
+			saveDialog.gameObject.SetActive(false);
+			levelSelector.gameObject.SetActive (false);
+			gameArea.gameObject.SetActive(false);
 		}
-		levelSelector.gameObject.SetActive (interfaceVisible);
+
 	}
+
+	public void ToggleSaveDialogVisibility() {
+	}
+
+
 
 	public void Update(){
 		if (Input.GetKeyDown (KeyCode.F5))
 			Run ();
 		if (Input.GetKeyDown (KeyCode.F11))
-			ToggleInterface ();
+			//ToggleInterface ();
 		if (Input.GetKeyDown (KeyCode.F10))
 			ToggleEditorVisibility ();
 		if (Input.GetKeyDown (KeyCode.F12)) {
 			Edit();
+		}
+		if (Input.GetKeyDown (KeyCode.F7)) {
+			saveDialog.gameObject.SetActive(!saveDialog.gameObject.activeSelf);
+		}
+		if (Input.GetKeyDown (KeyCode.F6)) {
+			levelSelector.gameObject.SetActive(!levelSelector.gameObject.activeSelf);
 		}
 	}
 
@@ -121,11 +146,28 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 //	}
 	
 	private void SetPosition(GameObjectEditor pgoe,Level level, PositionConfiguration p){
+
+		//This is the parent
 		RectTransform parent = pgoe.gameObject.transform.parent.GetComponent<RectTransform>();
-		float offsetX = (pgoe.transform.position.x - (parent.rect.width/2f) +  pgoe.GetComponent<RectTransform>().rect.width/2f);
-		float offsetY = (pgoe.transform.position.y - (parent.rect.height/2f) +  pgoe.GetComponent<RectTransform>().rect.height/2f);
+
+
+
+		//the parent is bigger than the visible area (gameArea)
+		Rect pgoeRect = pgoe.GetComponent<RectTransform> ().rect;
+		Vector2 anchoredPosition = pgoe.GetComponent<RectTransform> ().anchoredPosition;
+		Rect gameAreaRect = this.gameArea.GetComponent<RectTransform> ().rect;
+
+		float gameAreaScreenWidth = gameAreaRect.width;
+		float gameAreaScreenHeight = gameAreaRect.height;
+
+		float pgoeX = anchoredPosition.x;// + (pgoeRect.width / 2f);
+		float pgoeY = anchoredPosition.y;// + (pgoeRect.height / 2f);
+				
+	
+		float offsetX = pgoeX;// - (parent.rect.width/2f);
+		float offsetY = pgoeY; //- (parent.rect.height/2f);
 		
-		float xfactor = level.Scale/parent.rect.width;
+		float xfactor = level.Scale/gameAreaRect.width;
 		
 		p.X = offsetX * xfactor * GameController.SCALE ;
 		p.Y = offsetY * xfactor * GameController.SCALE ;
@@ -133,30 +175,31 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 
 	private void Position(GameObjectEditor pgoe,Level level, PositionConfiguration p){
 		RectTransform parent = pgoe.gameObject.transform.parent.GetComponent<RectTransform>();
+		Rect gameAreaRect = this.gameArea.GetComponent<RectTransform> ().rect;
 
 		//parent.rect.width = width of editor window.  
 		// level.scale is number of unity world units on screen.
 		//so xfactor converts from editor -> unity coordinates
 		//i.e. 30/800 
-		float xfactor = level.Scale/parent.rect.width; 
+		float xfactor = level.Scale/gameAreaRect.width; 
 
 		float y = 0;
 		float x = 0;
 
 		if (p.from == From.Top) {
-			y =  parent.rect.height;
+			y = gameAreaRect.height/2f;
 		} else if (p.from == From.Bottom) {
-			y = 0;
+			y = -gameAreaRect.height/2f;
 		} else { 
-			y = p.Y/(xfactor * GameController.SCALE) +  (parent.rect.height/2f);
+			y = p.Y/(xfactor * GameController.SCALE);// +  (parent.rect.height/2f);
 		}
 
 		if (p.from == From.Left) {
-			x = 0;
+			x = -gameAreaRect.width/2f;
 		} else if (p.from == From.Right) {
-			x = parent.rect.width;
+			x = gameAreaRect.width/2f;
 		} else { 
-			x = p.X/(xfactor * GameController.SCALE) +  (parent.rect.width/2f);
+			x = p.X/(xfactor * GameController.SCALE);// +  (parent.rect.width/2f);
 		}
 
 		//Debug.Log (p.from + " " + y);
@@ -169,7 +212,8 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 		//float y = p.Y/(xfactor * GameController.SCALE);
 
 		//pgoe.transform.position = new Vector2 (x + parent.rect.width/2f - pgoe.GetComponent<RectTransform>().rect.width/2f, y + (parent.rect.height/2f) -  pgoe.GetComponent<RectTransform>().rect.height/2f);
-		pgoe.transform.position = new Vector2 (x, y);
+		//pgoe.transform.position = new Vector2 (x, y);
+		pgoe.GetComponent<RectTransform>().anchoredPosition = new Vector2 (x, y);
 
 	}
 	
@@ -178,7 +222,7 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 			
 			GameObjectEditor pgoe = (GameObjectEditor)Instantiate (gameObjectEditorPrefab);
 			
-			pgoe.editorPanel.AddInput ("when","0");
+			pgoe.editorPanel.AddInput ("when",this.currentWhen.ToString());
 			pgoe.editorPanel.AddInput ("vx","0");
 			pgoe.editorPanel.AddInput ("vy","0");
 			
@@ -331,8 +375,11 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 			pgoe.SetSprite (wormHoleSprite);
 			//pgoe.transform.localScale = new Vector3(
 			pgoe.ConfigurationBuilder = delegate(EditorPanel panel, Level level) {
-				level.Position = new PositionConfiguration();
-				SetPosition(pgoe,level,level.Position);
+
+				WormHoleConfiguration w = new WormHoleConfiguration();
+				level.Planets.Add(w);
+				w.Position = new PositionConfiguration();
+				SetPosition(pgoe,level,w.Position);
 			};
 			
 			pgoe.ConfigurationReader = delegate(EditorPanel panel, BaseConfiguration config) {
@@ -346,6 +393,7 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	{
 		currentLevel = new Level ();
 		currentLevel.Scale = 30;
+		saveDialog.levelToSave = currentLevel;
 
 		toolPanelController.AddTool (redPlanetSprite,BuildPlanetEditorDelegate(PlanetType.Red));
 		toolPanelController.AddTool (bluePlanetSprite,BuildPlanetEditorDelegate(PlanetType.Blue));
@@ -359,6 +407,32 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 		toolPanelController.AddTool (wormHoleSprite, BuildWormHoleEditorDelegate() );
 
 	    timeLine.SlotClicked+= HandleSlotClicked;
+
+		saveDialog.gameObject.SetActive(false);
+		levelSelector.gameObject.SetActive (false);
+
+
+
+
+	}
+
+
+	void DisposeCurrentLevel()
+	{
+		foreach (int key in this.whenEditors.Keys) {
+			foreach(GameObjectEditor goe in this.whenEditors[key]){
+				Destroy(goe.gameObject);
+			}
+		}
+
+		this.whenEditors.Clear ();
+
+		foreach (GameObjectEditor goe in editors) {
+			Destroy(goe.gameObject);
+		}
+
+		this.editors.Clear ();
+	
 	}
 
 	void HideAllEvents(){
@@ -367,6 +441,8 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 				goe.gameObject.SetActive(false);
 			}
 		}
+
+
 	}
 
 	void DebugEditors() {
@@ -410,12 +486,13 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 		ToggleEditorVisibility ();
 		
 		currentLevel = level;
+		saveDialog.levelToSave = level;
 		
 		gameManager.LoadLevelFromConfiguration (level);
 	}
 
 	public void Save() {
-	
+		ToggleSaveDialogVisibility ();
 	}
 
 	public void Edit() {
@@ -430,41 +507,9 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 		}
 	}
 
-	/*
-	public void Save(){
 
 
-		if (!editorActive) {
-			//the level is running. Kill it with fire
-			editorActive = true;
-			interfaceVisible = false;
-			editorVisible = false;
-			ToggleInterface ();
-			ToggleEditorVisibility ();
-			gameManager.Reset ();
 
-		} else {
-
-			editorActive = false;
-			Level level = new Level ();
-			level.Scale = currentLevel.Scale;
-			level.Planets = new List<BaseConfiguration> ();
-			level.Events = new List<SpawnConfiguration> ();
-			foreach (GameObjectEditor goe in editors) {
-				goe.Apply (level);
-			}
-
-			interfaceVisible = true;
-			editorVisible = true;
-			ToggleInterface ();
-			ToggleEditorVisibility ();
-
-			currentLevel = level;
-
-			gameManager.LoadLevelFromConfiguration (level);
-		}
-	
-	}*/
 
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
@@ -488,9 +533,14 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	
 	public void Visit (Level visitable) {
 
+		DisposeCurrentLevel ();
 		currentLevel = visitable;
+		saveDialog.levelToSave = visitable;
 		GameObjectEditor goe = BuildStartPositionEditorDelegate ()();
 		UpdateEditor (goe, visitable);
+
+
+		ResetInterface ();
 
 
 	}
@@ -562,6 +612,10 @@ public class GameScenePanel : MonoBehaviour, IDropHandler, ILevelConfigurationVi
 	{
 
 		timeLine.Build ();
+		//make sure all ui is always on top of editors
+		saveDialog.gameObject.transform.SetAsLastSibling ();
+		levelSelector.gameObject.transform.SetAsLastSibling ();
+		timeLine.gameObject.transform.SetAsLastSibling ();
 	
 	}
 }

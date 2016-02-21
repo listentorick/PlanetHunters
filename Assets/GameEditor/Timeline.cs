@@ -56,6 +56,13 @@ public class Timeline : MonoBehaviour {
 		slot.transform.SetParent(content,false);
 		slot.transform.SetSiblingIndex (when);
 	}
+
+	public void AddSlotToEnd(){
+	
+		maxWhen++;
+		AddSlot (maxWhen);
+	
+	}
 	
 	public void Build() {
 

@@ -11,9 +11,25 @@ public class LevelSelector : MonoBehaviour {//, IBeginDragHandler, IDragHandler,
 	public Transform content;
 	public LevelLoader levelLoader;
 	public GameScenePanel gameScenePanel;
+	public ScrollableList scrollableList;
 
 
+	void Start () {
+		scrollableList.OnClicked+= HandleOnClicked;
+		List<string> players = new List<string> ();
+		string myPath = "Assets/Configuration/Resources/";
+		DirectoryInfo dir = new DirectoryInfo (myPath);
+		FileInfo[] info = dir.GetFiles ("*.*");
+		foreach (FileInfo f in info) {
+			if (f.Extension == ".xml") {
+				
+				scrollableList.AddMenuItem(Path.GetFileNameWithoutExtension(f.Name));
+			}
+		}
+		
+	}
 
+	/*
 	public void Start ()
 	{
 		List<string> players = new List<string> ();
@@ -33,12 +49,19 @@ public class LevelSelector : MonoBehaviour {//, IBeginDragHandler, IDragHandler,
 		button.transform.SetParent(content, false);
 		button.GetComponentInChildren<Text> ().text = text;
 		button.onClick.AddListener(()=> LoadLevel(text));
+	}*/
+
+	void HandleOnClicked (string text)
+	{
+		//	fn = text + ".xml";
+		levelLoader.LoadLevel(text,(Level l)=> {l.Accept(gameScenePanel); gameScenePanel.Build();});
 	}
 
+	/*
 	private void LoadLevel(string text)
 	{
 		levelLoader.LoadLevel(text,(Level l)=> {l.Accept(gameScenePanel); gameScenePanel.Build();});
-	}
+	}*/
 
 	// Update is called once per frame
 	void Update () {
